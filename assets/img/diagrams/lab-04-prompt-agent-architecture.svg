@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="510" viewBox="0 0 820 510">
+  <title>Lab 04 - Prompt Agent Architecture</title>
+  <desc>Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment for LLM inference and may invoke the Web Search Tool, which calls out to the Internet.</desc>
+
+  <!-- Background -->
+  <rect width="820" height="510" fill="white"/>
+
+  <defs>
+    <!-- Solid grey arrowhead -->
+    <marker id="ah" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#555555"/>
+    </marker>
+    <!-- Blue arrowhead (request) -->
+    <marker id="ah-blue" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#1565C0"/>
+    </marker>
+    <!-- Purple arrowhead (tool call) -->
+    <marker id="ah-purple" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#6A1B9A"/>
+    </marker>
+    <!-- Red arrowhead (HTTP search) -->
+    <marker id="ah-red" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#B71C1C"/>
+    </marker>
+    <!-- Teal arrowhead (LLM call) -->
+    <marker id="ah-teal" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#006064"/>
+    </marker>
+  </defs>
+
+  <!-- ──────────────────────────────────────────
+       CONTAINERS
+       ────────────────────────────────────────── -->
+
+  <!-- Foundry Account -->
+  <rect x="220" y="20" width="580" height="360" rx="6"
+        fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <!-- Account header: rounded top, flat bottom -->
+  <path d="M 226,20 L 794,20 Q 800,20 800,26 L 800,54 L 220,54 L 220,26 Q 220,20 226,20 Z"
+        fill="#1565C0"/>
+  <text x="510" y="43" text-anchor="middle"
+        fill="white" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="14" font-weight="bold">Foundry Account</text>
+
+  <!-- Foundry Project -->
+  <rect x="265" y="72" width="490" height="290" rx="5"
+        fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+  <!-- Project header: rounded top, flat bottom -->
+  <path d="M 270,72 L 750,72 Q 755,72 755,77 L 755,100 L 265,100 L 265,77 Q 265,72 270,72 Z"
+        fill="#2E7D32"/>
+  <text x="510" y="91" text-anchor="middle"
+        fill="white" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">Foundry Project</text>
+
+  <!-- ──────────────────────────────────────────
+       NODES
+       ────────────────────────────────────────── -->
+
+  <!-- Agent Definition (inside Project) -->
+  <rect x="280" y="120" width="200" height="90" rx="6"
+        fill="#FFF3CD" stroke="#F59E0B" stroke-width="2"/>
+  <text x="380" y="149" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">acl-remedy-advisor</text>
+  <text x="380" y="168" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11">Agent Definition</text>
+  <text x="380" y="185" text-anchor="middle"
+        fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">Versions: v1 · v2 · ...</text>
+
+  <!-- chat model deployment (inside Project) -->
+  <rect x="555" y="120" width="175" height="90" rx="6"
+        fill="#E0F7FA" stroke="#006064" stroke-width="2"/>
+  <text x="642" y="149" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="14" font-weight="bold">chat</text>
+  <text x="642" y="168" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11">Model Deployment</text>
+  <text x="642" y="185" text-anchor="middle"
+        fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">LLM inference</text>
+
+  <!-- Web Search Tool (inside Project) - cx=380, below Agent Def -->
+  <rect x="275" y="270" width="210" height="72" rx="6"
+        fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2"/>
+  <text x="380" y="300" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">Web Search Tool</text>
+  <text x="380" y="320" text-anchor="middle"
+        fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11">Built-in · Microsoft Foundry</text>
+
+  <!-- Python Client (outside containers) - top-aligned with Agent Def (cy=165) -->
+  <rect x="20" y="120" width="175" height="90" rx="6"
+        fill="#BBDEFB" stroke="#1565C0" stroke-width="2"/>
+  <text x="107" y="149" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">Python Client</text>
+  <text x="107" y="169" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11">src/starter.py</text>
+  <text x="107" y="187" text-anchor="middle"
+        fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">AIProjectClient</text>
+
+  <!-- Internet (outside containers, bottom) - cx=380, below Web Search Tool -->
+  <ellipse cx="380" cy="448" rx="140" ry="43"
+           fill="#FFEBEE" stroke="#C62828" stroke-width="2"/>
+  <text x="380" y="443" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">Internet</text>
+  <text x="380" y="462" text-anchor="middle"
+        fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11">accc.gov.au etc.</text>
+
+  <!-- ──────────────────────────────────────────
+       ARROWS
+       ────────────────────────────────────────── -->
+
+  <!-- 1. Python Client → Agent Definition  (solid blue, request) -->
+  <!-- right of client (195,155) → left of agent_def (280,155) - straight horizontal -->
+  <path d="M 195,155 L 280,155"
+        stroke="#1565C0" stroke-width="2" fill="none"
+        marker-end="url(#ah-blue)"/>
+  <text x="237" y="147" text-anchor="middle"
+        fill="#1565C0" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">responses.create()</text>
+
+  <!-- 2. Agent Definition → Python Client  (dashed grey, response) -->
+  <!-- left of agent_def (280,175) → right of client (195,175) - straight horizontal -->
+  <path d="M 280,175 L 195,175"
+        stroke="#888888" stroke-width="1.5" stroke-dasharray="5,4"
+        fill="none" marker-end="url(#ah)"/>
+  <text x="237" y="190" text-anchor="middle"
+        fill="#888888" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">response</text>
+
+  <!-- 3. Agent Definition → chat model  (solid teal, LLM call) -->
+  <!-- right of agent_def (480,155) → left of model (555,155) - straight horizontal -->
+  <path d="M 480,155 L 555,155"
+        stroke="#006064" stroke-width="2" fill="none"
+        marker-end="url(#ah-teal)"/>
+  <text x="517" y="147" text-anchor="middle"
+        fill="#006064" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">LLM call</text>
+
+  <!-- 4. chat model → Agent Definition  (dashed teal, completion) -->
+  <!-- left of model (555,175) → right of agent_def (480,175) - straight horizontal -->
+  <path d="M 555,175 L 480,175"
+        stroke="#006064" stroke-width="1.5" stroke-dasharray="5,4"
+        fill="none" marker-end="url(#ah-teal)"/>
+  <text x="517" y="190" text-anchor="middle"
+        fill="#006064" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">completion</text>
+
+  <!-- 5. Agent Definition → Web Search Tool  (solid purple, tool call) -->
+  <!-- bottom centre of agent_def (380,210) → top centre of web_search (380,270) - straight vertical -->
+  <path d="M 380,210 L 380,270"
+        stroke="#6A1B9A" stroke-width="2" fill="none"
+        marker-end="url(#ah-purple)"/>
+  <text x="388" y="243" text-anchor="start"
+        fill="#6A1B9A" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">tool call</text>
+
+  <!-- 6. Web Search Tool → Internet  (solid red, HTTP search) -->
+  <!-- bottom centre of web_search (380,342) → top of internet ellipse (380,405) - straight vertical -->
+  <path d="M 380,342 L 380,405"
+        stroke="#B71C1C" stroke-width="2" fill="none"
+        marker-end="url(#ah-red)"/>
+  <text x="388" y="377" text-anchor="start"
+        fill="#B71C1C" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">HTTP search</text>
+</svg>

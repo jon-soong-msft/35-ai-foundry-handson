@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+  <title>Lab 13 - Custom Engine Agent runtime sequence</title>
+  <desc>Runtime sequence for a Custom Engine Agent. A user sends a message in Teams or Microsoft 365 Copilot. Azure Bot Service forwards a Bot Framework Activity to the proxy's api/messages endpoint. CloudAdapter and AgentApplication dispatch the message, AIProjectClient runs acl-remedy-advisor, and the proxy sends an Activity response back through Bot Service to the channel.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#0078D4"/></marker>
+    <style>
+      .title { font: 700 28px Segoe UI, Arial, sans-serif; fill: #1b1a19; }
+      .head { font: 700 16px Segoe UI, Arial, sans-serif; fill: #1b1a19; }
+      .text { font: 14px Segoe UI, Arial, sans-serif; fill: #323130; }
+      .life { stroke: #8a8886; stroke-width: 2; stroke-dasharray: 7 7; }
+      .msg { stroke: #0078D4; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .box { stroke-width: 2; rx: 10; }
+    </style>
+  </defs>
+  <rect width="1400" height="760" fill="#ffffff"/>
+  <text x="50" y="48" class="title">Custom Engine Agent runtime flow</text>
+  <text x="50" y="76" class="text">Bot Framework Activity in, Foundry agent run, Activity response out.</text>
+  <g transform="translate(50,110)">
+    <rect x="0" y="0" width="170" height="68" fill="#CFE4FA" stroke="#0078D4" class="box"/><text x="85" y="30" text-anchor="middle" class="head">User</text><text x="85" y="52" text-anchor="middle" class="text">Teams / Copilot</text>
+    <rect x="260" y="0" width="180" height="68" fill="#DFF6DD" stroke="#107C10" class="box"/><text x="350" y="30" text-anchor="middle" class="head">Azure Bot Service</text><text x="350" y="52" text-anchor="middle" class="text">Teams channel</text>
+    <rect x="520" y="0" width="210" height="68" fill="#FFF4CE" stroke="#F7630C" class="box"/><text x="625" y="30" text-anchor="middle" class="head">Proxy /api/messages</text><text x="625" y="52" text-anchor="middle" class="text">CloudAdapter + AgentApplication</text>
+    <rect x="810" y="0" width="190" height="68" fill="#E8DAEF" stroke="#5C2D91" class="box"/><text x="905" y="30" text-anchor="middle" class="head">AIProjectClient</text><text x="905" y="52" text-anchor="middle" class="text">thread + run</text>
+    <rect x="1080" y="0" width="210" height="68" fill="#E8DAEF" stroke="#5C2D91" class="box"/><text x="1185" y="30" text-anchor="middle" class="head">acl-remedy-advisor</text><text x="1185" y="52" text-anchor="middle" class="text">Foundry agent</text>
+    <line x1="85" y1="68" x2="85" y2="610" class="life"/><line x1="350" y1="68" x2="350" y2="610" class="life"/><line x1="625" y1="68" x2="625" y2="610" class="life"/><line x1="905" y1="68" x2="905" y2="610" class="life"/><line x1="1185" y1="68" x2="1185" y2="610" class="life"/>
+    <line x1="85" y1="130" x2="350" y2="130" class="msg"/><text x="217" y="121" text-anchor="middle" class="text">1. User message</text>
+    <line x1="350" y1="210" x2="625" y2="210" class="msg"/><text x="487" y="201" text-anchor="middle" class="text">2. POST Activity + JWT</text>
+    <rect x="545" y="245" width="160" height="52" fill="#FFF4CE" stroke="#F7630C" class="box"/><text x="625" y="267" text-anchor="middle" class="text">3. Validate and</text><text x="625" y="285" text-anchor="middle" class="text">dispatch Activity</text>
+    <line x1="625" y1="330" x2="905" y2="330" class="msg"/><text x="765" y="321" text-anchor="middle" class="text">4. Create/reuse thread and start run</text>
+    <line x1="905" y1="410" x2="1185" y2="410" class="msg"/><text x="1045" y="401" text-anchor="middle" class="text">5. Run agent</text>
+    <line x1="1185" y1="485" x2="905" y2="485" class="msg"/><text x="1045" y="476" text-anchor="middle" class="text">6. Response text/chunks</text>
+    <line x1="905" y1="540" x2="625" y2="540" class="msg"/><text x="765" y="531" text-anchor="middle" class="text">7. Build Activity response</text>
+    <line x1="625" y1="590" x2="350" y2="590" class="msg"/><text x="487" y="581" text-anchor="middle" class="text">8. Send Activity via Bot Connector</text>
+    <line x1="350" y1="630" x2="85" y2="630" class="msg"/><text x="217" y="621" text-anchor="middle" class="text">9. Display response</text>
+  </g>
+</svg>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>05. Agent tools &amp; evaluations · Foundry Agent Service Workshop</title>
+<meta name="description" content="Add web search and Code Interpreter tools, then run an evaluation on the agent — all in the portal.">
+<link rel="preconnect" href="https://ai.azure.com">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body data-page="module" data-slug="05-agent-tools-and-evaluations">
+<header class="site-header"><button class="icon-btn menu-btn" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button><a class="brand" href="../index.html"><span class="brand-mark">F</span><span class="brand-text"><small>Portal-first workshop</small><strong>Foundry Agent Service</strong></span></a><div class="header-progress"><span class="lbl">0 / 0 steps</span><div class="bar"><span></span></div></div><div class="header-actions"><button class="icon-btn" data-action="theme" aria-label="Toggle dark mode"><svg class="i-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="i-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button><a class="icon-btn" href="https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/README.md" target="_blank" rel="noopener" title="View source module on GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.22.66-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.16.57.67.48A10 10 0 0 0 22 12 10 10 0 0 0 12 2Z"/></svg></a></div></header>
+<div class="layout">
+<aside class="sidebar" id="sidebar"><h4>Workshop</h4><a class="nav-item" href="../index.html"><span class="num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 21V12h6v9"/></svg></span><span class="txt">Overview &amp; progress</span></a><h4>Modules</h4><a class="nav-item" data-slug="01-setup" href="01-setup.html"><span class="num">01</span><span class="txt">Setup &amp; access verification</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-slug="02-foundry-portal-walkthrough" href="02-foundry-portal-walkthrough.html"><span class="num">02</span><span class="txt">Foundry portal walkthrough</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-slug="03-foundry-toolkit-vscode" href="03-foundry-toolkit-vscode.html"><span class="num">03</span><span class="txt">Foundry Toolkit for VS Code</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-slug="04-prompt-based-agents" href="04-prompt-based-agents.html"><span class="num">04</span><span class="txt">Create &amp; chat with a Prompt Agent</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item active" data-slug="05-agent-tools-and-evaluations" href="05-agent-tools-and-evaluations.html"><span class="num">05</span><span class="txt">Agent tools &amp; evaluations</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-slug="06-mcp-tools" href="06-mcp-tools.html"><span class="num">06</span><span class="txt">Integrate MCP tools</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-slug="07-foundry-iq" href="07-foundry-iq.html"><span class="num">07</span><span class="txt">Ground with Foundry IQ knowledge</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-slug="08-agent-framework-python" href="08-agent-framework-python.html"><span class="num">08</span><span class="txt">Agent Framework for Python</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-slug="09-hosted-agents" href="09-hosted-agents.html"><span class="num">09</span><span class="txt">Build &amp; run a hosted agent</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-slug="10-foundry-toolboxes" href="10-foundry-toolboxes.html"><span class="num">10</span><span class="txt">Foundry Toolboxes</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-slug="11-agent-ops-and-agent-id" href="11-agent-ops-and-agent-id.html"><span class="num">11</span><span class="txt">Agent operations &amp; Agent ID</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-slug="12-publishing-agents" href="12-publishing-agents.html"><span class="num">12</span><span class="txt">Publish an agent</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-slug="13-custom-engine-agent" href="13-custom-engine-agent.html"><span class="num">13</span><span class="txt">Custom Engine Agent</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a></aside><div class="scrim"></div>
+<main class="main"><div class="content-wrap">
+<article class="content">
+<div class="breadcrumb"><a href="../index.html">Workshop</a> &nbsp;/&nbsp; Module 5</div>
+<div class="module-eyebrow"><span class="mod-badge handson"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 0 1 4 0v5"/><path d="M13 7a2 2 0 0 1 4 0v6a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-4l-1.5-3a1.5 1.5 0 0 1 2.7-1.3L9 15"/></svg> Hands-on lab</span></div>
+<h1>Agent tools &amp; evaluations</h1>
+<div class="meta-row"><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 0 1 4 0v5"/><path d="M13 7a2 2 0 0 1 4 0v6a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-4l-1.5-3a1.5 1.5 0 0 1 2.7-1.3L9 15"/></svg>Hands-on lab</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>30 min</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Intermediate</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>Module 5 of 13</span></div>
+<div class="callout note">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Adapted for your own subscription</div>
+<p>This module is delivered in the <strong>Foundry portal</strong>. Where the original steps mention a pre-provisioned shared environment, a <code>.env</code> file, an organizer, or a proctor, use <strong>your own Foundry project</strong> and the model you deployed in <a href="01-setup.html">Module 01</a>.</p>
+</div>
+<p>In this module you extend <code>acl-remedy-advisor</code> with a second tool — <strong>Code Interpreter</strong> — refine its instructions so it routes work to the right tool, then run a no‑code <strong>evaluation</strong> in the Foundry portal to score the agent's quality. Everything here happens in the browser at <a href="https://ai.azure.com">ai.azure.com</a>.</p>
+<p><img src="../assets/img/diagrams/lab-05-agent-tools-architecture.svg" alt="Diagram showing the acl-remedy-advisor agent with Web search and Code Interpreter tools, evaluated against a dataset in the Foundry portal."></p>
+<div class="callout tip">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1h6c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"/></svg>Tip</div>
+<p>Tick the checkbox next to each step as you complete it. Your progress is saved in this browser and shown on the <a href="../index.html">workshop overview</a>.</p>
+</div>
+<h2 id="objectives">Objectives<a href="#objectives" class="anchor" aria-hidden="true"> #</a></h2>
+<ul>
+<li>Add the <strong>Code Interpreter</strong> tool to the agent for precise calculations.</li>
+<li>Update the instructions so the model knows <em>when</em> to use each tool.</li>
+<li>Run an <strong>automatic evaluation</strong> in the portal and read the per‑evaluator scores.</li>
+</ul>
+<h2 id="concepts">Concepts<a href="#concepts" class="anchor" aria-hidden="true"> #</a></h2>
+<h3 id="multiple-tools-and-instruction-routing">Multiple tools and instruction routing<a href="#multiple-tools-and-instruction-routing" class="anchor" aria-hidden="true"> #</a></h3>
+<p>An agent can hold several tools at once. On each turn the model decides which — if any — to call, based on two things: the user's message and <strong>your instructions</strong>. Precise instructions (&quot;use code interpreter to calculate refund amounts&quot;) make tool selection consistent and predictable, which also makes evaluation results more reliable.</p>
+<h3 id="evaluations">Evaluations<a href="#evaluations" class="anchor" aria-hidden="true"> #</a></h3>
+<p>An <strong>evaluation</strong> runs your agent against a set of test inputs and scores each response with one or more <strong>evaluators</strong>. The portal does this end‑to‑end in the cloud — it can even generate the test data for you. Evaluators relevant to a tool‑using agent include:</p>
+<table>
+<thead>
+<tr>
+<th>Evaluator</th>
+<th>Category</th>
+<th>What it measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tool Call Accuracy</strong></td>
+<td>Agents</td>
+<td>Did the agent call the right tool with the right arguments?</td>
+</tr>
+<tr>
+<td><strong>Task Adherence</strong></td>
+<td>Agents</td>
+<td>Does the final response fully satisfy the request?</td>
+</tr>
+<tr>
+<td><strong>Intent Resolution</strong></td>
+<td>Agents</td>
+<td>Did the agent's first actions match the user's intent?</td>
+</tr>
+<tr>
+<td><strong>Groundedness / Relevance</strong></td>
+<td>Quality</td>
+<td>Is the answer grounded and on‑topic?</td>
+</tr>
+<tr>
+<td><strong>Safety</strong> (Violence, Self‑harm, …)</td>
+<td>Safety</td>
+<td>Does any response contain harmful content?</td>
+</tr>
+</tbody>
+</table>
+<div class="callout note">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Note</div>
+<p>Evaluators that use an LLM judge require a deployed chat model in your project (your Module 01 <code>chat</code> deployment is sufficient). Running evaluations consumes model quota.</p>
+</div>
+<h2 id="steps">Steps<a href="#steps" class="anchor" aria-hidden="true"> #</a></h2>
+<h3 id="part-1--add-code-interpreter-to-the-agent">Part 1 — Add Code Interpreter to the agent<a href="#part-1--add-code-interpreter-to-the-agent" class="anchor" aria-hidden="true"> #</a></h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> In the <a href="https://ai.azure.com">Foundry portal</a>, open <strong>Build → Agents</strong> and select <strong>acl-remedy-advisor</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> In the <strong>Tools</strong> section (which already lists <strong>Web search</strong> from Module 04), click <strong>+ Add tools</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Select <strong>Code Interpreter</strong> from the catalog and confirm to add it.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Confirm both <strong>Web search</strong> and <strong>Code Interpreter</strong> now appear in the agent's Tools section.</p>
+<details>
+<summary>📸 Reference — the tool picker in the VS Code Agent Builder</summary>
+<p><img src="../assets/img/screenshots/lab-05/01-add-tool-dialog.png" alt="Select a tool dialog showing the Configured tab with Web search already added and Code Interpreter available"></p>
+<p><img src="../assets/img/screenshots/lab-05/02-agent-tools-added.png" alt="Agent Builder TOOL section showing both Web search and Code Interpreter listed"></p>
+<p>The portal catalog offers the same <strong>Code Interpreter</strong> tool. Code Interpreter runs sandboxed Python and is billed per active session.</p>
+</details>
+</li>
+</ul>
+<h3 id="part-2--update-the-instructions">Part 2 — Update the instructions<a href="#part-2--update-the-instructions" class="anchor" aria-hidden="true"> #</a></h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Scroll to the <strong>Instructions</strong> field and add this paragraph to the end of the existing instructions:</p>
+<pre><code class="language-text">When asked to calculate refund amounts, depreciation, pro-rata warranty
+values, or compare prices, use code interpreter to perform the calculation
+precisely and show your working.
+</code></pre>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Confirm the new paragraph appears at the bottom of the instructions.</p>
+</li>
+</ul>
+<div class="callout note">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Note</div>
+<p>Foundry records this change as a new agent <strong>version</strong> automatically (conceptually your <code>v2</code>). Earlier versions remain available, and anything referencing the agent by name uses the latest version.</p>
+</div>
+<h3 id="part-3--test-both-tools-in-the-playground">Part 3 — Test both tools in the Playground<a href="#part-3--test-both-tools-in-the-playground" class="anchor" aria-hidden="true"> #</a></h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Open the <strong>Playground</strong> tab and send:</p>
+<blockquote>
+<p>A customer bought a $899 laptop 14 months ago. The battery now only holds 20% of its original capacity after normal use. The manufacturer's warranty was 12 months. What are the customer's rights under Australian Consumer Law, and what would a reasonable refund amount be if they've had 14 months of use from a product expected to last at least 3 years?</p>
+</blockquote>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Review the response. Confirm the agent classifies the failure, explains the remedy options, and cites current ACCC guidance.</p>
+<blockquote>
+<p>The prompt is designed to trigger Web search for ACL guidance and Code Interpreter for the refund calculation. The model exercises judgement — if the calculation does not fire, iterate on the wording. Evaluation (next) gives you a repeatable way to measure this.</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="part-4--run-an-automatic-evaluation-in-the-portal">Part 4 — Run an automatic evaluation in the portal<a href="#part-4--run-an-automatic-evaluation-in-the-portal" class="anchor" aria-hidden="true"> #</a></h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> With <strong>acl-remedy-advisor</strong> open, click the <strong>Evaluation</strong> tab, then click <strong>+ Create</strong>.</p>
+<details>
+<summary>📸 Screenshot: the Evaluation tab</summary>
+<p><img src="../assets/img/screenshots/lab-05/05-portal-evaluation-tab.png" alt="Foundry portal Evaluation tab for the acl-remedy-advisor agent with no evaluations listed"></p>
+</details>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> <strong>Step 1 — Target:</strong> keep <strong>Agent</strong> selected; <code>acl-remedy-advisor</code> is pre‑checked. Click <strong>Next</strong>.</p>
+<details>
+<summary>📸 Screenshot: Step 1 Target</summary>
+<p><img src="../assets/img/screenshots/lab-05/06-portal-eval-step1-target.png" alt="Create new evaluation wizard Step 1 with Agent selected and acl-remedy-advisor pre-checked"></p>
+</details>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> <strong>Step 2 — Scope:</strong> keep <strong>Individual turns</strong> selected (per‑turn tool‑accuracy scores are easy to read). Click <strong>Next</strong>.</p>
+<details>
+<summary>📸 Screenshot: Step 2 Scope</summary>
+<p><img src="../assets/img/screenshots/lab-05/07-portal-eval-step2-scope.png" alt="Step 2 Scope showing Individual turns selected"></p>
+</details>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> <strong>Step 3 — Data:</strong> keep <strong>Synthetic generation</strong> selected and click <strong>Generate</strong>. In the dialog, set <strong>Number of rows</strong> to <strong>5</strong>, confirm the <strong>Model</strong> is your <code>chat</code> deployment, and paste this prompt:</p>
+<pre><code class="language-text">Generate questions a retail staff member might ask about Australian
+Consumer Law remedies for common product faults: faulty electronics,
+broken appliances, defective clothing, and expired warranties. Include
+at least one question requiring a refund calculation.
+</code></pre>
+<p>Click <strong>Confirm</strong>, then <strong>Next</strong>.</p>
+<details>
+<summary>📸 Screenshot: Step 3 Data (synthetic dataset)</summary>
+<p><img src="../assets/img/screenshots/lab-05/08-portal-eval-step3-data.png" alt="Step 3 Data with Synthetic generation selected"></p>
+<p><img src="../assets/img/screenshots/lab-05/09-portal-eval-synthetic-configured.png" alt="Generate synthetic dataset dialog with 5 rows and the ACL scenario prompt"></p>
+</details>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> <strong>Step 4 — Criteria:</strong> the portal auto‑selects evaluators across <strong>Agents</strong>, <strong>Quality</strong>, and <strong>Safety</strong>, and maps the dataset fields for you. Leave the selection as suggested and click <strong>Next</strong>.</p>
+<details>
+<summary>📸 Screenshot: Step 4 Criteria</summary>
+<p><img src="../assets/img/screenshots/lab-05/11-portal-eval-criteria-full.png" alt="Step 4 Criteria showing auto-suggested evaluators grouped into Agents, Quality, and Safety"></p>
+</details>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> <strong>Step 5 — Review:</strong> name the evaluation <code>acl-remedy-advisor-tools-eval</code> and click <strong>Submit</strong>.</p>
+<details>
+<summary>📸 Screenshot: Step 5 Review</summary>
+<p><img src="../assets/img/screenshots/lab-05/12-portal-eval-review-named.png" alt="Step 5 Review with the evaluation name set and a summary panel"></p>
+</details>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Wait for the run <strong>Status</strong> to reach <strong>Completed</strong> (a few minutes for 5 rows), then open the run to see per‑evaluator scores for each row.</p>
+<details>
+<summary>📸 Screenshot: evaluation run and results</summary>
+<p><img src="../assets/img/screenshots/lab-05/13-portal-eval-submitted.png" alt="Evaluation run showing Completed status"></p>
+<p><img src="../assets/img/screenshots/lab-05/14-portal-eval-results.png" alt="Evaluation results with per-evaluator score columns"></p>
+</details>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Look at <strong>ToolCallAccuracy</strong> and <strong>TaskAdherence</strong> (are scores consistently high?), any <strong>Safety</strong> flags, and any low <strong>Groundedness</strong> rows.</p>
+<blockquote>
+<p>These scores are a baseline. After you change instructions or add tools, re‑run the same evaluation and compare — a higher ToolCallAccuracy means the agent is following your tool‑usage instructions more reliably.</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="validation">Validation<a href="#validation" class="anchor" aria-hidden="true"> #</a></h2>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> <code>acl-remedy-advisor</code> has both <strong>Web search</strong> and <strong>Code Interpreter</strong> attached.</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> The instructions include the Code Interpreter routing paragraph.</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> An evaluation named <code>acl-remedy-advisor-tools-eval</code> shows <strong>Completed</strong> with per‑evaluator scores.</li>
+</ul>
+<div class="source-cta">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+<div>
+<div class="t">Want evaluations in CI/CD?</div>
+The original workshop also scaffolds a local <code>pytest-agent-evals</code> suite you can run in a pipeline. <a href="https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/README.md" target="_blank" rel="noopener">Open Module 05 on GitHub →</a>
+</div>
+</div>
+
+<div class="pager"><a class="prev" href="04-prompt-based-agents.html"><span class="dir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Previous</span><span class="ttl">04. Create &amp; chat with a Prompt Agent</span></a><a class="next" href="06-mcp-tools.html"><span class="dir">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span><span class="ttl">06. Integrate MCP tools</span></a></div>
+<div class="page-footer">
+Adapted for portal-first delivery from the open-source
+<a href="https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/README.md" target="_blank" rel="noopener">Microsoft Foundry Agentic Workshop</a>
+(MIT-licensed). Screenshots reflect the shared-environment New Foundry UI and may differ from your tenant.
+</div>
+</article>
+<nav class="toc"><div class="toc-title">On this page</div><a class="h2" href="#objectives">Objectives</a><a class="h2" href="#concepts">Concepts</a><a class="h3" href="#multiple-tools-and-instruction-routing">Multiple tools and instruction routing</a><a class="h3" href="#evaluations">Evaluations</a><a class="h2" href="#steps">Steps</a><a class="h3" href="#part-1--add-code-interpreter-to-the-agent">Part 1 — Add Code Interpreter to the agent</a><a class="h3" href="#part-2--update-the-instructions">Part 2 — Update the instructions</a><a class="h3" href="#part-3--test-both-tools-in-the-playground">Part 3 — Test both tools in the Playground</a><a class="h3" href="#part-4--run-an-automatic-evaluation-in-the-portal">Part 4 — Run an automatic evaluation in the portal</a><a class="h2" href="#validation">Validation</a></nav>
+</div></main>
+</div>
+<script src="../assets/js/modules-data.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

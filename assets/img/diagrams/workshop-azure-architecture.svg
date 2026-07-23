@@ -1,0 +1,342 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="960" viewBox="0 0 1280 960" font-family="'Segoe UI',Arial,sans-serif">
+  <title>Microsoft Foundry Agentic Workshop - Azure Architecture</title>
+  <desc>All workshop resources live in a single Azure resource group. A Microsoft Foundry (AI Services) account hosts one Foundry project per attendee, the model deployments, and the agent connections. The exact deployments depend on the selected profile: the workshop default profile includes chat (gpt-5.4-mini), embedding (text-embedding-3-small), and gpt54mini (gpt-5.4-mini); the minimal profile includes only chat and embedding; and the broad profile includes all six original models. The account always connects to Azure AI Search (search and vector store for Foundry IQ), Azure Container Registry (hosted agent images) and Application Insights (agent telemetry). Optional capability-host connections add Azure Cosmos DB (serverless, agent thread storage) and an Azure Storage account (agent file storage). An Azure Container Apps environment runs the Module 06 Retail Remedy Operations MCP server, which Foundry agents reach over HTTPS and which pulls its image from the container registry. Workshop attendees connect from GitHub Codespaces using the Python AIProjectClient SDK and push hosted-agent images to the registry. Azure Key Vault provides RBAC secret storage, and all resources emit diagnostics to a central Log Analytics workspace that backs Application Insights.</desc>
+
+  <defs>
+    <!-- Service icon gradients -->
+    <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#32B0E7"/>
+      <stop offset="1" stop-color="#0078D4"/>
+    </linearGradient>
+    <linearGradient id="gCyan" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#50E6FF"/>
+      <stop offset="1" stop-color="#0294E4"/>
+    </linearGradient>
+    <linearGradient id="gTeal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#00C8D4"/>
+      <stop offset="1" stop-color="#0078D4"/>
+    </linearGradient>
+    <linearGradient id="gAmber" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFD70F"/>
+      <stop offset="1" stop-color="#FFB900"/>
+    </linearGradient>
+    <linearGradient id="gPurple" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C39BE8"/>
+      <stop offset="1" stop-color="#5C2D91"/>
+    </linearGradient>
+    <linearGradient id="gSlate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5B6B79"/>
+      <stop offset="1" stop-color="#37474F"/>
+    </linearGradient>
+
+    <!-- Arrowheads -->
+    <marker id="aBlue" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 11 4, 0 8" fill="#0078D4"/>
+    </marker>
+    <marker id="aIndigo" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 11 4, 0 8" fill="#283593"/>
+    </marker>
+    <marker id="aGrey" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 11 4, 0 8" fill="#607D8B"/>
+    </marker>
+
+    <!-- ICON: Microsoft Foundry (AI Services) -->
+    <symbol id="icFoundry" viewBox="0 0 48 48">
+      <path d="M24 3 L42 13.5 L42 34.5 L24 45 L6 34.5 L6 13.5 Z" fill="url(#gCyan)"/>
+      <path d="M24 14 L27.4 21.2 L34.8 24 L27.4 26.8 L24 34 L20.6 26.8 L13.2 24 L20.6 21.2 Z" fill="#FFFFFF" opacity="0.95"/>
+      <circle cx="24" cy="24" r="2.4" fill="#0078D4"/>
+    </symbol>
+
+    <!-- ICON: Azure AI Search -->
+    <symbol id="icSearch" viewBox="0 0 48 48">
+      <circle cx="20" cy="20" r="12" fill="none" stroke="url(#gBlue)" stroke-width="5"/>
+      <line x1="28.5" y1="28.5" x2="42" y2="42" stroke="url(#gBlue)" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="20" cy="20" r="4.5" fill="#50E6FF"/>
+    </symbol>
+
+    <!-- ICON: Azure Cosmos DB -->
+    <symbol id="icCosmos" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="15" fill="url(#gBlue)"/>
+      <ellipse cx="24" cy="24" rx="6" ry="15" fill="none" stroke="#FFFFFF" stroke-width="1.6" opacity="0.9"/>
+      <ellipse cx="24" cy="24" rx="15" ry="6" fill="none" stroke="#FFFFFF" stroke-width="1.6" opacity="0.9"/>
+      <line x1="9" y1="24" x2="39" y2="24" stroke="#FFFFFF" stroke-width="1.6" opacity="0.9"/>
+      <circle cx="35.5" cy="13" r="3" fill="#50E6FF" stroke="#FFFFFF" stroke-width="1"/>
+      <circle cx="12.5" cy="34" r="2.6" fill="#50E6FF" stroke="#FFFFFF" stroke-width="1"/>
+    </symbol>
+
+    <!-- ICON: Azure Storage Account -->
+    <symbol id="icStorage" viewBox="0 0 48 48">
+      <rect x="7" y="13" width="34" height="22" rx="2.5" fill="url(#gCyan)"/>
+      <rect x="7" y="13" width="34" height="7" rx="2.5" fill="#0078D4"/>
+      <line x1="7" y1="27.5" x2="41" y2="27.5" stroke="#FFFFFF" stroke-width="1.6"/>
+      <line x1="18.5" y1="20" x2="18.5" y2="35" stroke="#FFFFFF" stroke-width="1.6"/>
+      <line x1="30" y1="20" x2="30" y2="35" stroke="#FFFFFF" stroke-width="1.6"/>
+    </symbol>
+
+    <!-- ICON: Azure Key Vault -->
+    <symbol id="icKeyVault" viewBox="0 0 48 48">
+      <circle cx="18" cy="19" r="7.5" fill="none" stroke="url(#gTeal)" stroke-width="5"/>
+      <path d="M22.5 23.5 L39 40" stroke="url(#gTeal)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M34 35 l5.5 5.5 M30.5 31.5 l4 4" stroke="url(#gTeal)" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="18" cy="19" r="2.4" fill="#FFFFFF"/>
+    </symbol>
+
+    <!-- ICON: Azure Container Registry -->
+    <symbol id="icAcr" viewBox="0 0 48 48">
+      <rect x="15" y="7" width="18" height="11" rx="2" fill="url(#gBlue)"/>
+      <rect x="7" y="22" width="14" height="11" rx="2" fill="url(#gCyan)"/>
+      <rect x="27" y="22" width="14" height="11" rx="2" fill="url(#gCyan)"/>
+      <rect x="17" y="37" width="14" height="9" rx="2" fill="url(#gBlue)"/>
+      <path d="M24 18 L24 22 M14 22 L14 19 L34 19 L34 22 M24 33 L24 37" fill="none" stroke="#607D8B" stroke-width="1.4"/>
+    </symbol>
+
+    <!-- ICON: Azure Container Apps -->
+    <symbol id="icContainerApps" viewBox="0 0 48 48">
+      <path d="M24 5 L40 14 L40 34 L24 43 L8 34 L8 14 Z" fill="none" stroke="url(#gCyan)" stroke-width="4"/>
+      <rect x="17" y="18" width="14" height="13" rx="2" fill="url(#gCyan)"/>
+      <line x1="17" y1="23.5" x2="31" y2="23.5" stroke="#FFFFFF" stroke-width="1.5"/>
+      <line x1="24" y1="18" x2="24" y2="31" stroke="#FFFFFF" stroke-width="1.5"/>
+      <circle cx="35" cy="13" r="3" fill="url(#gCyan)"/>
+    </symbol>
+
+    <!-- ICON: Application Insights -->
+    <symbol id="icAppInsights" viewBox="0 0 48 48">
+      <path d="M7 38 Q24 6 41 38" fill="none" stroke="url(#gPurple)" stroke-width="4.5" stroke-linecap="round"/>
+      <circle cx="24" cy="12" r="5.5" fill="url(#gPurple)"/>
+      <circle cx="9" cy="37" r="3.4" fill="#C39BE8"/>
+      <circle cx="39" cy="37" r="3.4" fill="#C39BE8"/>
+    </symbol>
+
+    <!-- ICON: Log Analytics Workspace -->
+    <symbol id="icLogAnalytics" viewBox="0 0 48 48">
+      <rect x="8" y="8" width="25" height="30" rx="2.5" fill="url(#gBlue)"/>
+      <line x1="14" y1="30" x2="14" y2="20" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+      <line x1="19.5" y1="30" x2="19.5" y2="15" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+      <line x1="25" y1="30" x2="25" y2="23" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="33" cy="33" r="7" fill="none" stroke="#50E6FF" stroke-width="3.4"/>
+      <line x1="38" y1="38" x2="43" y2="43" stroke="#50E6FF" stroke-width="3.4" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- ICON: Resource Group -->
+    <symbol id="icRg" viewBox="0 0 48 48">
+      <rect x="7" y="7" width="34" height="34" rx="3" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-dasharray="6 4"/>
+      <rect x="16" y="16" width="16" height="16" rx="2" fill="#FFFFFF" opacity="0.9"/>
+    </symbol>
+
+    <!-- ICON: Foundry projects / agents -->
+    <symbol id="icAgent" viewBox="0 0 48 48">
+      <line x1="24" y1="6" x2="24" y2="12" stroke="url(#gAmber)" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="24" cy="6" r="3" fill="url(#gAmber)"/>
+      <rect x="10" y="12" width="28" height="22" rx="5" fill="url(#gAmber)"/>
+      <circle cx="18.5" cy="22" r="3" fill="#5C3C00"/>
+      <circle cx="29.5" cy="22" r="3" fill="#5C3C00"/>
+      <rect x="17" y="28" width="14" height="3" rx="1.5" fill="#5C3C00"/>
+      <rect x="18" y="34" width="12" height="7" rx="2" fill="url(#gAmber)"/>
+    </symbol>
+
+    <!-- ICON: Model deployment (chip) -->
+    <symbol id="icModel" viewBox="0 0 48 48">
+      <rect x="13" y="13" width="22" height="22" rx="3" fill="url(#gTeal)"/>
+      <g stroke="url(#gTeal)" stroke-width="2.6" stroke-linecap="round">
+        <line x1="19" y1="13" x2="19" y2="7"/><line x1="29" y1="13" x2="29" y2="7"/>
+        <line x1="19" y1="35" x2="19" y2="41"/><line x1="29" y1="35" x2="29" y2="41"/>
+        <line x1="13" y1="19" x2="7" y2="19"/><line x1="13" y1="29" x2="7" y2="29"/>
+        <line x1="35" y1="19" x2="41" y2="19"/><line x1="35" y1="29" x2="41" y2="29"/>
+      </g>
+      <circle cx="24" cy="24" r="5.5" fill="#FFFFFF" opacity="0.95"/>
+      <circle cx="24" cy="24" r="2.4" fill="#0078D4"/>
+    </symbol>
+
+    <!-- ICON: Attendee (user) -->
+    <symbol id="icUser" viewBox="0 0 48 48">
+      <circle cx="24" cy="16" r="8" fill="url(#gBlue)"/>
+      <path d="M9 41 C9 30 39 30 39 41 Z" fill="url(#gBlue)"/>
+    </symbol>
+  </defs>
+
+  <!-- Canvas background -->
+  <rect width="1280" height="960" fill="#FFFFFF"/>
+
+  <!-- Title -->
+  <text x="640" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#1A1A1A">Microsoft Foundry Agentic Workshop - Azure Architecture</text>
+  <text x="640" y="54" text-anchor="middle" font-size="12" fill="#607D8B">Provisioned by infra/main.bicep · single resource group · shared workshop services with per-attendee Foundry projects</text>
+
+  <!-- External actor: Workshop attendee -->
+  <rect x="60" y="74" width="330" height="92" rx="8" fill="#EAF3FB" stroke="#0078D4" stroke-width="1.5"/>
+  <use href="#icUser" x="76" y="98" width="44" height="44"/>
+  <text x="132" y="104" font-size="13" font-weight="700" fill="#1A1A1A">Workshop Attendee</text>
+  <text x="132" y="124" font-size="11" fill="#555555">GitHub Codespaces · Python AIProjectClient</text>
+  <text x="132" y="142" font-size="10.5" fill="#888888">Runs labs 01–12 · builds &amp; deploys agents</text>
+
+  <!-- Resource Group container -->
+  <rect x="40" y="196" width="1200" height="724" rx="10" fill="#FBFDFF" stroke="#0078D4" stroke-width="2" stroke-dasharray="9 5"/>
+  <path d="M40 206 Q40 196 50 196 L470 196 L470 230 L40 230 Z" fill="url(#gSlate)"/>
+  <use href="#icRg" x="50" y="200" width="26" height="26"/>
+  <text x="84" y="218" font-size="13" font-weight="700" fill="#FFFFFF">Resource Group - rg-&lt;environmentName&gt;</text>
+
+  <!-- ============ MICROSOFT FOUNDRY ACCOUNT ============ -->
+  <rect x="64" y="252" width="556" height="520" rx="8" fill="#E3F2FD" stroke="#0078D4" stroke-width="2"/>
+  <path d="M64 262 Q64 252 74 252 L610 252 Q620 252 620 262 L620 286 L64 286 Z" fill="#0078D4"/>
+  <use href="#icFoundry" x="74" y="256" width="26" height="26"/>
+  <text x="108" y="274" font-size="14" font-weight="700" fill="#FFFFFF">Microsoft Foundry - AI Services account</text>
+
+  <!-- Foundry Projects card (stacked) -->
+  <rect x="92" y="306" width="246" height="172" rx="8" fill="#FFFCF0" stroke="#FFB900" stroke-width="1.5" transform="translate(8 8)" opacity="0.55"/>
+  <rect x="92" y="306" width="246" height="172" rx="8" fill="#FFF8E1" stroke="#FFB900" stroke-width="1.5"/>
+  <use href="#icAgent" x="106" y="320" width="40" height="40"/>
+  <text x="156" y="334" font-size="13" font-weight="700" fill="#1A1A1A">Foundry Projects</text>
+  <text x="156" y="352" font-size="10.5" fill="#666666">One project per attendee</text>
+  <text x="112" y="382" font-size="11" fill="#444444">• attendee-NN (foundry-user)</text>
+  <text x="112" y="402" font-size="11" fill="#444444">• facilitator · proctor</text>
+  <text x="112" y="422" font-size="11" fill="#444444">• organizer</text>
+  <text x="112" y="448" font-size="10" fill="#888888">System-assigned managed identity</text>
+  <text x="112" y="465" font-size="10" fill="#888888">Agents · tools · evaluations</text>
+
+  <!-- Model Deployments card -->
+  <rect x="358" y="306" width="246" height="172" rx="8" fill="#E0F7FA" stroke="#006064" stroke-width="1.5"/>
+  <use href="#icModel" x="372" y="320" width="40" height="40"/>
+  <text x="422" y="334" font-size="13" font-weight="700" fill="#1A1A1A">Model Deployments</text>
+  <text x="422" y="352" font-size="10.5" fill="#666666">GlobalStandard · OpenAI · profile-dependent</text>
+  <text x="378" y="382" font-size="11" fill="#444444">• chat - gpt-5.4-mini</text>
+  <text x="378" y="402" font-size="11" fill="#444444">• embedding - t-emb-3-small</text>
+  <text x="378" y="422" font-size="11" fill="#444444">• gpt54mini (default/workshop+)</text>
+  <text x="378" y="442" font-size="10" fill="#888888">broad: + gpt54 · nano · codex</text>
+  <text x="378" y="465" font-size="10" fill="#888888">RAI: FoundryWorkshopContentPolicy</text>
+
+  <!-- Connections & Capability Hosts card -->
+  <rect x="92" y="500" width="512" height="244" rx="8" fill="#E8EAF6" stroke="#283593" stroke-width="1.5"/>
+  <text x="112" y="528" font-size="13" font-weight="700" fill="#1A1A1A">Connections &amp; Capability Hosts</text>
+  <text x="112" y="548" font-size="10.5" fill="#666666">Foundry account connections shared to all projects</text>
+
+  <rect x="112" y="562" width="150" height="34" rx="6" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.3"/>
+  <text x="187" y="584" text-anchor="middle" font-size="11" fill="#0078D4">Application Insights</text>
+  <rect x="274" y="562" width="120" height="34" rx="6" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.3"/>
+  <text x="334" y="584" text-anchor="middle" font-size="11" fill="#0078D4">Azure AI Search</text>
+  <rect x="406" y="562" width="178" height="34" rx="6" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.3"/>
+  <text x="495" y="584" text-anchor="middle" font-size="11" fill="#0078D4">Azure Container Registry</text>
+
+  <text x="112" y="624" font-size="10.5" fill="#666666">Optional capability hosts (Agents kind)</text>
+  <rect x="112" y="634" width="210" height="34" rx="6" fill="#FFFFFF" stroke="#5C6BC0" stroke-width="1.3" stroke-dasharray="5 3"/>
+  <text x="217" y="656" text-anchor="middle" font-size="11" fill="#3949AB">Cosmos DB - thread storage</text>
+  <rect x="334" y="634" width="180" height="34" rx="6" fill="#FFFFFF" stroke="#5C6BC0" stroke-width="1.3" stroke-dasharray="5 3"/>
+  <text x="424" y="656" text-anchor="middle" font-size="11" fill="#3949AB">Storage - file storage</text>
+
+  <text x="112" y="700" font-size="10.5" fill="#444444" font-weight="600">Foundry IQ knowledge bases &amp; agent threads</text>
+  <text x="112" y="718" font-size="10" fill="#888888">Vector store + thread + file connections power agentic retrieval</text>
+
+  <!-- ============ RIGHT-HAND SERVICE GRID ============ -->
+  <!-- Azure AI Search -->
+  <rect x="648" y="252" width="272" height="104" rx="8" fill="#F4F9FD" stroke="#0078D4" stroke-width="1.5"/>
+  <use href="#icSearch" x="660" y="274" width="44" height="44"/>
+  <text x="716" y="288" font-size="13" font-weight="700" fill="#1A1A1A">Azure AI Search</text>
+  <text x="716" y="308" font-size="11" fill="#555555">Search + vector store</text>
+  <text x="716" y="326" font-size="10.5" fill="#888888">basic · semantic ranker · Foundry IQ</text>
+
+  <!-- Azure Cosmos DB -->
+  <rect x="948" y="252" width="272" height="104" rx="8" fill="#F4F9FD" stroke="#0078D4" stroke-width="1.5"/>
+  <use href="#icCosmos" x="960" y="274" width="44" height="44"/>
+  <text x="1016" y="288" font-size="13" font-weight="700" fill="#1A1A1A">Azure Cosmos DB</text>
+  <text x="1016" y="308" font-size="11" fill="#555555">Serverless · agent thread storage</text>
+  <text x="1016" y="326" font-size="10.5" fill="#888888">NoSQL (SQL API) · AAD auth</text>
+
+  <!-- Azure Storage Account -->
+  <rect x="648" y="374" width="272" height="104" rx="8" fill="#F4F9FD" stroke="#0078D4" stroke-width="1.5"/>
+  <use href="#icStorage" x="660" y="396" width="44" height="44"/>
+  <text x="716" y="410" font-size="13" font-weight="700" fill="#1A1A1A">Azure Storage Account</text>
+  <text x="716" y="430" font-size="11" fill="#555555">Blob · agent file storage</text>
+  <text x="716" y="448" font-size="10.5" fill="#888888">Standard_LRS · system identity</text>
+
+  <!-- Azure Key Vault -->
+  <rect x="948" y="374" width="272" height="104" rx="8" fill="#F4F9FD" stroke="#0078D4" stroke-width="1.5"/>
+  <use href="#icKeyVault" x="960" y="396" width="44" height="44"/>
+  <text x="1016" y="410" font-size="13" font-weight="700" fill="#1A1A1A">Azure Key Vault</text>
+  <text x="1016" y="430" font-size="11" fill="#555555">Secret storage · RBAC</text>
+  <text x="1016" y="448" font-size="10.5" fill="#888888">Purge protection off · workshop scope</text>
+
+  <!-- Azure Container Registry -->
+  <rect x="648" y="496" width="272" height="104" rx="8" fill="#F4F9FD" stroke="#0078D4" stroke-width="1.5"/>
+  <use href="#icAcr" x="660" y="518" width="44" height="44"/>
+  <text x="716" y="532" font-size="13" font-weight="700" fill="#1A1A1A">Azure Container Registry</text>
+  <text x="716" y="552" font-size="11" fill="#555555">Hosted agent images (Module 09)</text>
+  <text x="716" y="570" font-size="10.5" fill="#888888">ABAC repository permissions</text>
+
+  <!-- Azure Container Apps environment (with MCP server) -->
+  <rect x="948" y="496" width="272" height="150" rx="8" fill="#E8F5FE" stroke="#005BA1" stroke-width="1.8"/>
+  <path d="M948 506 Q948 496 958 496 L1210 496 Q1220 496 1220 506 L1220 528 L948 528 Z" fill="#005BA1"/>
+  <use href="#icContainerApps" x="956" y="500" width="24" height="24"/>
+  <text x="988" y="516" font-size="12" font-weight="700" fill="#FFFFFF">Azure Container Apps environment</text>
+  <rect x="966" y="540" width="236" height="90" rx="7" fill="#FFFFFF" stroke="#283593" stroke-width="1.5"/>
+  <text x="982" y="566" font-size="12.5" font-weight="700" fill="#1A1A1A">Retail Remedy Operations</text>
+  <text x="982" y="585" font-size="10.5" fill="#555555">MCP server · Module 06</text>
+  <text x="982" y="603" font-size="10" fill="#888888">HTTPS endpoint · 6 tools</text>
+  <text x="982" y="620" font-size="10" fill="#888888">Pulls image from registry</text>
+
+  <!-- Application Insights -->
+  <rect x="648" y="668" width="272" height="84" rx="8" fill="#F6F3FB" stroke="#5C2D91" stroke-width="1.5"/>
+  <use href="#icAppInsights" x="660" y="688" width="44" height="44"/>
+  <text x="716" y="702" font-size="13" font-weight="700" fill="#1A1A1A">Application Insights</text>
+  <text x="716" y="722" font-size="11" fill="#555555">Agent telemetry &amp; traces</text>
+  <text x="716" y="740" font-size="10.5" fill="#888888">Workspace-based · OpenTelemetry</text>
+
+  <!-- Log Analytics Workspace -->
+  <rect x="948" y="668" width="272" height="84" rx="8" fill="#F4F9FD" stroke="#0078D4" stroke-width="1.5"/>
+  <use href="#icLogAnalytics" x="960" y="688" width="44" height="44"/>
+  <text x="1016" y="702" font-size="13" font-weight="700" fill="#1A1A1A">Log Analytics Workspace</text>
+  <text x="1016" y="722" font-size="11" fill="#555555">Central diagnostics sink</text>
+  <text x="1016" y="740" font-size="10.5" fill="#888888">Backs Application Insights</text>
+
+  <!-- ============ CONNECTIONS ============ -->
+  <!-- Attendee -> Foundry account -->
+  <path d="M210 166 L210 252" fill="none" stroke="#0078D4" stroke-width="2.2" marker-end="url(#aBlue)"/>
+  <rect x="118" y="168" width="184" height="20" rx="4" fill="#FFFFFF" opacity="0.92"/>
+  <text x="210" y="183" text-anchor="middle" font-size="10.5" fill="#0078D4">run agents (SDK / portal)</text>
+
+  <!-- Attendee -> Container Registry (push image) -->
+  <path d="M390 120 L634 120 L634 540 L648 540" fill="none" stroke="#607D8B" stroke-width="2" marker-end="url(#aGrey)"/>
+  <rect x="470" y="110" width="150" height="20" rx="4" fill="#FFFFFF" opacity="0.9"/>
+  <text x="545" y="125" text-anchor="middle" font-size="10.5" fill="#546E7A">push hosted agent image</text>
+
+  <!-- Foundry -> AI Search (always) -->
+  <path d="M620 304 L648 304" fill="none" stroke="#0078D4" stroke-width="2.2" marker-end="url(#aBlue)"/>
+  <!-- Foundry -> Storage (optional capability host) -->
+  <path d="M620 420 L648 426" fill="none" stroke="#0078D4" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aBlue)"/>
+  <!-- Foundry -> Container Registry (always) -->
+  <path d="M620 540 L648 548" fill="none" stroke="#0078D4" stroke-width="2.2" marker-end="url(#aBlue)"/>
+  <!-- Foundry -> Application Insights (always) -->
+  <path d="M620 596 L634 596 L634 700 L648 700" fill="none" stroke="#0078D4" stroke-width="2.2" marker-end="url(#aBlue)"/>
+
+  <!-- Foundry -> Cosmos DB (optional capability host, routed over the top) -->
+  <path d="M560 252 L560 238 L934 238 L934 296 L948 296" fill="none" stroke="#0078D4" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aBlue)"/>
+
+  <!-- Foundry agent -> Container Apps MCP server (HTTPS) -->
+  <path d="M620 632 L934 632 L934 596 L948 596" fill="none" stroke="#283593" stroke-width="2.2" marker-end="url(#aIndigo)"/>
+  <rect x="700" y="622" width="150" height="20" rx="4" fill="#FFFFFF" opacity="0.9"/>
+  <text x="775" y="637" text-anchor="middle" font-size="10.5" fill="#283593">MCP tool over HTTPS</text>
+
+  <!-- Container Apps MCP -> Container Registry (pull image) -->
+  <path d="M948 560 L920 560" fill="none" stroke="#607D8B" stroke-width="2" marker-end="url(#aGrey)"/>
+
+  <!-- Application Insights -> Log Analytics -->
+  <path d="M920 710 L948 710" fill="none" stroke="#607D8B" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aGrey)"/>
+
+  <!-- ============ LEGEND ============ -->
+  <rect x="64" y="788" width="1156" height="116" rx="8" fill="#F7FAFC" stroke="#CBD5E1" stroke-width="1.2"/>
+  <text x="84" y="812" font-size="13" font-weight="700" fill="#1A1A1A">Legend</text>
+
+  <line x1="84" y1="836" x2="124" y2="836" stroke="#0078D4" stroke-width="2.2" marker-end="url(#aBlue)"/>
+  <text x="134" y="840" font-size="11" fill="#444444">Foundry connection (always created)</text>
+
+  <line x1="430" y1="836" x2="470" y2="836" stroke="#0078D4" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aBlue)"/>
+  <text x="480" y="840" font-size="11" fill="#444444">Optional capability host (Cosmos / Storage)</text>
+
+  <line x1="840" y1="836" x2="880" y2="836" stroke="#283593" stroke-width="2.2" marker-end="url(#aIndigo)"/>
+  <text x="890" y="840" font-size="11" fill="#444444">MCP over HTTPS (Module 06)</text>
+
+  <line x1="84" y1="866" x2="124" y2="866" stroke="#607D8B" stroke-width="2" marker-end="url(#aGrey)"/>
+  <text x="134" y="870" font-size="11" fill="#444444">Container image push / pull</text>
+
+  <line x1="430" y1="866" x2="470" y2="866" stroke="#607D8B" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#aGrey)"/>
+  <text x="480" y="870" font-size="11" fill="#444444">Diagnostics → Log Analytics</text>
+
+  <text x="84" y="894" font-size="10.5" fill="#888888">Key Vault, Storage, AI Search, Cosmos DB, Container Registry and the Foundry account all emit diagnostics to the Log Analytics workspace.</text>
+</svg>

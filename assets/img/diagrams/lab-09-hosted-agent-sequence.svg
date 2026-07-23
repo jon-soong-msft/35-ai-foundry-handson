@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+  <title>Lab 09 - Hosted Agent request sequence</title>
+  <desc>Runtime sequence for a Hosted Agent request. A client posts to the Foundry Agent Service endpoint, which forwards to the Hosted Agent Container over the Responses protocol. The container calls the model for a chat completion with managed identity, receives a tool_use event, calls the Retail Remedy Ops MCP Server, receives the tool result, continues the completion, and the Foundry endpoint streams the final response back to the client.</desc>
+
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#0078D4"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#D45D00"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#006064"/>
+    </marker>
+    <style>
+      .title  { font: 700 26px 'Segoe UI', Arial, sans-serif; fill: #1b1a19; }
+      .head   { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #1b1a19; }
+      .sub    { font: 13px 'Segoe UI', Arial, sans-serif; fill: #323130; }
+      .life   { stroke: #8a8886; stroke-width: 1.5; stroke-dasharray: 7 6; }
+      .msg    { stroke-width: 2.5; fill: none; }
+      .msg-ret{ stroke-width: 2; fill: none; stroke-dasharray: 7 5; }
+      .box    { stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="1400" height="760" fill="#ffffff"/>
+  <text x="50" y="44" class="title">Hosted Agent: request sequence</text>
+  <text x="50" y="68" class="sub">Single request showing how a client message flows through the Foundry endpoint, hosted container, model, and MCP server.</text>
+
+  <!-- ── Participant boxes ── -->
+  <!-- Centers: Client=105, Foundry=320, Container=580, Model=860, MCP=1155 -->
+  <rect x="30"   y="85" width="150" height="60" rx="8" fill="#CFE4FA" stroke="#0078D4" class="box"/>
+  <text x="105"  y="111" text-anchor="middle" class="head">Client</text>
+  <text x="105"  y="130" text-anchor="middle" class="sub">Python script</text>
+
+  <rect x="242"  y="85" width="156" height="60" rx="8" fill="#FFF3CD" stroke="#F59E0B" class="box"/>
+  <text x="320"  y="111" text-anchor="middle" class="head">Foundry Agent</text>
+  <text x="320"  y="130" text-anchor="middle" class="sub">Service Endpoint</text>
+
+  <rect x="496"  y="85" width="168" height="60" rx="8" fill="#E8DAEF" stroke="#5C2D91" class="box"/>
+  <text x="580"  y="111" text-anchor="middle" class="head">Hosted Container</text>
+  <text x="580"  y="130" text-anchor="middle" class="sub">ResponsesHostServer</text>
+
+  <rect x="780"  y="85" width="160" height="60" rx="8" fill="#E0F7FA" stroke="#006064" class="box"/>
+  <text x="860"  y="111" text-anchor="middle" class="head">Model</text>
+  <text x="860"  y="130" text-anchor="middle" class="sub">(Azure OpenAI)</text>
+
+  <rect x="1073" y="85" width="164" height="60" rx="8" fill="#FFF3E0" stroke="#D45D00" class="box"/>
+  <text x="1155" y="111" text-anchor="middle" class="head">MCP Server</text>
+  <text x="1155" y="130" text-anchor="middle" class="sub">retail_remedy_ops</text>
+
+  <!-- ── Lifelines ── -->
+  <line x1="105"  y1="145" x2="105"  y2="720" class="life"/>
+  <line x1="320"  y1="145" x2="320"  y2="720" class="life"/>
+  <line x1="580"  y1="145" x2="580"  y2="720" class="life"/>
+  <line x1="860"  y1="145" x2="860"  y2="720" class="life"/>
+  <line x1="1155" y1="145" x2="1155" y2="720" class="life"/>
+
+  <!-- ── Messages ── -->
+
+  <!-- 1. Client → Foundry Endpoint -->
+  <line x1="105" y1="185" x2="316" y2="185" class="msg" stroke="#0078D4" marker-end="url(#arrow)"/>
+  <text x="210" y="177" text-anchor="middle" class="sub">1. POST /responses (thread_id, message)</text>
+
+  <!-- 2. Foundry Endpoint → Hosted Container -->
+  <line x1="320" y1="255" x2="576" y2="255" class="msg" stroke="#5C2D91" marker-end="url(#arrow)"/>
+  <text x="448" y="247" text-anchor="middle" class="sub" fill="#5C2D91">2. Forward (Responses protocol, :8088)</text>
+
+  <!-- 3. Hosted Container → Model -->
+  <line x1="580" y1="325" x2="856" y2="325" class="msg" stroke="#006064" marker-end="url(#arrow-teal)"/>
+  <text x="718" y="317" text-anchor="middle" class="sub" fill="#006064">3. Chat completion (managed identity)</text>
+
+  <!-- 4. Model → Hosted Container (return – dashed) -->
+  <line x1="860" y1="390" x2="584" y2="390" class="msg-ret" stroke="#006064" marker-end="url(#arrow-teal)"/>
+  <text x="722" y="382" text-anchor="middle" class="sub" fill="#006064">4. Streaming tokens / tool_use event</text>
+
+  <!-- 5. Hosted Container → MCP Server -->
+  <line x1="580" y1="458" x2="1151" y2="458" class="msg" stroke="#D45D00" marker-end="url(#arrow-orange)"/>
+  <text x="866" y="450" text-anchor="middle" class="sub" fill="#D45D00">5. Tool call (retail_remedy_ops)</text>
+
+  <!-- 6. MCP Server → Hosted Container (return – dashed) -->
+  <line x1="1155" y1="520" x2="584" y2="520" class="msg-ret" stroke="#D45D00" marker-end="url(#arrow-orange)"/>
+  <text x="870" y="512" text-anchor="middle" class="sub" fill="#D45D00">6. Tool result JSON</text>
+
+  <!-- 7. Hosted Container → Model (continue) -->
+  <line x1="580" y1="585" x2="856" y2="585" class="msg" stroke="#006064" marker-end="url(#arrow-teal)"/>
+  <text x="718" y="577" text-anchor="middle" class="sub" fill="#006064">7. Continue completion</text>
+
+  <!-- 8. Model → Hosted Container (final response – dashed) -->
+  <line x1="860" y1="638" x2="584" y2="638" class="msg-ret" stroke="#006064" marker-end="url(#arrow-teal)"/>
+  <text x="722" y="630" text-anchor="middle" class="sub" fill="#006064">8. Final response tokens</text>
+
+  <!-- 9. Hosted Container → Foundry Endpoint -->
+  <line x1="580" y1="678" x2="324" y2="678" class="msg" stroke="#5C2D91" marker-end="url(#arrow)"/>
+  <text x="452" y="670" text-anchor="middle" class="sub" fill="#5C2D91">9. Responses protocol response</text>
+
+  <!-- 10. Foundry Endpoint → Client -->
+  <line x1="320" y1="718" x2="109" y2="718" class="msg" stroke="#0078D4" marker-end="url(#arrow)"/>
+  <text x="212" y="710" text-anchor="middle" class="sub">10. Streamed response</text>
+
+</svg>

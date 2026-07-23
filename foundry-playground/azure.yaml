@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+# Foundry Playground — infrastructure-only azd project.
+# `azd up` provisions rg-foundry-playground with a ready-to-use Microsoft Foundry
+# account + project, chat + embedding models, and Application Insights (workspace-based)
+# wired to the project for agent traceability. There is no application to deploy.
+name: foundry-playground
+metadata:
+  template: foundry-playground@1.0.0
+infra:
+  provider: bicep
+  path: infra
+  module: main

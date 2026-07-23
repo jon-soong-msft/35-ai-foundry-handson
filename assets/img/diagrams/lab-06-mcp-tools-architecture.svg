@@ -1,0 +1,300 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="620" viewBox="0 0 900 620">
+  <title>Lab 06 - Integrate MCP Tools Architecture</title>
+  <desc>Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment and may invoke the Web Search Tool (which calls the Internet), the Code Interpreter Tool (sandboxed Python), or the MCP Tool - which connects over HTTPS to a Retail Remedy Operations MCP Server. The MCP Server runs either as a shared Azure Container Apps service (default) or on the local dev machine exposed via a DevTunnel.</desc>
+
+  <!-- Background -->
+  <rect width="900" height="620" fill="white"/>
+
+  <defs>
+    <!-- Solid grey arrowhead -->
+    <marker id="ah" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#555555"/>
+    </marker>
+    <!-- Blue arrowhead (request) -->
+    <marker id="ah-blue" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#1565C0"/>
+    </marker>
+    <!-- Purple arrowhead (web search tool call) -->
+    <marker id="ah-purple" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#6A1B9A"/>
+    </marker>
+    <!-- Red arrowhead (HTTP search) -->
+    <marker id="ah-red" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#B71C1C"/>
+    </marker>
+    <!-- Teal arrowhead (LLM call) -->
+    <marker id="ah-teal" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#006064"/>
+    </marker>
+    <!-- Orange arrowhead (code interpreter tool call) -->
+    <marker id="ah-orange" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#E65100"/>
+    </marker>
+    <!-- Indigo arrowhead (MCP tool call / HTTPS) -->
+    <marker id="ah-indigo" markerWidth="12" markerHeight="8" refX="12" refY="4"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#283593"/>
+    </marker>
+  </defs>
+
+  <!-- ──────────────────────────────────────────
+       CONTAINERS
+       ────────────────────────────────────────── -->
+
+  <!-- Foundry Account -->
+  <rect x="210" y="20" width="660" height="370" rx="6"
+        fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <!-- Account header: rounded top, flat bottom -->
+  <path d="M 216,20 L 864,20 Q 870,20 870,26 L 870,54 L 210,54 L 210,26 Q 210,20 216,20 Z"
+        fill="#1565C0"/>
+  <text x="540" y="43" text-anchor="middle"
+        fill="white" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="14" font-weight="bold">Foundry Account</text>
+
+  <!-- Foundry Project -->
+  <rect x="250" y="72" width="580" height="300" rx="5"
+        fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+  <!-- Project header: rounded top, flat bottom -->
+  <path d="M 256,72 L 824,72 Q 830,72 830,77 L 830,100 L 250,100 L 250,77 Q 250,72 256,72 Z"
+        fill="#2E7D32"/>
+  <text x="540" y="91" text-anchor="middle"
+        fill="white" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">Foundry Project</text>
+
+  <!-- ──────────────────────────────────────────
+       NODES
+       ────────────────────────────────────────── -->
+
+  <!-- Agent Definition (inside Project) -->
+  <rect x="300" y="120" width="210" height="90" rx="6"
+        fill="#FFF3CD" stroke="#F59E0B" stroke-width="2"/>
+  <text x="405" y="149" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">acl-remedy-advisor</text>
+  <text x="405" y="168" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11">Agent Definition</text>
+  <text x="405" y="185" text-anchor="middle"
+        fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">Versions: v1 · v2 · ...</text>
+
+  <!-- chat model deployment (inside Project) -->
+  <rect x="640" y="120" width="170" height="90" rx="6"
+        fill="#E0F7FA" stroke="#006064" stroke-width="2"/>
+  <text x="725" y="149" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="14" font-weight="bold">chat</text>
+  <text x="725" y="168" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11">Model Deployment</text>
+  <text x="725" y="185" text-anchor="middle"
+        fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">LLM inference</text>
+
+  <!-- Web Search Tool (inside Project) - center x=352 -->
+  <rect x="270" y="265" width="165" height="72" rx="6"
+        fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2"/>
+  <text x="352" y="294" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">Web Search Tool</text>
+  <text x="352" y="314" text-anchor="middle"
+        fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">Built-in · Foundry</text>
+
+  <!-- Code Interpreter Tool (inside Project) - center x=537 -->
+  <rect x="455" y="265" width="165" height="72" rx="6"
+        fill="#FFF3E0" stroke="#E65100" stroke-width="2"/>
+  <text x="537" y="294" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">Code Interpreter</text>
+  <text x="537" y="314" text-anchor="middle"
+        fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">Built-in · sandboxed Python</text>
+
+  <!-- MCP Tool connection (inside Project) - center x=722 -->
+  <rect x="640" y="265" width="165" height="72" rx="6"
+        fill="#E8EAF6" stroke="#283593" stroke-width="2"/>
+  <text x="722" y="294" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">MCP Tool</text>
+  <text x="722" y="314" text-anchor="middle"
+        fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">retail-remedy-ops · 6 tools</text>
+
+  <!-- Python Client (outside containers) - vertically centred with Agent Def -->
+  <rect x="20" y="120" width="175" height="90" rx="6"
+        fill="#BBDEFB" stroke="#1565C0" stroke-width="2"/>
+  <text x="107" y="149" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">Python Client</text>
+  <text x="107" y="169" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11">src/starter.py</text>
+  <text x="107" y="187" text-anchor="middle"
+        fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">AIProjectClient</text>
+
+  <!-- Internet (outside containers, below Web Search Tool) -->
+  <ellipse cx="352" cy="460" rx="120" ry="40"
+           fill="#FFEBEE" stroke="#C62828" stroke-width="2"/>
+  <text x="352" y="455" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">Internet</text>
+  <text x="352" y="474" text-anchor="middle"
+        fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11">accc.gov.au etc.</text>
+
+  <!-- ── MCP SERVER DEPLOYMENT OPTIONS ──────────────────────────────── -->
+
+  <!-- Option A: Azure Container Apps (cloud-hosted, default) -->
+  <rect x="478" y="415" width="205" height="160" rx="6"
+        fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <!-- ACA header: rounded top, flat bottom -->
+  <path d="M 484,415 L 677,415 Q 683,415 683,421 L 683,445 L 478,445 L 478,421 Q 478,415 484,415 Z"
+        fill="#1565C0"/>
+  <text x="580" y="433" text-anchor="middle"
+        fill="white" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11" font-weight="bold">Azure Container Apps</text>
+  <!-- MCP Server box inside ACA -->
+  <rect x="490" y="452" width="181" height="110" rx="5"
+        fill="#E8EAF6" stroke="#283593" stroke-width="2"/>
+  <text x="580" y="472" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">Retail Remedy Operations</text>
+  <text x="580" y="490" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">MCP Server</text>
+  <text x="580" y="508" text-anchor="middle"
+        fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">shared · cloud-hosted</text>
+  <text x="580" y="526" text-anchor="middle"
+        fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">public HTTPS endpoint</text>
+  <text x="580" y="544" text-anchor="middle"
+        fill="#AAAAAA" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="9" font-style="italic">default option</text>
+
+  <!-- "OR" separator between deployment options -->
+  <text x="700" y="500" text-anchor="middle"
+        fill="#888888" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="15" font-weight="bold">OR</text>
+
+  <!-- Option B: Local dev machine + DevTunnel (optional, bring-your-own) -->
+  <rect x="718" y="415" width="170" height="160" rx="6"
+        fill="#ECEFF1" stroke="#37474F" stroke-width="2"/>
+  <!-- dev machine header: rounded top, flat bottom -->
+  <path d="M 724,415 L 882,415 Q 888,415 888,421 L 888,445 L 718,445 L 718,421 Q 718,415 724,415 Z"
+        fill="#37474F"/>
+  <text x="803" y="433" text-anchor="middle"
+        fill="white" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11" font-weight="bold">Local dev machine</text>
+  <!-- MCP Server box inside local machine -->
+  <rect x="730" y="452" width="146" height="110" rx="5"
+        fill="#E8EAF6" stroke="#283593" stroke-width="2"/>
+  <text x="803" y="472" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">Retail Remedy Operations</text>
+  <text x="803" y="490" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">MCP Server</text>
+  <text x="803" y="508" text-anchor="middle"
+        fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">localhost:8080</text>
+  <text x="803" y="526" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">DevTunnel · public port</text>
+  <text x="803" y="544" text-anchor="middle"
+        fill="#AAAAAA" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="9" font-style="italic">optional / bring-your-own</text>
+
+  <!-- ──────────────────────────────────────────
+       ARROWS
+       ────────────────────────────────────────── -->
+
+  <!-- 1. Python Client → Agent Definition  (solid blue, request) -->
+  <path d="M 195,155 L 300,155"
+        stroke="#1565C0" stroke-width="2" fill="none"
+        marker-end="url(#ah-blue)"/>
+  <text x="247" y="147" text-anchor="middle"
+        fill="#1565C0" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">responses.create()</text>
+
+  <!-- 2. Agent Definition → Python Client  (dashed grey, response) -->
+  <path d="M 300,175 L 195,175"
+        stroke="#888888" stroke-width="1.5" stroke-dasharray="5,4"
+        fill="none" marker-end="url(#ah)"/>
+  <text x="247" y="190" text-anchor="middle"
+        fill="#888888" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">response</text>
+
+  <!-- 3. Agent Definition → chat model  (solid teal, LLM call) -->
+  <path d="M 510,155 L 640,155"
+        stroke="#006064" stroke-width="2" fill="none"
+        marker-end="url(#ah-teal)"/>
+  <text x="575" y="147" text-anchor="middle"
+        fill="#006064" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">LLM call</text>
+
+  <!-- 4. chat model → Agent Definition  (dashed teal, completion) -->
+  <path d="M 640,175 L 510,175"
+        stroke="#006064" stroke-width="1.5" stroke-dasharray="5,4"
+        fill="none" marker-end="url(#ah-teal)"/>
+  <text x="575" y="190" text-anchor="middle"
+        fill="#006064" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">completion</text>
+
+  <!-- 5. Agent Definition → Web Search Tool  (solid purple, tool call) -->
+  <path d="M 360,210 C 360,242 352,238 352,265"
+        stroke="#6A1B9A" stroke-width="2" fill="none"
+        marker-end="url(#ah-purple)"/>
+  <text x="344" y="240" text-anchor="end"
+        fill="#6A1B9A" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">tool call</text>
+
+  <!-- 6. Agent Definition → Code Interpreter  (solid orange, tool call) -->
+  <path d="M 430,210 C 470,245 537,232 537,265"
+        stroke="#E65100" stroke-width="2" fill="none"
+        marker-end="url(#ah-orange)"/>
+  <text x="470" y="232" text-anchor="middle"
+        fill="#E65100" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">tool call</text>
+
+  <!-- 7. Agent Definition → MCP Tool  (solid indigo, tool call) -->
+  <path d="M 500,210 C 610,248 722,232 722,265"
+        stroke="#283593" stroke-width="2" fill="none"
+        marker-end="url(#ah-indigo)"/>
+  <text x="624" y="228" text-anchor="middle"
+        fill="#283593" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">tool call</text>
+
+  <!-- 8. Web Search Tool → Internet  (solid red, HTTP search) -->
+  <path d="M 352,337 L 352,420"
+        stroke="#B71C1C" stroke-width="2" fill="none"
+        marker-end="url(#ah-red)"/>
+  <text x="360" y="382" text-anchor="start"
+        fill="#B71C1C" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">HTTP search</text>
+
+  <!-- 9a. MCP Tool → Azure Container Apps MCP Server  (solid indigo, HTTPS, default; crosses Account boundary) -->
+  <path d="M 695,337 C 695,380 580,380 580,415"
+        stroke="#283593" stroke-width="2" fill="none"
+        marker-end="url(#ah-indigo)"/>
+  <text x="625" y="370" text-anchor="middle"
+        fill="#283593" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">HTTPS</text>
+
+  <!-- 9b. MCP Tool → Local dev machine MCP Server  (dashed indigo, HTTPS via DevTunnel, optional; crosses Account boundary) -->
+  <path d="M 749,337 C 749,380 803,380 803,415"
+        stroke="#283593" stroke-width="1.5" fill="none"
+        stroke-dasharray="5,3"
+        marker-end="url(#ah-indigo)"/>
+  <text x="768" y="368" text-anchor="middle"
+        fill="#283593" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">HTTPS · DevTunnel</text>
+</svg>

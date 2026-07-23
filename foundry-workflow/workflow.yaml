@@ -1,0 +1,245 @@
+# =============================================================================
+# Commercial Loan Underwriting — Foundry Multi-Agent Workflow (reference blueprint)
+# =============================================================================
+# Orchestration = Sequential  ->  Group chat  ->  Human-in-the-loop  ->  Finalize
+#
+# HOW TO USE THIS FILE
+#   1. Create the 7 agents from agents.md in the portal FIRST (names must match).
+#   2. Foundry portal -> Build -> Create new workflow -> pick "Group chat" (or blank).
+#   3. Turn ON the "YAML Visualizer View" toggle, open the YAML tab, and paste this in
+#      (replace the template contents). Switch back to the Visualizer to verify the nodes,
+#      then Save.  ** Foundry does NOT autosave — click Save after every change. **
+#
+# NOTE: This is a public-preview feature and the portal may regenerate node ids / minor
+# syntax on save. Treat this as a faithful blueprint that mirrors the visual recipe in
+# README.md; if a paste is rejected, build the same nodes visually and use this as the map.
+# Variable model follows the portal export dialect: Local.LatestMessage carries the running
+# message; agents share System.ConversationId so the committee members see each other (group
+# chat); Question nodes pause for the human (HITL).
+# =============================================================================
+
+kind: workflow
+
+trigger:
+  kind: OnConversationStart
+  id: trigger_loan_wf
+  actions:
+
+    # ---- seed the running message with the applicant's submission --------------
+    - kind: SetVariable
+      id: init_latest
+      variable: Local.LatestMessage
+      value: =UserMessage(System.LastMessageText)
+
+    # =========================================================================
+    # STAGE 1 — SEQUENTIAL intake pipeline
+    # =========================================================================
+    - kind: InvokeAzureAgent
+      id: agent_intake
+      agent:
+        name: Loan-Intake-Agent
+      description: Parse the raw application into applicant_profile JSON.
+      conversationId: =System.ConversationId
+      input:
+        messages: =Local.LatestMessage
+      output:
+        messages: Local.LatestMessage        # also: Save output as -> Local.applicantProfile
+        autoSend: true
+
+    - kind: InvokeAzureAgent
+      id: agent_enrichment
+      agent:
+        name: Financial-Enrichment-Agent
+      description: Compute DSCR / LTV / leverage / credit band -> underwriting_fact_sheet JSON.
+      conversationId: =System.ConversationId
+      input:
+        messages: =Local.LatestMessage
+      output:
+        messages: Local.LatestMessage        # also: Save output as -> Local.factSheet
+        autoSend: true
+
+    # =========================================================================
+    # STAGE 2 — GROUP CHAT credit committee (shared conversation, Chair-moderated)
+    # The three specialists share System.ConversationId, so each sees the running
+    # deliberation. The Chair then synthesizes a consensus.
+    # =========================================================================
+    - kind: SendActivity
+      id: committee_open
+      activity: "[Credit Committee is now in session] Panel: Credit Risk, Fraud & AML, Compliance. Reviewing the underwriting fact sheet..."
+
+    - kind: InvokeAzureAgent
+      id: agent_risk
+      agent:
+        name: Credit-Risk-Analyst
+      description: Repayment capacity, ratios, collateral -> risk rating + rate tier.
+      conversationId: =System.ConversationId
+      input:
+        messages: =Local.LatestMessage
+      output:
+        messages: Local.LatestMessage
+        autoSend: true
+
+    - kind: InvokeAzureAgent
+      id: agent_fraud
+      agent:
+        name: Fraud-AML-Analyst
+      description: Red flags + simulated AML/sanctions/PEP -> CLEAR / REVIEW / FLAGGED.
+      conversationId: =System.ConversationId
+      input:
+        messages: =Local.LatestMessage
+      output:
+        messages: Local.LatestMessage
+        autoSend: true
+
+    - kind: InvokeAzureAgent
+      id: agent_compliance
+      agent:
+        name: Compliance-Policy-Officer
+      description: Fair lending, policy limits, disclosures -> COMPLIANT / CONDITIONS / NOT_COMPLIANT.
+      conversationId: =System.ConversationId
+      input:
+        messages: =Local.LatestMessage
+      output:
+        messages: Local.LatestMessage
+        autoSend: true
+
+    - kind: InvokeAzureAgent
+      id: agent_chair
+      agent:
+        name: Credit-Committee-Chair
+      description: Weigh the three opinions -> committee_recommendation JSON (+ requiresHumanSignoff).
+      conversationId: =System.ConversationId
+      input:
+        messages: =Local.LatestMessage
+      output:
+        messages: Local.committeeMessages
+        autoSend: true
+
+    # Capture the Chair's JSON output as a STRING. An agent's `messages` output is a Table of
+    # message records (NOT text), so Lower()/Find()/Concatenate() on it fail with
+    # "Invalid argument type (Table)". Extract the last message's text via Last(<table>).Text.
+    # NOTE: do NOT use System.LastMessage(.Text) here — that is the most recent *user* message
+    # (the original application), not the agent's response, so the gate would never see the flag.
+    - kind: SetVariable
+      id: capture_committee
+      variable: Local.committeeText
+      value: =Last(Local.committeeMessages).Text
+
+    # =========================================================================
+    # STAGE 3 — HUMAN-IN-THE-LOOP: Senior Underwriter sign-off (conditional)
+    # Branch on the Chair's requiresHumanSignoff flag.
+    # =========================================================================
+    - kind: ConditionGroup
+      id: gate_signoff
+      conditions:
+        - id: needs_human
+          # true when policy requires a human (amount >= 250k, not a clean Approve,
+          # fraud/AML not CLEAR, compliance not COMPLIANT, or credit score < 660).
+          # NOTE: Foundry's workflow Power Fx subset does NOT support ParseJSON(), so we
+          # string-match the Chair's compact JSON text instead of parsing it: lowercase,
+          # strip spaces, then look for "requireshumansignoff":true.
+          condition: '=Not(IsBlank(Find("""requireshumansignoff"":true", Substitute(Lower(Local.committeeText), " ", ""))))'
+          actions:
+
+            # Human-friendly rendering: turn the Chair's JSON into a plain-English sign-off
+            # briefing so the Senior Underwriter never sees raw JSON. Runs once, only when a
+            # human is actually pulled in (the re-ask GotoAction below targets the Question,
+            # so this briefing is NOT recomputed on invalid replies). autoSend:false keeps the
+            # briefing out of the transcript so it appears exactly once, in the question prompt.
+            - kind: InvokeAzureAgent
+              id: agent_briefing
+              agent:
+                name: Underwriter-Briefing-Agent
+              description: Render the committee_recommendation JSON into a readable sign-off card.
+              conversationId: =System.ConversationId
+              input:
+                messages: =UserMessage(Local.committeeText)
+              output:
+                messages: Local.briefingMessages
+                autoSend: false
+            - kind: SetVariable
+              id: capture_briefing
+              variable: Local.briefingText
+              value: =Last(Local.briefingMessages).Text
+
+            - kind: Question
+              id: underwriter_question
+              variable: Local.humanDecision
+              entity: StringPrebuiltEntity
+              skipQuestionMode: SkipOnFirstExecutionIfVariableHasValue
+              prompt: |
+                {Local.briefingText}
+
+                Reply with one of:
+                  APPROVE            - accept the committee recommendation as-is
+                  DECLINE            - decline the application
+                  REVISE <notes>     - approve with your revised terms/conditions
+
+            - kind: ConditionGroup
+              id: route_human
+              conditions:
+                - id: human_approve
+                  condition: =StartsWith(Upper(Trim(Local.humanDecision)), "APPROVE")
+                  actions:
+                    - kind: SetVariable
+                      id: set_final_approve
+                      variable: Local.finalDecision
+                      value: '=Concatenate("APPROVED by Senior Underwriter. ", Local.committeeText)'
+                - id: human_decline
+                  condition: =StartsWith(Upper(Trim(Local.humanDecision)), "DECLINE")
+                  actions:
+                    - kind: SetVariable
+                      id: set_final_decline
+                      variable: Local.finalDecision
+                      value: '="DECLINED by Senior Underwriter after committee review."'
+                - id: human_revise
+                  condition: =StartsWith(Upper(Trim(Local.humanDecision)), "REVISE")
+                  actions:
+                    - kind: SetVariable
+                      id: set_final_revise
+                      variable: Local.finalDecision
+                      value: '=Concatenate("APPROVED WITH REVISED TERMS by Senior Underwriter: ", Local.humanDecision, " | Base committee rec: ", Local.committeeText)'
+              elseActions:
+                # invalid reply -> explain and re-ask
+                - kind: SendActivity
+                  id: reask_msg
+                  activity: "Please reply exactly APPROVE, DECLINE, or REVISE <notes>."
+                - kind: GotoAction
+                  id: goto_reask
+                  actionId: underwriter_question
+
+      elseActions:
+        # Clean, small, low-risk deal -> auto-finalize (demonstrates the HITL bypass)
+        - kind: SetVariable
+          id: set_final_auto
+          variable: Local.finalDecision
+          value: '=Concatenate("AUTO-APPROVED per policy (no human sign-off required). ", Local.committeeText)'
+        - kind: SendActivity
+          id: auto_msg
+          activity: "Auto-approved per policy - no Senior Underwriter sign-off required."
+
+    # =========================================================================
+    # FINALIZE — draft the applicant-facing decision letter
+    # =========================================================================
+    - kind: InvokeAzureAgent
+      id: agent_letter
+      agent:
+        name: Decision-Letter-Agent
+      description: Draft the approval / adverse-action letter from the final decision.
+      conversationId: =System.ConversationId
+      input:
+        messages: '=UserMessage(Concatenate("Draft the applicant decision letter. FINAL DECISION: ", Local.finalDecision))'
+      output:
+        messages: Local.decisionLetter
+        autoSend: true
+
+    - kind: EndConversation
+      id: end_wf
+
+id: ""
+name: commercial-loan-underwriting-workflow
+description: |
+  Commercial loan underwriting & approval. Sequential intake (parse -> enrich), a group-chat
+  credit committee (Risk + Fraud/AML + Compliance, moderated by a Chair), a conditional
+  human-in-the-loop Senior Underwriter sign-off, and a final applicant decision letter.
+  All agents run on the gpt-5 deployment; runs are traced to appi-foundry-playground.

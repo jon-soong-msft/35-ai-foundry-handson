@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680">
+  <title>Lab 13 - Custom Engine Agent architecture</title>
+  <desc>Microsoft Teams or Microsoft 365 Copilot sends messages through an attendee-owned Azure Bot Service to a local FastAPI proxy using the Microsoft 365 Agents SDK. The proxy calls the acl-remedy-advisor agent in the shared Microsoft Foundry project through the Azure AI Projects SDK. The attendee-owned tenant and subscription are visually separated from the shared workshop Foundry environment.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#0078D4"/></marker>
+    <marker id="arrow-green" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#107C10"/></marker>
+    <marker id="arrow-gray" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#605E5C"/></marker>
+    <style>
+      .title { font: 700 28px Segoe UI, Arial, sans-serif; fill: #1b1a19; }
+      .heading { font: 700 20px Segoe UI, Arial, sans-serif; fill: #1b1a19; }
+      .label { font: 600 16px Segoe UI, Arial, sans-serif; fill: #1b1a19; }
+      .small { font: 14px Segoe UI, Arial, sans-serif; fill: #323130; }
+      .boundary { stroke-width: 3; stroke-dasharray: 10 8; rx: 18; }
+      .node { stroke-width: 2; rx: 12; }
+      .flow { fill: none; stroke-width: 3; }
+    </style>
+  </defs>
+  <rect width="1200" height="680" fill="#ffffff"/>
+  <text x="60" y="55" class="title">Custom Engine Agent: attendee-owned channel proxy</text>
+  <text x="60" y="84" class="small">The proxy owns /api/messages and calls the existing Foundry agent through azure-ai-projects.</text>
+
+  <rect x="45" y="120" width="700" height="490" fill="#F3F2F1" stroke="#F7630C" class="boundary"/>
+  <text x="75" y="158" class="heading">Attendee-owned Microsoft 365 tenant and Azure subscription</text>
+  <text x="75" y="184" class="small">Provisioned by the attendee for this optional module</text>
+
+  <rect x="85" y="245" width="190" height="125" fill="#CFE4FA" stroke="#0078D4" class="node"/>
+  <text x="180" y="285" text-anchor="middle" class="label">Teams /</text>
+  <text x="180" y="310" text-anchor="middle" class="label">Microsoft 365 Copilot</text>
+  <text x="180" y="345" text-anchor="middle" class="small">User message</text>
+
+  <rect x="340" y="225" width="190" height="165" fill="#DFF6DD" stroke="#107C10" class="node"/>
+  <text x="435" y="270" text-anchor="middle" class="label">Azure Bot Service</text>
+  <text x="435" y="302" text-anchor="middle" class="small">Microsoft Teams channel</text>
+  <text x="435" y="328" text-anchor="middle" class="small">Bot Framework Activity</text>
+  <text x="435" y="354" text-anchor="middle" class="small">HTTPS + JWT</text>
+
+  <rect x="590" y="205" width="120" height="205" fill="#FFF4CE" stroke="#F7630C" class="node"/>
+  <text x="650" y="245" text-anchor="middle" class="label">Local proxy</text>
+  <text x="650" y="275" text-anchor="middle" class="small">FastAPI</text>
+  <text x="650" y="300" text-anchor="middle" class="small">CloudAdapter</text>
+  <text x="650" y="325" text-anchor="middle" class="small">AgentApplication</text>
+  <text x="650" y="350" text-anchor="middle" class="small">/api/messages</text>
+  <text x="650" y="382" text-anchor="middle" class="small">Dev tunnel</text>
+
+  <line x1="275" y1="307" x2="340" y2="307" class="flow" stroke="#0078D4" marker-end="url(#arrow-blue)"/>
+  <text x="307" y="282" text-anchor="middle" class="small">Activity</text>
+  <line x1="530" y1="307" x2="590" y2="307" class="flow" stroke="#107C10" marker-end="url(#arrow-green)"/>
+  <text x="560" y="282" text-anchor="middle" class="small">POST</text>
+
+  <rect x="825" y="120" width="330" height="490" fill="#E8DAEF" stroke="#5C2D91" class="boundary"/>
+  <text x="855" y="150" class="heading">
+    <tspan x="855" dy="0">Shared workshop Foundry</tspan>
+    <tspan x="855" dy="24">environment</tspan>
+  </text>
+  <text x="855" y="198" class="small">
+    <tspan x="855" dy="0">The proxy uses the attendee's existing</tspan>
+    <tspan x="855" dy="20">project access</tspan>
+  </text>
+
+  <rect x="875" y="245" width="230" height="145" fill="#E8DAEF" stroke="#5C2D91" class="node"/>
+  <text x="990" y="285" text-anchor="middle" class="label">Microsoft Foundry</text>
+  <text x="990" y="315" text-anchor="middle" class="label">acl-remedy-advisor</text>
+  <text x="990" y="350" text-anchor="middle" class="small">Agent threads and runs</text>
+  <text x="990" y="374" text-anchor="middle" class="small">Azure AI Projects SDK</text>
+
+  <line x1="710" y1="307" x2="875" y2="307" class="flow" stroke="#605E5C" marker-end="url(#arrow-gray)"/>
+  <text x="792" y="276" text-anchor="middle" class="small">Foundry call</text>
+  <text x="792" y="296" text-anchor="middle" class="small">thread + run</text>
+
+  <rect x="85" y="470" width="625" height="95" fill="#ffffff" stroke="#F7630C" class="node"/>
+  <text x="110" y="505" class="label">Local configuration</text>
+  <text x="110" y="535" class="small">Entra client secret stays in .env; never package it in the Teams app.</text>
+
+  <text x="60" y="650" class="small">Blue/green flows are Bot Framework Activities. The gray flow is the proxy's Foundry SDK call.</text>
+</svg>

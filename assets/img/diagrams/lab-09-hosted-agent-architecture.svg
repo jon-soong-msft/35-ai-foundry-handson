@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="435" viewBox="0 0 880 435">
+  <title>Lab 09 - Hosted Agent component topology</title>
+  <desc>A Python client sends requests through the Foundry Agent Service endpoint to a Hosted Agent Container running user code and ResponsesHostServer inside a Foundry Project. The container calls the Model Deployment using managed identity, invokes the Web Search tool via the Foundry runtime, and calls the external Retail Remedy Ops MCP Server over HTTPS and SSE.</desc>
+
+  <rect width="880" height="435" fill="white"/>
+
+  <defs>
+    <marker id="ah-blue" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#0078D4"/>
+    </marker>
+    <marker id="ah-purple" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#5C2D91"/>
+    </marker>
+    <marker id="ah-teal" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#006064"/>
+    </marker>
+    <marker id="ah-green" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#107C10"/>
+    </marker>
+    <marker id="ah-orange" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#D45D00"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="440" y="24" text-anchor="middle" fill="#1b1a19"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="15" font-weight="bold">Lab 09 - Hosted Agent: component topology</text>
+
+  <!-- Foundry Account boundary (x=230..850, y=42..322) -->
+  <rect x="230" y="42" width="620" height="280" rx="6" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <path d="M 236,42 L 844,42 Q 850,42 850,48 L 850,70 L 230,70 L 230,48 Q 230,42 236,42 Z" fill="#1565C0"/>
+  <text x="540" y="61" text-anchor="middle" fill="white"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="14" font-weight="bold">Foundry Account</text>
+
+  <!-- Foundry Project boundary (x=248..470, y=88..308) -->
+  <rect x="248" y="88" width="222" height="220" rx="5" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+  <path d="M 254,88 L 464,88 Q 470,88 470,94 L 470,108 L 248,108 L 248,94 Q 248,88 254,88 Z" fill="#2E7D32"/>
+  <text x="359" y="103" text-anchor="middle" fill="white"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="12" font-weight="bold">Foundry Project</text>
+
+  <!-- All boxes: W=200, H=70 -->
+
+  <!-- Client app (outside, left) — x=10, cy=153 -->
+  <rect x="10" y="118" width="200" height="70" rx="6" fill="#CFE4FA" stroke="#0078D4" stroke-width="2"/>
+  <text x="110" y="149" text-anchor="middle" fill="#1b1a19"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="13" font-weight="bold">Client app</text>
+  <text x="110" y="168" text-anchor="middle" fill="#323130"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="12">(Python)</text>
+
+  <!-- Foundry Agent Service Endpoint — x=260, cy=153 -->
+  <rect x="260" y="118" width="200" height="70" rx="6" fill="#FFF3CD" stroke="#F59E0B" stroke-width="2"/>
+  <text x="360" y="149" text-anchor="middle" fill="#1b1a19"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="13" font-weight="bold">Foundry Agent Service</text>
+  <text x="360" y="168" text-anchor="middle" fill="#323130"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="12">Endpoint</text>
+
+  <!-- Hosted Agent Container — x=260, cy=255 -->
+  <rect x="260" y="220" width="200" height="70" rx="6" fill="#E8DAEF" stroke="#5C2D91" stroke-width="2"/>
+  <text x="360" y="248" text-anchor="middle" fill="#1b1a19"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="13" font-weight="bold">Hosted Agent Container</text>
+  <text x="360" y="265" text-anchor="middle" fill="#323130"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="12">user code +</text>
+  <text x="360" y="281" text-anchor="middle" fill="#323130"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="12">ResponsesHostServer</text>
+
+  <!-- Model Deployment — x=620, cy=153 (same row as Foundry Agent Service) -->
+  <rect x="620" y="118" width="200" height="70" rx="6" fill="#E0F7FA" stroke="#006064" stroke-width="2"/>
+  <text x="720" y="149" text-anchor="middle" fill="#1b1a19"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="13" font-weight="bold">Model Deployment</text>
+  <text x="720" y="168" text-anchor="middle" fill="#323130"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="12">(Azure OpenAI)</text>
+
+  <!-- Web Search Tool — x=620, cy=255 (same row as Hosted Agent Container) -->
+  <rect x="620" y="220" width="200" height="70" rx="6" fill="#DFF6DD" stroke="#107C10" stroke-width="2"/>
+  <text x="720" y="251" text-anchor="middle" fill="#1b1a19"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="13" font-weight="bold">Web Search Tool</text>
+  <text x="720" y="270" text-anchor="middle" fill="#323130"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="12">(Foundry built-in)</text>
+
+  <!-- MCP Server (outside Account, below col B) — x=260, cy=373 -->
+  <rect x="260" y="338" width="200" height="70" rx="6" fill="#FFF3E0" stroke="#D45D00" stroke-width="2"/>
+  <text x="360" y="366" text-anchor="middle" fill="#1b1a19"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="12" font-weight="bold">Retail Remedy Ops</text>
+  <text x="360" y="382" text-anchor="middle" fill="#1b1a19"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="12" font-weight="bold">MCP Server</text>
+  <text x="360" y="398" text-anchor="middle" fill="#323130"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="11">(external, HTTPS / SSE)</text>
+
+  <!-- Internet (outside Account, below col C) — x=620, cy=373 -->
+  <rect x="620" y="338" width="200" height="70" rx="6" fill="#F5F5F5" stroke="#9E9E9E" stroke-width="1.5"/>
+  <text x="720" y="378" text-anchor="middle" fill="#323130"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="13" font-weight="bold">Internet</text>
+
+  <!-- ARROWS — no diagonal lines; horizontal and vertical segments only -->
+
+  <!-- 1. Client -> Foundry Agent Service Endpoint [HORIZONTAL, y=153] -->
+  <line x1="210" y1="153" x2="258" y2="153" stroke="#0078D4" stroke-width="2" marker-end="url(#ah-blue)"/>
+  <text x="234" y="143" text-anchor="middle" fill="#0078D4"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="9">Responses API / HTTPS</text>
+
+  <!-- 2. Foundry Agent Service Endpoint -> Hosted Agent Container [VERTICAL, x=360] -->
+  <line x1="360" y1="188" x2="360" y2="218" stroke="#5C2D91" stroke-width="2" marker-end="url(#ah-purple)"/>
+  <text x="366" y="207" text-anchor="start" fill="#5C2D91"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="10">Responses protocol :8088</text>
+
+  <!-- 3. Hosted Agent Container -> Model Deployment [H then V then H, no diagonal] -->
+  <path d="M 460,240 L 555,240 L 555,153 L 618,153"
+        fill="none" stroke="#006064" stroke-width="2" marker-end="url(#ah-teal)"/>
+  <text x="558" y="194" text-anchor="start" fill="#006064"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="10">model inference</text>
+  <text x="558" y="206" text-anchor="start" fill="#006064"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="10">+ managed identity</text>
+
+  <!-- 4. Hosted Agent Container -> Web Search Tool [HORIZONTAL, y=255] -->
+  <line x1="460" y1="255" x2="618" y2="255" stroke="#107C10" stroke-width="2" marker-end="url(#ah-green)"/>
+  <text x="539" y="247" text-anchor="middle" fill="#107C10"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="10">tool call (Foundry runtime)</text>
+
+  <!-- 5. Web Search Tool -> Internet [VERTICAL, x=720] -->
+  <line x1="720" y1="290" x2="720" y2="336" stroke="#107C10" stroke-width="2" marker-end="url(#ah-green)"/>
+  <text x="726" y="316" text-anchor="start" fill="#107C10"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="10">HTTP search</text>
+
+  <!-- 6. Hosted Agent Container -> MCP Server [VERTICAL, x=360] -->
+  <line x1="360" y1="290" x2="360" y2="336" stroke="#D45D00" stroke-width="2" marker-end="url(#ah-orange)"/>
+  <text x="354" y="316" text-anchor="end" fill="#D45D00"
+        font-family="'Segoe UI',Arial,sans-serif" font-size="10">HTTPS / SSE</text>
+
+</svg>
