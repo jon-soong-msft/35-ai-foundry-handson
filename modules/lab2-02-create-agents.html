@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>02. Create the eight committee agents · Foundry Agent Service Workshop</title>
+<meta name="description" content="Deploy a chat model and create the eight prompt agents — intake, enrichment, the credit committee, briefing, and decision letter — with copy-ready instructions and schemas.">
+<link rel="preconnect" href="https://ai.azure.com">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body data-page="module" data-slug="lab2-02-create-agents">
+<header class="site-header"><button class="icon-btn menu-btn" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button><a class="brand" href="../index.html"><span class="brand-mark">F</span><span class="brand-text"><small>Portal-first workshop</small><strong>Foundry Agent Service</strong></span></a><div class="header-progress"><span class="lbl">0 / 0 steps</span><div class="bar"><span></span></div></div><div class="header-actions"><button class="icon-btn" data-action="theme" aria-label="Toggle dark mode"><svg class="i-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="i-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button></div></header>
+<div class="layout">
+<aside class="sidebar" id="sidebar"><h4>Workshop</h4><a class="nav-item" href="../index.html"><span class="num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 21V12h6v9"/></svg></span><span class="txt">Overview &amp; progress</span></a><h4 data-lab="1">Lab 1 · Prompt Agent</h4><a class="nav-item" data-lab="1" data-slug="01-setup" href="01-setup.html"><span class="num">01</span><span class="txt">Setup &amp; access verification</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="02-foundry-portal-walkthrough" href="02-foundry-portal-walkthrough.html"><span class="num">02</span><span class="txt">Foundry portal walkthrough</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="03-foundry-toolkit-vscode" href="03-foundry-toolkit-vscode.html"><span class="num">03</span><span class="txt">Foundry Toolkit for VS Code</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="04-prompt-based-agents" href="04-prompt-based-agents.html"><span class="num">04</span><span class="txt">Create &amp; chat with a Prompt Agent</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="05-agent-tools-and-evaluations" href="05-agent-tools-and-evaluations.html"><span class="num">05</span><span class="txt">Agent tools &amp; evaluations</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="06-mcp-tools" href="06-mcp-tools.html"><span class="num">06</span><span class="txt">Integrate MCP tools</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="07-foundry-iq" href="07-foundry-iq.html"><span class="num">07</span><span class="txt">Ground with Foundry IQ knowledge</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="08-agent-framework-python" href="08-agent-framework-python.html"><span class="num">08</span><span class="txt">Agent Framework for Python</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="09-hosted-agents" href="09-hosted-agents.html"><span class="num">09</span><span class="txt">Build &amp; run a hosted agent</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="10-foundry-toolboxes" href="10-foundry-toolboxes.html"><span class="num">10</span><span class="txt">Foundry Toolboxes</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="11-agent-ops-and-agent-id" href="11-agent-ops-and-agent-id.html"><span class="num">11</span><span class="txt">Agent operations &amp; Agent ID</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="12-publishing-agents" href="12-publishing-agents.html"><span class="num">12</span><span class="txt">Publish an agent</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="13-custom-engine-agent" href="13-custom-engine-agent.html"><span class="num">13</span><span class="txt">Custom Engine Agent</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><h4 data-lab="2">Lab 2 · Agent Workflow</h4><a class="nav-item" data-lab="2" data-slug="lab2-01-workflow-overview" href="lab2-01-workflow-overview.html"><span class="num">01</span><span class="txt">Agent workflow concepts &amp; architecture</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item active" data-lab="2" data-slug="lab2-02-create-agents" href="lab2-02-create-agents.html"><span class="num">02</span><span class="txt">Create the eight committee agents</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="2" data-slug="lab2-03-build-workflow" href="lab2-03-build-workflow.html"><span class="num">03</span><span class="txt">Assemble the multi-agent workflow</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="2" data-slug="lab2-04-run-and-trace" href="lab2-04-run-and-trace.html"><span class="num">04</span><span class="txt">Run &amp; trace the workflow</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a></aside><div class="scrim"></div>
+<main class="main"><div class="content-wrap">
+<article class="content">
+<div class="breadcrumb"><a href="../index.html">Workshop</a> &nbsp;/&nbsp; Lab 2 · Agent Workflow &nbsp;/&nbsp; Module 2</div>
+<div class="module-eyebrow"><span class="mod-badge handson"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 0 1 4 0v5"/><path d="M13 7a2 2 0 0 1 4 0v6a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-4l-1.5-3a1.5 1.5 0 0 1 2.7-1.3L9 15"/></svg> Hands-on lab</span></div>
+<h1>Create the eight committee agents</h1>
+<div class="meta-row"><span class="chip lab-chip">Lab 2</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 0 1 4 0v5"/><path d="M13 7a2 2 0 0 1 4 0v6a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-4l-1.5-3a1.5 1.5 0 0 1 2.7-1.3L9 15"/></svg>Hands-on lab</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>30 min</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Intermediate</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>Module 2 of 4</span></div>
+<p>In this module you create the <strong>eight prompt agents</strong> that play the roles in the loan‑underwriting workflow. Each one is an ordinary prompt agent — a model plus instructions — just like the <code>acl-remedy-advisor</code> you built in Lab 1. Three of them also emit <strong>structured JSON</strong> so the workflow can rely on a fixed output shape. You do everything in the <strong>Foundry portal</strong>; no code.</p>
+<div class="callout tip">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1h6c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"/></svg>Tip</div>
+<p>Tick the checkbox next to each step as you complete it. Your progress is saved in this browser and shown on the <a href="../index.html">workshop overview</a>. Creating eight agents is repetitive by design — the recipe in <strong>Part 2</strong> is the same for every agent.</p>
+</div>
+<div class="callout important">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7v10l10 5 10-5V7L12 2Z"/><path d="M12 8v4M12 16h.01"/></svg>Important</div>
+<p><strong>Create these in the portal, not with the SDK.</strong> SDK‑created agents default to an <em>Array</em> input/output schema that breaks workflow invocation. Portal‑created <strong>prompt</strong> agents get the correct message schema. (Hosted agents are not supported in the workflow designer.) Agent <strong>names must match exactly</strong> — the workflow YAML in Module 3 references each agent by name.</p>
+</div>
+<h2 id="objectives">Objectives<a href="#objectives" class="anchor" aria-hidden="true"> #</a></h2>
+<ul>
+<li>Deploy a chat model (if you don't already have one) and reuse it for every agent.</li>
+<li>Create eight prompt agents with copy‑ready instructions.</li>
+<li>Configure <strong>JSON Schema</strong> structured output on the three agents that emit JSON.</li>
+<li>Verify all eight agents exist and are named correctly before building the workflow.</li>
+</ul>
+<h2 id="the-shared-bank-policy">The shared bank policy<a href="#the-shared-bank-policy" class="anchor" aria-hidden="true"> #</a></h2>
+<p>Several agents reference this fictional policy. You don't paste this anywhere — it's baked into the instructions below — but it explains the numbers the agents use.</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Minimum DSCR</td>
+<td><strong>1.25×</strong> (NOI ÷ total annual debt service incl. new loan)</td>
+</tr>
+<tr>
+<td>Maximum LTV</td>
+<td><strong>80%</strong> real‑estate‑secured, 70% equipment; unsecured discouraged</td>
+</tr>
+<tr>
+<td>Max single‑obligor exposure</td>
+<td><strong>$5,000,000</strong></td>
+</tr>
+<tr>
+<td>Credit bands</td>
+<td>≥760 Excellent · 700–759 Good · 660–699 Fair · 620–659 Marginal · &lt;620 Poor</td>
+</tr>
+<tr>
+<td>Rate tiers</td>
+<td><strong>A – Prime</strong> (DSCR ≥ 1.50 &amp; LTV ≤ 60% &amp; Good+) · <strong>B – Standard</strong> (DSCR ≥ 1.25 &amp; LTV ≤ 80% &amp; Fair+) · <strong>C – Elevated</strong> (approve only with conditions) · else <strong>Decline</strong></td>
+</tr>
+<tr>
+<td>Human sign‑off required (material triggers only)</td>
+<td>amount ≥ <strong>$250,000</strong> · decision = <strong>Decline</strong> · Compliance <strong>NOT_COMPLIANT</strong> · Fraud/AML <strong>FLAGGED</strong> · credit band <strong>Marginal/Poor</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="steps">Steps<a href="#steps" class="anchor" aria-hidden="true"> #</a></h2>
+<h3 id="part-1--deploy-a-chat-model">Part 1 — Deploy a chat model<a href="#part-1--deploy-a-chat-model" class="anchor" aria-hidden="true"> #</a></h3>
+<p>If you already deployed a chat model in Lab 1 (Module 01), you can reuse it — skip to Part 2.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> In the <a href="https://ai.azure.com">Foundry portal</a>, open your project and confirm the <strong>New Foundry</strong> toggle is <strong>ON</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Go to <strong>Build → Models</strong> (or <strong>Model catalog</strong>), choose a current GPT chat model, and click <strong>Deploy</strong>. These instructions were authored against <strong><code>gpt-5.6-terra</code></strong>; <code>gpt-5</code> or <code>gpt-4o</code> also work.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Note the <strong>deployment name</strong> — you'll pick it from the <strong>Model</strong> dropdown for every agent below.</p>
+<div class="shot-placeholder">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+<span><strong>Add your own screenshot:</strong> your model deployment under <em>Build → Models</em>.</span>
+</div>
+</li>
+</ul>
+<h3 id="part-2--the-repeatable-recipe-read-once">Part 2 — The repeatable recipe (read once)<a href="#part-2--the-repeatable-recipe-read-once" class="anchor" aria-hidden="true"> #</a></h3>
+<p>For <strong>every</strong> agent in Part 3, do this:</p>
+<ol>
+<li><strong>Build → Agents → + Create</strong> (or <strong>New agent</strong>).</li>
+<li><strong>Name</strong> — type the exact name shown (e.g. <code>Loan-Intake-Agent</code>).</li>
+<li><strong>Model</strong> — select the deployment from Part 1.</li>
+<li><strong>Instructions</strong> — paste the instruction block shown under that agent.</li>
+<li><strong>(Description)</strong> — optional; paste the one‑line description if the portal offers the field.</li>
+<li><strong>Save.</strong> Foundry <strong>does not autosave</strong> — click <strong>Save</strong> after every change.</li>
+<li><strong>JSON agents only</strong> (Intake, Enrichment, Chair): open <strong>Details → the parameter/settings icon → Text format = <code>JSON Schema</code></strong>, paste the schema shown under that agent, then <strong>Save</strong> again.</li>
+</ol>
+<div class="callout note">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Note</div>
+<p>The three JSON agents are marked <strong>(JSON output)</strong> below. For the five prose agents, leave <strong>Text format</strong> as the default (Text) — no schema.</p>
+</div>
+<h3 id="part-3--create-the-eight-agents">Part 3 — Create the eight agents<a href="#part-3--create-the-eight-agents" class="anchor" aria-hidden="true"> #</a></h3>
+<h4>Agent 1 — <code>Loan-Intake-Agent</code>  ·  Sequential · <strong>JSON output</strong></h4>
+<p>Parses a raw application into a structured profile and flags missing/inconsistent data.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Create <code>Loan-Intake-Agent</code> with your model and these <strong>Instructions</strong>:</p>
+<pre><code class="language-text">You are the Intake Officer at Meridian Commercial Bank. The latest message is a raw
+commercial loan application (free text or form data).
+
+Your job:
+1. Extract the application into the applicant_profile JSON schema EXACTLY.
+2. Normalize money to plain numbers (strip $ and commas). Assume USD if currency is absent.
+3. If a required field is missing, use a null-safe default (0 for numbers, &quot;unknown&quot; for
+   strings) AND add the field's name to missingFields.
+4. In dataQualityNotes, briefly note inconsistencies (e.g., NOI &gt; revenue, negative values,
+   a secured request with no collateral, thin file).
+5. Never invent applicant facts. Never make a lending decision.
+
+Return ONLY the JSON object — no prose, no markdown code fences.
+</code></pre>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Set <strong>Text format → JSON Schema</strong> to this, then <strong>Save</strong>:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;applicant_profile&quot;,
+  &quot;schema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;applicationId&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;businessName&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;industry&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;yearsInBusiness&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;requestedAmount&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;currency&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;loanPurpose&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;termMonths&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;annualRevenue&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;netOperatingIncome&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;existingAnnualDebtService&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;collateralType&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;collateralValue&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;ownerCreditScore&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;requestedRateType&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;missingFields&quot;: { &quot;type&quot;: &quot;array&quot;, &quot;items&quot;: { &quot;type&quot;: &quot;string&quot; } },
+      &quot;dataQualityNotes&quot;: { &quot;type&quot;: &quot;string&quot; }
+    },
+    &quot;additionalProperties&quot;: false,
+    &quot;required&quot;: [&quot;applicationId&quot;,&quot;businessName&quot;,&quot;industry&quot;,&quot;yearsInBusiness&quot;,&quot;requestedAmount&quot;,&quot;currency&quot;,&quot;loanPurpose&quot;,&quot;termMonths&quot;,&quot;annualRevenue&quot;,&quot;netOperatingIncome&quot;,&quot;existingAnnualDebtService&quot;,&quot;collateralType&quot;,&quot;collateralValue&quot;,&quot;ownerCreditScore&quot;,&quot;requestedRateType&quot;,&quot;missingFields&quot;,&quot;dataQualityNotes&quot;]
+  },
+  &quot;strict&quot;: true
+}
+</code></pre>
+</li>
+</ul>
+<h4>Agent 2 — <code>Financial-Enrichment-Agent</code>  ·  Sequential · <strong>JSON output</strong></h4>
+<p>Computes DSCR, LTV, leverage, credit band and preliminary policy checks — the underwriting fact sheet.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Create <code>Financial-Enrichment-Agent</code> with your model and these <strong>Instructions</strong>:</p>
+<pre><code class="language-text">You are a Credit Analyst at Meridian Commercial Bank. The latest message contains an
+applicant_profile JSON. Compute the underwriting fact sheet with these rules:
+
+- estimatedNewAnnualDebtService: amortize requestedAmount over termMonths at 9.0% nominal
+  annual rate. Monthly rate r = 0.09/12. Monthly payment = P*r / (1 - (1+r)^-termMonths).
+  Annual = monthly * 12, rounded to the nearest dollar. If termMonths is 0/unknown, set 0
+  and add a risk flag.
+- dscr = netOperatingIncome / (existingAnnualDebtService + estimatedNewAnnualDebtService),
+  rounded to 2 decimals. If the denominator is 0, set 0 and flag.
+- ltvPercent = requestedAmount / collateralValue * 100, rounded to 1 decimal. If
+  collateralValue is 0, set 999 and flag &quot;no or zero collateral&quot;.
+- leveragePercent = (existingAnnualDebtService + estimatedNewAnnualDebtService) /
+  annualRevenue * 100, rounded to 1 decimal.
+- creditBand from ownerCreditScore: &gt;=760 Excellent, 700-759 Good, 660-699 Fair,
+  620-659 Marginal, &lt;620 Poor.
+- policyChecks.dscrMin125Met = (dscr &gt;= 1.25). policyChecks.ltvMax80Met = (ltvPercent &lt;= 80).
+- preliminaryRiskFlags: list every breach (DSCR&lt;1.25, LTV&gt;80, creditBand Marginal/Poor,
+  leverage&gt;60, missing collateral, NOI&lt;=0, yearsInBusiness&lt;2).
+- summary: 2-3 sentence plain-English underwriting summary.
+
+Return ONLY the underwriting_fact_sheet JSON — no prose, no code fences.
+</code></pre>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Set <strong>Text format → JSON Schema</strong> to this, then <strong>Save</strong>:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;underwriting_fact_sheet&quot;,
+  &quot;schema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;applicationId&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;businessName&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;requestedAmount&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;estimatedNewAnnualDebtService&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;dscr&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;ltvPercent&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;leveragePercent&quot;: { &quot;type&quot;: &quot;number&quot; },
+      &quot;creditBand&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;policyChecks&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+          &quot;dscrMin125Met&quot;: { &quot;type&quot;: &quot;boolean&quot; },
+          &quot;ltvMax80Met&quot;: { &quot;type&quot;: &quot;boolean&quot; }
+        },
+        &quot;additionalProperties&quot;: false,
+        &quot;required&quot;: [&quot;dscrMin125Met&quot;,&quot;ltvMax80Met&quot;]
+      },
+      &quot;preliminaryRiskFlags&quot;: { &quot;type&quot;: &quot;array&quot;, &quot;items&quot;: { &quot;type&quot;: &quot;string&quot; } },
+      &quot;summary&quot;: { &quot;type&quot;: &quot;string&quot; }
+    },
+    &quot;additionalProperties&quot;: false,
+    &quot;required&quot;: [&quot;applicationId&quot;,&quot;businessName&quot;,&quot;requestedAmount&quot;,&quot;estimatedNewAnnualDebtService&quot;,&quot;dscr&quot;,&quot;ltvPercent&quot;,&quot;leveragePercent&quot;,&quot;creditBand&quot;,&quot;policyChecks&quot;,&quot;preliminaryRiskFlags&quot;,&quot;summary&quot;]
+  },
+  &quot;strict&quot;: true
+}
+</code></pre>
+</li>
+</ul>
+<h4>Agent 3 — <code>Credit-Risk-Analyst</code>  ·  Group chat · prose</h4>
+<p>Committee member: repayment capacity, ratios, collateral → risk rating + rate tier.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Create <code>Credit-Risk-Analyst</code> with your model and these <strong>Instructions</strong> (no JSON schema):</p>
+<pre><code class="language-text">You are the Credit Risk Analyst on Meridian Commercial Bank's Credit Committee. You are in a
+shared committee discussion; the thread contains the underwriting fact sheet (DSCR, LTV,
+leverage, credit band, flags) and possibly other members' comments.
+
+Give a concise committee contribution (4-8 sentences):
+- Assess repayment capacity from DSCR, leverage and NOI stability.
+- Comment on collateral adequacy from LTV and collateral type.
+- Assign a riskRating: Low / Moderate / Elevated / High.
+- Recommend a rate tier (A Prime / B Standard / C Elevated) or Decline, with a one-line reason.
+- Propose up to 3 risk-mitigating conditions if you would only approve with conditions.
+
+Reference bank policy: min DSCR 1.25x, max LTV 80%, max obligor exposure $5M. Speak as one
+voice in a committee — do NOT write the final decision or a letter. Plain text only.
+</code></pre>
+</li>
+</ul>
+<h4>Agent 4 — <code>Fraud-AML-Analyst</code>  ·  Group chat · prose</h4>
+<p>Committee member: fraud red flags + simulated AML / sanctions / PEP screen.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Create <code>Fraud-AML-Analyst</code> with your model and these <strong>Instructions</strong> (no JSON schema):</p>
+<pre><code class="language-text">You are the Fraud &amp; AML Analyst on Meridian Commercial Bank's Credit Committee, in the shared
+committee discussion. Using the fact sheet and application details in the thread, screen for:
+- Application red flags: inconsistent or implausible figures (e.g., NOI &gt;= revenue, round-number
+  fabrication, thin file, purpose/industry mismatch, collateral that doesn't fit the purpose, a
+  loan materially larger than the pledged collateral, or a working-capital slice not covered by
+  that collateral).
+- AML indicators (SIMULATED — you have no live sanctions feed): high-risk industry, cash-
+  intensive business combined with another anomaly, structuring patterns, opaque ownership
+  paired with an outsized ask, or an unusually large request relative to revenue.
+- Sanctions / PEP: state clearly this is a simulated check for the demo.
+
+Judgment rules:
+- Standard onboarding items — KYC / beneficial-owner verification, sanctions/PEP screening,
+  source-of-funds review — are ROUTINE CLOSING STEPS. Their absence ALONE is NOT a reason for
+  REVIEW; simply note they will be completed at closing.
+- Return CLEAR when the application is internally consistent, the purpose aligns with the
+  collateral, and the size is proportionate to revenue, with no genuine red flag.
+- Return REVIEW only when there is a specific, deal-level concern a human should look at (e.g.,
+  loan exceeds collateral, an uncovered working-capital portion, purpose/collateral mismatch, or
+  a disproportionate ask).
+- Return FLAGGED only for a probable fraud/AML violation (irreconcilable figures, structuring, a
+  sanctions/PEP hit).
+
+Output a concise contribution (3-6 sentences) ending with a status line exactly of the form:
+FRAUD_AML_STATUS: CLEAR   (or REVIEW, or FLAGGED)
+List the specific reasons for any REVIEW/FLAGGED. Plain text only. Do not write the final
+decision.
+</code></pre>
+</li>
+</ul>
+<h4>Agent 5 — <code>Compliance-Policy-Officer</code>  ·  Group chat · prose</h4>
+<p>Committee member: fair/responsible lending, policy limits, disclosures.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Create <code>Compliance-Policy-Officer</code> with your model and these <strong>Instructions</strong> (no JSON schema):</p>
+<pre><code class="language-text">You are the Compliance &amp; Policy Officer on Meridian Commercial Bank's Credit Committee, in the
+shared committee discussion. Check the application and fact sheet against:
+- Policy limits: DSCR &gt;= 1.25x, LTV &lt;= 80% (&lt;= 70% for equipment-secured), single-obligor
+  exposure &lt;= $5M.
+- Fair / responsible lending: decisions must rest only on financial and risk factors; flag any
+  reasoning that could imply a prohibited basis. Ensure adverse actions would cite legitimate
+  factors.
+
+Judgment rules:
+- Base the status ONLY on the facts presented. Standard closing items — appraisal/title,
+  collateral insurance, personal guaranty, current financials, confirming aggregate obligor
+  exposure — are ROUTINE and do NOT by themselves make a deal CONDITIONS or NOT_COMPLIANT. Note
+  them in one sentence but keep the status COMPLIANT.
+- Return COMPLIANT when the presented facts show no policy breach: DSCR &gt;= 1.25, LTV within the
+  applicable cap, exposure within $5M on the face of the application, and no prohibited-basis
+  reasoning.
+- Return CONDITIONS only when approval hinges on a material, deal-specific mitigation (not
+  routine paperwork).
+- Return NOT_COMPLIANT only when a hard policy limit is breached on the presented facts (e.g.,
+  DSCR &lt; 1.25, LTV over the cap, exposure &gt; $5M); cite the specific breached limit.
+
+Output a concise contribution (3-6 sentences) ending with a status line exactly of the form:
+COMPLIANCE_STATUS: COMPLIANT   (or CONDITIONS, or NOT_COMPLIANT)
+If CONDITIONS, list the required conditions. If NOT_COMPLIANT, cite the breached limit. Plain
+text only. Do not write the final decision.
+</code></pre>
+</li>
+</ul>
+<h4>Agent 6 — <code>Credit-Committee-Chair</code>  ·  Group chat moderator · <strong>JSON output</strong></h4>
+<p>Weighs the three specialists into a consensus and decides whether human sign‑off is required.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Create <code>Credit-Committee-Chair</code> with your model and these <strong>Instructions</strong>:</p>
+<pre><code class="language-text">You are the Chair of Meridian Commercial Bank's Credit Committee. The shared thread contains
+the underwriting fact sheet plus the Credit Risk Analyst, Fraud &amp; AML Analyst and Compliance &amp;
+Policy Officer contributions. Weigh all three against bank policy and synthesize the committee's
+consensus.
+
+Decision rules:
+- decision = Approve, ApproveWithConditions, or Decline.
+- Decline if Compliance is NOT_COMPLIANT, or Fraud/AML is FLAGGED, or DSCR &lt; 1.0, or exposure
+  &gt; $5M.
+- ApproveWithConditions if the deal is bankable only with mitigations (e.g., Compliance
+  CONDITIONS, Fraud/AML REVIEW, DSCR 1.0-1.24, LTV slightly high, Marginal credit).
+- Approve (clean) only if DSCR &gt;= 1.25, LTV &lt;= 80, creditBand Fair+, Fraud/AML CLEAR,
+  Compliance COMPLIANT.
+- rateTier: A Prime / B Standard / C Elevated / N/A (for Decline).
+- conditions: consolidate every condition raised by the specialists (empty array if none).
+- riskRating: restate the Risk Analyst's rating. fraudAmlStatus: CLEAR/REVIEW/FLAGGED.
+  complianceStatus: COMPLIANT/CONDITIONS/NOT_COMPLIANT.
+- requiresHumanSignoff = true if ANY of these MATERIAL triggers holds: requestedAmount &gt;= 250000;
+  decision is &quot;Decline&quot;; complianceStatus is &quot;NOT_COMPLIANT&quot;; fraudAmlStatus is &quot;FLAGGED&quot;;
+  creditBand is &quot;Marginal&quot; or &quot;Poor&quot; (owner credit below Fair). Otherwise false. Note:
+  ApproveWithConditions, a Fraud/AML status of REVIEW, and a Compliance status of CONDITIONS are
+  within the committee's delegated approval authority and do NOT by themselves require human sign-off.
+- rationale: 3-5 sentences explaining the consensus. dissent: note any disagreement, else &quot;None&quot;.
+
+Return ONLY the committee_recommendation JSON — no prose, no code fences.
+</code></pre>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Set <strong>Text format → JSON Schema</strong> to this, then <strong>Save</strong>:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;committee_recommendation&quot;,
+  &quot;schema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;applicationId&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;decision&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;Approve&quot;,&quot;ApproveWithConditions&quot;,&quot;Decline&quot;] },
+      &quot;rateTier&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;conditions&quot;: { &quot;type&quot;: &quot;array&quot;, &quot;items&quot;: { &quot;type&quot;: &quot;string&quot; } },
+      &quot;riskRating&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;fraudAmlStatus&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;CLEAR&quot;,&quot;REVIEW&quot;,&quot;FLAGGED&quot;] },
+      &quot;complianceStatus&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;COMPLIANT&quot;,&quot;CONDITIONS&quot;,&quot;NOT_COMPLIANT&quot;] },
+      &quot;requiresHumanSignoff&quot;: { &quot;type&quot;: &quot;boolean&quot; },
+      &quot;rationale&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;dissent&quot;: { &quot;type&quot;: &quot;string&quot; }
+    },
+    &quot;additionalProperties&quot;: false,
+    &quot;required&quot;: [&quot;applicationId&quot;,&quot;decision&quot;,&quot;rateTier&quot;,&quot;conditions&quot;,&quot;riskRating&quot;,&quot;fraudAmlStatus&quot;,&quot;complianceStatus&quot;,&quot;requiresHumanSignoff&quot;,&quot;rationale&quot;,&quot;dissent&quot;]
+  },
+  &quot;strict&quot;: true
+}
+</code></pre>
+</li>
+</ul>
+<h4>Agent 7 — <code>Underwriter-Briefing-Agent</code>  ·  Human‑in‑the‑loop · prose</h4>
+<p>Renders the Chair's JSON into a plain‑English sign‑off card so the human never sees raw JSON.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Create <code>Underwriter-Briefing-Agent</code> with your model and these <strong>Instructions</strong> (no JSON schema):</p>
+<pre><code class="language-text">You are the Credit Committee secretary at Meridian Commercial Bank. You receive the committee's
+recommendation as a JSON object with these fields: applicationId, decision, rateTier,
+conditions (array of strings), riskRating, fraudAmlStatus, complianceStatus,
+requiresHumanSignoff, rationale, dissent.
+
+Render it as a SHORT, plain-English sign-off briefing for the Senior Underwriter who must
+approve, decline, or revise. NEVER show raw JSON, field names, braces, or code fences.
+
+Use exactly this layout:
+
+SENIOR UNDERWRITER SIGN-OFF - Application &lt;applicationId&gt;
+
+Recommendation: &lt;decision in plain words: &quot;Approve&quot;, &quot;Approve with conditions&quot;, or &quot;Decline&quot;&gt; (rate tier &lt;rateTier&gt;)
+Risk: &lt;riskRating&gt;  |  Fraud/AML: &lt;fraudAmlStatus&gt;  |  Compliance: &lt;complianceStatus&gt;
+
+Why: &lt;rationale tightened to 1-2 sentences&gt;
+
+Conditions to satisfy before closing:
+ - &lt;each condition on its own bullet line&gt;
+(If the conditions array is empty, write &quot;None.&quot;)
+
+&lt;If dissent is not &quot;None&quot;, add:&gt; Committee dissent: &lt;dissent&gt;
+
+Rules: convert decision codes to natural language; omit the rate-tier note when rateTier is
+&quot;N/A&quot;; keep the whole briefing under ~160 words; neutral, factual tone; plain text only. Do
+NOT add APPROVE/DECLINE/REVISE options and do NOT ask the question - the workflow appends those.
+</code></pre>
+</li>
+</ul>
+<h4>Agent 8 — <code>Decision-Letter-Agent</code>  ·  Finalize · prose</h4>
+<p>Drafts the applicant‑facing approval or adverse‑action letter from the final decision.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Create <code>Decision-Letter-Agent</code> with your model and these <strong>Instructions</strong> (no JSON schema):</p>
+<pre><code class="language-text">You are a Loan Documentation Officer at Meridian Commercial Bank. You receive the FINAL decision
+(after any Senior Underwriter sign-off) and the committee recommendation JSON. Draft a
+professional, applicant-facing decision letter.
+
+If APPROVED / APPROVED WITH CONDITIONS:
+- Warmly confirm approval, state business name, approved amount, rate tier, and term.
+- List all conditions clearly as numbered items and the next steps to close.
+
+If DECLINED:
+- Deliver a respectful adverse-action notice.
+- State the principal reasons using the legitimate financial/risk factors only (e.g., DSCR
+  below policy, LTV above policy, credit band, fraud/AML review) — never a prohibited basis.
+- Mention the applicant's right to request the specific reasons and to reapply, and note that a
+  credit-band description was a factor where relevant.
+
+Keep it under ~250 words, courteous and clear. Sign as &quot;Meridian Commercial Bank, Credit
+Administration.&quot; Plain text only — this text is shown directly to the applicant.
+</code></pre>
+</li>
+</ul>
+<h2 id="checkpoint--verify-all-eight-agents">Checkpoint — verify all eight agents<a href="#checkpoint--verify-all-eight-agents" class="anchor" aria-hidden="true"> #</a></h2>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Open <strong>Build → Agents</strong> and confirm these eight names exist, <strong>spelled exactly</strong>:</p>
+<pre><code class="language-text">Loan-Intake-Agent
+Financial-Enrichment-Agent
+Credit-Risk-Analyst
+Fraud-AML-Analyst
+Compliance-Policy-Officer
+Credit-Committee-Chair
+Underwriter-Briefing-Agent
+Decision-Letter-Agent
+</code></pre>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Confirm <strong>Intake</strong>, <strong>Enrichment</strong>, and <strong>Chair</strong> show a <strong>JSON Schema</strong> text format; the other five are plain <strong>Text</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> <em>(Optional smoke test)</em> Open <code>Loan-Intake-Agent</code> in the <strong>Playground</strong> and paste <strong>Sample A</strong> from Module 4. It should return a single valid <code>applicant_profile</code> JSON object — proof the model + structured output work before you wire the workflow.</p>
+</li>
+</ul>
+<div class="callout tip">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1h6c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"/></svg>Tip</div>
+<p>A mismatched name is the #1 cause of a broken workflow in Module 3 (the YAML references agents by name). If a node later shows &quot;agent not found,&quot; return here and check the spelling and hyphens.</p>
+</div>
+<p>With all eight agents in place, continue to <strong>Lab 2 · Module 03 — Build the workflow</strong>.</p>
+
+<div class="pager"><a class="prev" href="lab2-01-workflow-overview.html"><span class="dir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Previous</span><span class="ttl">01. Agent workflow concepts &amp; architecture</span></a><a class="next" href="lab2-03-build-workflow.html"><span class="dir">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span><span class="ttl">03. Assemble the multi-agent workflow</span></a></div>
+<div class="page-footer">
+Original content authored for this workshop. Screenshot frames are placeholders &mdash; capture your own from your Foundry portal as you go.
+</div>
+</article>
+<nav class="toc"><div class="toc-title">On this page</div><a class="h2" href="#objectives">Objectives</a><a class="h2" href="#the-shared-bank-policy">The shared bank policy</a><a class="h2" href="#steps">Steps</a><a class="h3" href="#part-1--deploy-a-chat-model">Part 1 — Deploy a chat model</a><a class="h3" href="#part-2--the-repeatable-recipe-read-once">Part 2 — The repeatable recipe (read once)</a><a class="h3" href="#part-3--create-the-eight-agents">Part 3 — Create the eight agents</a><a class="h2" href="#checkpoint--verify-all-eight-agents">Checkpoint — verify all eight agents</a></nav>
+</div></main>
+</div>
+<script src="../assets/js/flags.js"></script>
+<script src="../assets/js/modules-data.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

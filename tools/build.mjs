@@ -63,6 +63,33 @@ const MODULES = [
     summary: "How to build an M365 Custom Engine Agent proxy in your own tenant. Optional extra credit, read-only overview." }
 ];
 
+// Everything above is Lab 1; default it, then append the Lab 2 modules.
+for (const m of MODULES) if (m.lab == null) m.lab = 1;
+MODULES.push(
+  { num: "01", slug: "lab2-01-workflow-overview", type: "concept", minutes: 15, difficulty: "intermediate", lab: 2,
+    title: "Agent workflow concepts & architecture",
+    summary: "Meet the commercial loan-underwriting scenario and see how sequential, group-chat, and human-in-the-loop orchestration combine into one Foundry workflow." },
+  { num: "02", slug: "lab2-02-create-agents", type: "handson", minutes: 30, difficulty: "intermediate", lab: 2,
+    title: "Create the eight committee agents",
+    summary: "Deploy a chat model and create the eight prompt agents — intake, enrichment, the credit committee, briefing, and decision letter — with copy-ready instructions and schemas." },
+  { num: "03", slug: "lab2-03-build-workflow", type: "handson", minutes: 25, difficulty: "advanced", lab: 2,
+    title: "Assemble the multi-agent workflow",
+    summary: "Paste the workflow YAML into the designer, wire the agents, and walk every node from intake through the human sign-off gate." },
+  { num: "04", slug: "lab2-04-run-and-trace", type: "handson", minutes: 20, difficulty: "intermediate", lab: 2,
+    title: "Run & trace the workflow",
+    summary: "Run a clean auto-approval and a borderline human-in-the-loop deal, then confirm end-to-end traces in Application Insights." }
+);
+
+// ---- Labs: grouping metadata for the sidebar + landing page -----------
+const LABS = [
+  { lab: 1, title: "Lab 1 — Prompt Agent with Foundry", navTitle: "Lab 1 · Prompt Agent",
+    blurb: "Build, tool, ground, evaluate, and publish a single prompt agent — entirely in the Foundry portal." },
+  { lab: 2, title: "Lab 2 — Multi-agent with Agent Workflow", navTitle: "Lab 2 · Agent Workflow",
+    blurb: "Compose eight agents into one governed workflow that combines sequential, group-chat, and human-in-the-loop orchestration." }
+];
+const labModules = (lab) => MODULES.filter((m) => m.lab === lab);
+const labOf = (lab) => LABS.find((l) => l.lab === lab) || LABS[0];
+
 // Faithful hands-on modules get a light "adapted for your subscription" banner.
 const ADAPT_BANNER_SLUGS = new Set([
   "02-foundry-portal-walkthrough", "04-prompt-based-agents", "05-agent-tools-and-evaluations",
@@ -223,15 +250,17 @@ function sidebarHtml(active) {
   let s = '<aside class="sidebar" id="sidebar">';
   s += '<h4>Workshop</h4>';
   s += `<a class="nav-item" href="../index.html"><span class="num">${IC.home}</span><span class="txt">Overview &amp; progress</span></a>`;
-  s += '<h4>Modules</h4>';
-  for (const m of MODULES) {
-    const act = m.slug === active ? " active" : "";
-    s += `<a class="nav-item${act}" data-slug="${m.slug}" href="${m.slug}.html">` +
-      `<span class="num">${m.num}</span>` +
-      `<span class="txt">${escHtml(m.title)}</span>` +
-      `<span class="type-dot ${m.type}" title="${m.type === "handson" ? "Hands-on lab" : "Concept overview"}"></span>` +
-      `<span class="nav-check">${IC.check}</span>` +
-      `</a>`;
+  for (const lab of LABS) {
+    s += `<h4 data-lab="${lab.lab}">${escHtml(lab.navTitle)}</h4>`;
+    for (const m of labModules(lab.lab)) {
+      const act = m.slug === active ? " active" : "";
+      s += `<a class="nav-item${act}" data-lab="${m.lab}" data-slug="${m.slug}" href="${m.slug}.html">` +
+        `<span class="num">${m.num}</span>` +
+        `<span class="txt">${escHtml(m.title)}</span>` +
+        `<span class="type-dot ${m.type}" title="${m.type === "handson" ? "Hands-on lab" : "Concept overview"}"></span>` +
+        `<span class="nav-check">${IC.check}</span>` +
+        `</a>`;
+    }
   }
   s += '</aside><div class="scrim"></div>';
   return s;
@@ -243,6 +272,8 @@ function headerHtml(mod) {
     ? '<div class="header-progress"><span class="lbl">0 / 0 steps</span><div class="bar"><span></span></div></div>'
     : "";
   const srcUrl = `${SRC_BASE}/${mod.slug}/README.md`;
+  const srcLink = mod.lab === 2 ? "" :
+    `<a class="icon-btn" href="${srcUrl}" target="_blank" rel="noopener" title="View source module on GitHub">${IC.github}</a>`;
   return '<header class="site-header">' +
     `<button class="icon-btn menu-btn" aria-label="Toggle navigation">${IC.menu}</button>` +
     `<a class="brand" href="../index.html"><span class="brand-mark">F</span>` +
@@ -250,7 +281,7 @@ function headerHtml(mod) {
     prog +
     '<div class="header-actions">' +
     `<button class="icon-btn" data-action="theme" aria-label="Toggle dark mode">${IC.sun}${IC.moon}</button>` +
-    `<a class="icon-btn" href="${srcUrl}" target="_blank" rel="noopener" title="View source module on GitHub">${IC.github}</a>` +
+    srcLink +
     '</div></header>';
 }
 
@@ -266,17 +297,21 @@ function metaRow(mod) {
   const typeLabel = mod.type === "handson"
     ? `<span class="chip">${IC.hands}Hands-on lab</span>`
     : `<span class="chip">${IC.book}Concept overview</span>`;
+  const count = labModules(mod.lab).length;
   return '<div class="meta-row">' +
+    `<span class="chip lab-chip">Lab ${mod.lab}</span>` +
     typeLabel +
     `<span class="chip">${IC.clock}${mod.minutes} min</span>` +
     `<span class="chip">${IC.level}${mod.difficulty.charAt(0).toUpperCase() + mod.difficulty.slice(1)}</span>` +
-    `<span class="chip">${IC.stack}Module ${parseInt(mod.num, 10)} of ${MODULES.length}</span>` +
+    `<span class="chip">${IC.stack}Module ${parseInt(mod.num, 10)} of ${count}</span>` +
     "</div>";
 }
 
-function pagerHtml(idx) {
-  const prev = idx > 0 ? MODULES[idx - 1] : null;
-  const next = idx < MODULES.length - 1 ? MODULES[idx + 1] : null;
+function pagerHtml(mod) {
+  const sibs = labModules(mod.lab);
+  const i = sibs.findIndex((m) => m.slug === mod.slug);
+  const prev = i > 0 ? sibs[i - 1] : null;
+  const next = i < sibs.length - 1 ? sibs[i + 1] : null;
   let s = '<div class="pager">';
   if (prev) s += `<a class="prev" href="${prev.slug}.html"><span class="dir">${IC.arrowL} Previous</span><span class="ttl">${escHtml(prev.num + ". " + prev.title)}</span></a>`;
   else s += '<span class="spacer"></span>';
@@ -296,6 +331,12 @@ function badgeHtml(mod) {
 
 function pageHtml(mod, idx, bodyHtml, toc) {
   const srcUrl = `${SRC_BASE}/${mod.slug}/README.md`;
+  const lab = labOf(mod.lab);
+  const footer = mod.lab === 2
+    ? `Original content authored for this workshop. Screenshot frames are placeholders &mdash; capture your own from your Foundry portal as you go.`
+    : `Adapted for portal-first delivery from the open-source
+<a href="${srcUrl}" target="_blank" rel="noopener">Microsoft Foundry Agentic Workshop</a>
+(MIT-licensed). Screenshots reflect the shared-environment New Foundry UI and may differ from your tenant.`;
   return `<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -312,21 +353,20 @@ ${headerHtml(mod)}
 ${sidebarHtml(mod.slug)}
 <main class="main"><div class="content-wrap">
 <article class="content">
-<div class="breadcrumb"><a href="../index.html">Workshop</a> &nbsp;/&nbsp; Module ${parseInt(mod.num, 10)}</div>
+<div class="breadcrumb"><a href="../index.html">Workshop</a> &nbsp;/&nbsp; ${escHtml(lab.navTitle)} &nbsp;/&nbsp; Module ${parseInt(mod.num, 10)}</div>
 ${badgeHtml(mod)}
 <h1>${escHtml(mod.title)}</h1>
 ${metaRow(mod)}
 ${bodyHtml}
-${pagerHtml(idx)}
+${pagerHtml(mod)}
 <div class="page-footer">
-Adapted for portal-first delivery from the open-source
-<a href="${srcUrl}" target="_blank" rel="noopener">Microsoft Foundry Agentic Workshop</a>
-(MIT-licensed). Screenshots reflect the shared-environment New Foundry UI and may differ from your tenant.
+${footer}
 </div>
 </article>
 ${tocHtml(toc)}
 </div></main>
 </div>
+<script src="../assets/js/flags.js"></script>
 <script src="../assets/js/modules-data.js"></script>
 <script src="../assets/js/app.js"></script>
 </body>
@@ -347,7 +387,7 @@ function build() {
     const mod = MODULES[idx];
     const file = path.join(CONTENT, mod.slug + ".md");
     if (!fs.existsSync(file)) { console.warn("  ! missing content:", mod.slug + ".md — skipped"); 
-      dataOut.push({ num: mod.num, slug: mod.slug, title: mod.title, type: mod.type, minutes: mod.minutes, difficulty: mod.difficulty, taskCount: 0, summary: mod.summary, optional: !!mod.optional });
+      dataOut.push({ num: mod.num, slug: mod.slug, title: mod.title, type: mod.type, minutes: mod.minutes, difficulty: mod.difficulty, taskCount: 0, summary: mod.summary, optional: !!mod.optional, lab: mod.lab });
       continue; }
     const raw = fs.readFileSync(file, "utf8");
     const parsed = matter(raw);
@@ -355,13 +395,14 @@ function build() {
     const taskCount = mod.type === "handson" ? countTasks(pre) : 0;
     const { html, toc } = renderBody(pre);
     fs.writeFileSync(path.join(OUT, mod.slug + ".html"), pageHtml(mod, idx, html, toc), "utf8");
-    dataOut.push({ num: mod.num, slug: mod.slug, title: mod.title, type: mod.type, minutes: mod.minutes, difficulty: mod.difficulty, taskCount, summary: mod.summary, optional: !!mod.optional });
+    dataOut.push({ num: mod.num, slug: mod.slug, title: mod.title, type: mod.type, minutes: mod.minutes, difficulty: mod.difficulty, taskCount, summary: mod.summary, optional: !!mod.optional, lab: mod.lab });
     built++;
     console.log(`  \u2713 ${mod.slug}.html  (${taskCount} steps)`);
   }
   if (!fs.existsSync(JS)) fs.mkdirSync(JS, { recursive: true });
   fs.writeFileSync(path.join(JS, "modules-data.js"),
-    "window.WORKSHOP_MODULES = " + JSON.stringify(dataOut, null, 2) + ";\n", "utf8");
+    "window.WORKSHOP_MODULES = " + JSON.stringify(dataOut, null, 2) + ";\n" +
+    "window.WORKSHOP_LABS = " + JSON.stringify(LABS, null, 2) + ";\n", "utf8");
   console.log(`\nBuilt ${built}/${MODULES.length} module pages + modules-data.js`);
 }
 

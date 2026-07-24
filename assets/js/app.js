@@ -8,12 +8,70 @@
   var LS = window.localStorage;
   var K = {
     theme: "fw:theme",
+    flagLab2: "fw:flag:lab2",
     check: function (slug, i) { return "fw:check:" + slug + ":" + i; },
     progress: function (slug) { return "fw:progress:" + slug; }
   };
+  var FLAGS = window.WORKSHOP_FLAGS || {};
   var MODULES = window.WORKSHOP_MODULES || [];
+  var LABS = window.WORKSHOP_LABS || [];
   var byslug = {};
   MODULES.forEach(function (m) { byslug[m.slug] = m; });
+
+  /* --------------------------------------------- Feature flag: Lab 2 */
+  // Apply a ?lab2=1 / ?lab2=0 URL override once, persisting to localStorage.
+  (function applyLab2UrlOverride() {
+    try {
+      var q = new URLSearchParams(window.location.search).get("lab2");
+      if (q === "1" || q === "0") LS.setItem(K.flagLab2, q === "1" ? "1" : "0");
+    } catch (e) { /* older browsers: ignore */ }
+  })();
+
+  function lab2Enabled() {
+    var v = LS.getItem(K.flagLab2);
+    if (v === "1") return true;
+    if (v === "0") return false;
+    return !!FLAGS.lab2; // fall back to build-time default
+  }
+
+  // Modules that survive the current flag state.
+  function visibleModules() {
+    if (lab2Enabled()) return MODULES;
+    return MODULES.filter(function (m) { return (m.lab || 1) !== 2; });
+  }
+
+  // Hide/show any element tagged data-lab="2" (sidebar headings/items, hero bits).
+  function applyLab2Dom() {
+    var on = lab2Enabled();
+    document.querySelectorAll('[data-lab="2"]').forEach(function (el) {
+      el.style.display = on ? "" : "none";
+    });
+    updateHeroStats();
+  }
+
+  // Reflect the flag in the landing hero stats + intro wording.
+  function updateHeroStats() {
+    var mods = visibleModules();
+    var labIds = {};
+    mods.forEach(function (m) { labIds[m.lab || 1] = true; });
+    var labCount = Object.keys(labIds).length;
+    var handson = mods.filter(function (m) { return m.type === "handson"; }).length;
+    var set = function (id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
+    set("heroLabs", labCount);
+    set("heroModules", mods.length);
+    set("heroHandson", handson);
+    var word = document.getElementById("heroLabsWord");
+    if (word) word.textContent = labCount === 1 ? "one lab" : (labCount === 2 ? "two labs" : labCount + " labs");
+  }
+
+  // If Lab 2 is off, keep its module pages unreachable by direct URL.
+  function guardLab2Page() {
+    if (lab2Enabled()) return;
+    var slug = document.body.getAttribute("data-slug") || "";
+    if (slug.indexOf("lab2-") === 0) {
+      window.location.replace("../index.html");
+    }
+  }
 
   /* ---------------------------------------------------------- Theme */
   function applyTheme(t) {
@@ -174,42 +232,85 @@
       '<text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" font-size="' + (size * 0.26) + '" font-weight="700" fill="var(--text)">' + pct + '%</text></svg>';
   }
 
+  function cardHtml(m) {
+    var checked = parseInt(LS.getItem(K.progress(m.slug)) || "0", 10);
+    var total = m.taskCount || 0;
+    var pct = total ? Math.min(100, Math.round((checked / total) * 100)) : 0;
+    var isDone = total > 0 && checked >= total;
+    var footBits = [];
+    footBits.push('<span class="card-badge ' + m.type + '">' + (m.type === "handson" ? "Hands-on" : "Concept") + "</span>");
+    footBits.push('<span>' + m.minutes + " min</span>");
+    footBits.push('<span class="dot"></span>');
+    footBits.push('<span>' + cap(m.difficulty) + "</span>");
+    if (total) { footBits.push('<span class="dot"></span>'); footBits.push("<span>" + checked + "/" + total + " steps</span>"); }
+    return '<a class="module-card' + (isDone ? " done" : "") + '" href="modules/' + m.slug + '.html">' +
+      '<span class="card-progress" style="width:' + pct + '%"></span>' +
+      '<span class="mini-check">' + CHECK_ICON + "</span>" +
+      '<div class="top"><div class="mnum">' + m.num + "</div></div>" +
+      "<h3>" + esc(m.title) + "</h3>" +
+      "<p>" + esc(m.summary || "") + "</p>" +
+      '<div class="foot">' + footBits.join("") + "</div>" +
+      "</a>";
+  }
+
   function renderLanding() {
+    var host = document.getElementById("labSections");
     var grid = document.getElementById("moduleGrid");
-    if (!grid) return;
+    if (!host && !grid) return;
+
+    var shownModules = visibleModules();
     var doneCount = 0, handsonTotal = 0, handsonDone = 0;
-    var frag = "";
-    MODULES.forEach(function (m) {
+    shownModules.forEach(function (m) {
       var checked = parseInt(LS.getItem(K.progress(m.slug)) || "0", 10);
       var total = m.taskCount || 0;
-      var pct = total ? Math.min(100, Math.round((checked / total) * 100)) : 0;
       var isDone = total > 0 && checked >= total;
       if (isDone) doneCount++;
       if (m.type === "handson") { handsonTotal++; if (isDone) handsonDone++; }
-      var footBits = [];
-      footBits.push('<span class="card-badge ' + m.type + '">' + (m.type === "handson" ? "Hands-on" : "Concept") + "</span>");
-      footBits.push('<span>' + m.minutes + " min</span>");
-      footBits.push('<span class="dot"></span>');
-      footBits.push('<span>' + cap(m.difficulty) + "</span>");
-      if (total) { footBits.push('<span class="dot"></span>'); footBits.push("<span>" + checked + "/" + total + " steps</span>"); }
-      frag += '<a class="module-card' + (isDone ? " done" : "") + '" href="modules/' + m.slug + '.html">' +
-        '<span class="card-progress" style="width:' + pct + '%"></span>' +
-        '<span class="mini-check">' + CHECK_ICON + "</span>" +
-        '<div class="top"><div class="mnum">' + m.num + "</div></div>" +
-        "<h3>" + esc(m.title) + "</h3>" +
-        "<p>" + esc(m.summary || "") + "</p>" +
-        '<div class="foot">' + footBits.join("") + "</div>" +
-        "</a>";
     });
-    grid.innerHTML = frag;
 
-    var overallPct = MODULES.length ? Math.round((doneCount / MODULES.length) * 100) : 0;
+    if (host) {
+      var labs = LABS.length ? LABS : [{ lab: 1, title: "Modules", blurb: "" }];
+      var lab2On = lab2Enabled();
+      var out = "";
+      labs.forEach(function (lab) {
+        if (lab.lab === 2 && !lab2On) return;
+        var mods = MODULES.filter(function (m) { return (m.lab || 1) === lab.lab; });
+        if (!mods.length) return;
+        var lDone = 0, lHandsonTotal = 0, lHandsonDone = 0, cards = "";
+        mods.forEach(function (m) {
+          var checked = parseInt(LS.getItem(K.progress(m.slug)) || "0", 10);
+          var total = m.taskCount || 0;
+          var isDone = total > 0 && checked >= total;
+          if (isDone) lDone++;
+          if (m.type === "handson") { lHandsonTotal++; if (isDone) lHandsonDone++; }
+          cards += cardHtml(m);
+        });
+        var lPct = mods.length ? Math.round((lDone / mods.length) * 100) : 0;
+        out += '<section class="lab-section" id="lab-' + lab.lab + '">' +
+          '<div class="lab-head">' +
+            '<div class="lab-ring">' + circle(lPct, 52) + '</div>' +
+            '<div class="lab-meta"><h2>' + esc(lab.title) + '</h2>' +
+              '<p>' + esc(lab.blurb || "") + '</p>' +
+              '<span class="lab-progress">' + lDone + ' of ' + mods.length + ' modules \u00b7 ' + lHandsonDone + '/' + lHandsonTotal + ' hands-on</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="module-grid">' + cards + '</div>' +
+        '</section>';
+      });
+      host.innerHTML = out;
+    } else {
+      var frag = "";
+      MODULES.forEach(function (m) { frag += cardHtml(m); });
+      grid.innerHTML = frag;
+    }
+
+    var overallPct = shownModules.length ? Math.round((doneCount / shownModules.length) * 100) : 0;
     var ring = document.getElementById("overallRing");
     if (ring) ring.innerHTML = circle(overallPct, 58);
     var ovBar = document.getElementById("overallBar");
     if (ovBar) ovBar.style.width = overallPct + "%";
     var ovLbl = document.getElementById("overallLbl");
-    if (ovLbl) ovLbl.innerHTML = "<b>" + doneCount + " of " + MODULES.length + " modules complete</b> \u00b7 " +
+    if (ovLbl) ovLbl.innerHTML = "<b>" + doneCount + " of " + shownModules.length + " modules complete</b> \u00b7 " +
       handsonDone + "/" + handsonTotal + " hands-on labs done";
   }
 
@@ -228,11 +329,29 @@
     });
   }
 
+  /* --------------------------------------------- Lab 2 flag: shortcut */
+  function initLab2Shortcut() {
+    document.addEventListener("keydown", function (e) {
+      // Ctrl+Alt+2 ("2" or numpad) toggles Lab 2 visibility.
+      if (e.ctrlKey && e.altKey && (e.key === "2" || e.code === "Digit2" || e.code === "Numpad2")) {
+        e.preventDefault();
+        var next = !lab2Enabled();
+        LS.setItem(K.flagLab2, next ? "1" : "0");
+        applyLab2Dom();
+        renderLanding();
+        toast(next ? "Lab 2 enabled" : "Lab 2 hidden");
+      }
+    });
+  }
+
   /* ----------------------------------------------------------- Boot */
   function boot() {
+    guardLab2Page();
     document.querySelectorAll("[data-action=theme]").forEach(function (b) {
       b.addEventListener("click", toggleTheme);
     });
+    applyLab2Dom();
+    initLab2Shortcut();
     addCopyButtons();
     initNav();
     initModuleProgress();

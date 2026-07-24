@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>01. Agent workflow concepts &amp; architecture · Foundry Agent Service Workshop</title>
+<meta name="description" content="Meet the commercial loan-underwriting scenario and see how sequential, group-chat, and human-in-the-loop orchestration combine into one Foundry workflow.">
+<link rel="preconnect" href="https://ai.azure.com">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body data-page="module" data-slug="lab2-01-workflow-overview">
+<header class="site-header"><button class="icon-btn menu-btn" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button><a class="brand" href="../index.html"><span class="brand-mark">F</span><span class="brand-text"><small>Portal-first workshop</small><strong>Foundry Agent Service</strong></span></a><div class="header-actions"><button class="icon-btn" data-action="theme" aria-label="Toggle dark mode"><svg class="i-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="i-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button></div></header>
+<div class="layout">
+<aside class="sidebar" id="sidebar"><h4>Workshop</h4><a class="nav-item" href="../index.html"><span class="num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 21V12h6v9"/></svg></span><span class="txt">Overview &amp; progress</span></a><h4 data-lab="1">Lab 1 · Prompt Agent</h4><a class="nav-item" data-lab="1" data-slug="01-setup" href="01-setup.html"><span class="num">01</span><span class="txt">Setup &amp; access verification</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="02-foundry-portal-walkthrough" href="02-foundry-portal-walkthrough.html"><span class="num">02</span><span class="txt">Foundry portal walkthrough</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="03-foundry-toolkit-vscode" href="03-foundry-toolkit-vscode.html"><span class="num">03</span><span class="txt">Foundry Toolkit for VS Code</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="04-prompt-based-agents" href="04-prompt-based-agents.html"><span class="num">04</span><span class="txt">Create &amp; chat with a Prompt Agent</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="05-agent-tools-and-evaluations" href="05-agent-tools-and-evaluations.html"><span class="num">05</span><span class="txt">Agent tools &amp; evaluations</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="06-mcp-tools" href="06-mcp-tools.html"><span class="num">06</span><span class="txt">Integrate MCP tools</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="07-foundry-iq" href="07-foundry-iq.html"><span class="num">07</span><span class="txt">Ground with Foundry IQ knowledge</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="08-agent-framework-python" href="08-agent-framework-python.html"><span class="num">08</span><span class="txt">Agent Framework for Python</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="09-hosted-agents" href="09-hosted-agents.html"><span class="num">09</span><span class="txt">Build &amp; run a hosted agent</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="10-foundry-toolboxes" href="10-foundry-toolboxes.html"><span class="num">10</span><span class="txt">Foundry Toolboxes</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="11-agent-ops-and-agent-id" href="11-agent-ops-and-agent-id.html"><span class="num">11</span><span class="txt">Agent operations &amp; Agent ID</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="12-publishing-agents" href="12-publishing-agents.html"><span class="num">12</span><span class="txt">Publish an agent</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="13-custom-engine-agent" href="13-custom-engine-agent.html"><span class="num">13</span><span class="txt">Custom Engine Agent</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><h4 data-lab="2">Lab 2 · Agent Workflow</h4><a class="nav-item active" data-lab="2" data-slug="lab2-01-workflow-overview" href="lab2-01-workflow-overview.html"><span class="num">01</span><span class="txt">Agent workflow concepts &amp; architecture</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="2" data-slug="lab2-02-create-agents" href="lab2-02-create-agents.html"><span class="num">02</span><span class="txt">Create the eight committee agents</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="2" data-slug="lab2-03-build-workflow" href="lab2-03-build-workflow.html"><span class="num">03</span><span class="txt">Assemble the multi-agent workflow</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="2" data-slug="lab2-04-run-and-trace" href="lab2-04-run-and-trace.html"><span class="num">04</span><span class="txt">Run &amp; trace the workflow</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a></aside><div class="scrim"></div>
+<main class="main"><div class="content-wrap">
+<article class="content">
+<div class="breadcrumb"><a href="../index.html">Workshop</a> &nbsp;/&nbsp; Lab 2 · Agent Workflow &nbsp;/&nbsp; Module 1</div>
+<div class="module-eyebrow"><span class="mod-badge concept"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg> Concept overview</span></div>
+<h1>Agent workflow concepts &amp; architecture</h1>
+<div class="meta-row"><span class="chip lab-chip">Lab 2</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>Concept overview</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>15 min</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Intermediate</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>Module 1 of 4</span></div>
+<p>In <strong>Lab 1</strong> you built a single <strong>prompt agent</strong> and gave it tools, knowledge, and a publish target. In <strong>Lab 2</strong> you compose <em>many</em> agents into one <strong>multi‑agent workflow</strong> — a declarative orchestration you assemble and run <strong>entirely in the Microsoft Foundry portal</strong>. This first module is a short concept overview: the scenario, the three orchestration patterns you will combine, and the eight agents that play the roles. The next three modules are hands‑on.</p>
+<div class="callout note">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Note</div>
+<p><strong>Public preview + retirement notice.</strong> Foundry <strong>Workflows</strong> (the visual multi‑agent designer and in‑portal execution) are in <strong>public preview</strong>, and Microsoft has announced the designer + in‑portal run experience will be <strong>retired on Dec 1, 2026</strong>, with the forward path being the <strong>Microsoft Agent Framework</strong>. The same declarative YAML you author here ports forward as a hosted agent, so the concepts and artifacts you build in this lab carry over. It is fully usable today and ideal for learning the orchestration patterns.</p>
+</div>
+<h2 id="objectives">Objectives<a href="#objectives" class="anchor" aria-hidden="true"> #</a></h2>
+<ul>
+<li>Understand what a <strong>multi‑agent workflow</strong> is and how it differs from a single prompt agent.</li>
+<li>Learn the three orchestration patterns you will combine: <strong>Sequential</strong>, <strong>Group chat</strong>, and <strong>Human‑in‑the‑loop (HITL)</strong>.</li>
+<li>Meet the <strong>eight agents</strong> and the <strong>variables</strong> that carry state between them.</li>
+<li>Know exactly what you will build in Modules 2–4 of this lab.</li>
+</ul>
+<h2 id="the-scenario--meridian-commercial-bank">The scenario — Meridian Commercial Bank<a href="#the-scenario--meridian-commercial-bank" class="anchor" aria-hidden="true"> #</a></h2>
+<p>You will build a <strong>Commercial Loan Underwriting &amp; Approval</strong> workflow for a fictional bank, <em>Meridian Commercial Bank</em>. A business submits a loan application; your workflow takes it from raw text all the way to an applicant‑facing decision letter, passing through an automated intake pipeline, a deliberating credit committee, and — only when policy demands it — a human sign‑off.</p>
+<p>This is a realistic financial‑services shape: <strong>deterministic data preparation</strong>, <strong>multi‑expert judgement</strong>, and a <strong>governed human gate</strong> for material decisions. It is a great vehicle for learning orchestration because each stage naturally maps to a different pattern.</p>
+<h2 id="the-three-orchestration-patterns">The three orchestration patterns<a href="#the-three-orchestration-patterns" class="anchor" aria-hidden="true"> #</a></h2>
+<p>A workflow strings together <strong>nodes</strong> (invoke an agent, ask a question, branch on a condition, set a variable). By arranging nodes you get different <em>orchestration patterns</em>. This lab combines all three:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>What it means</th>
+<th>Where it appears here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sequential</strong></td>
+<td>Agents run one after another; each hands its output to the next.</td>
+<td><strong>Intake → Financial Enrichment</strong> — parse the application, then compute the underwriting ratios.</td>
+</tr>
+<tr>
+<td><strong>Group chat</strong></td>
+<td>Several agents share <strong>one conversation</strong> so they can see each other's contributions; a moderator synthesizes a result.</td>
+<td><strong>Credit Committee</strong> — Credit Risk, Fraud/AML, and Compliance debate; the <strong>Chair</strong> weighs them into a consensus.</td>
+</tr>
+<tr>
+<td><strong>Human‑in‑the‑loop</strong></td>
+<td>The run <strong>pauses</strong> and waits for a person to decide before continuing.</td>
+<td><strong>Senior Underwriter sign‑off</strong> — fires only on <em>material</em> triggers; the human replies APPROVE / DECLINE / REVISE.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-text">        Applicant submits a commercial loan application
+                          │
+   ┌──────────────────────▼────────────────────────┐
+   │  STAGE 1 — SEQUENTIAL   (intake pipeline)      │
+   │    Loan-Intake-Agent  →  Financial-Enrichment  │
+   └──────────────────────┬────────────────────────┘
+                          │  underwriting fact sheet (JSON)
+   ┌──────────────────────▼────────────────────────┐
+   │  STAGE 2 — GROUP CHAT   (Credit Committee)     │
+   │    Credit-Risk  ·  Fraud-AML  ·  Compliance    │
+   │                  ↓ moderated by ↓              │
+   │             Credit-Committee-Chair             │
+   └──────────────────────┬────────────────────────┘
+                          │  committee_recommendation (JSON)
+                 requiresHumanSignoff?
+                    ┌─────┴─────┐
+                yes │           │ no
+   ┌────────────────▼───┐   ┌───▼─────────────────┐
+   │ STAGE 3 — HITL      │   │ Auto-approve per     │
+   │ Underwriter-Briefing│   │ policy  (HITL bypass)│
+   │ → Senior Underwriter│   └───┬─────────────────┘
+   │   APPROVE / DECLINE │       │
+   │   / REVISE          │       │
+   └────────────────┬───┘       │
+                    └─────┬──────┘
+                          ▼
+               Decision-Letter-Agent
+                          ▼
+              Decision letter shown in the playground
+</code></pre>
+<h2 id="the-agent-roster-eight-prompt-agents">The agent roster (eight prompt agents)<a href="#the-agent-roster-eight-prompt-agents" class="anchor" aria-hidden="true"> #</a></h2>
+<p>Every agent is an ordinary <strong>prompt agent</strong> (a model + instructions) — exactly what you built in Lab 1, just many of them, each with a narrow job. Three of them emit <strong>structured JSON</strong> so the next stage can rely on a fixed shape.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Agent</th>
+<th>Stage</th>
+<th>Job</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>Loan-Intake-Agent</code></td>
+<td>Sequential</td>
+<td>Parse the raw application into a clean profile; flag missing fields.</td>
+<td>JSON <code>applicant_profile</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>Financial-Enrichment-Agent</code></td>
+<td>Sequential</td>
+<td>Compute DSCR, LTV, leverage, credit band, policy checks.</td>
+<td>JSON <code>underwriting_fact_sheet</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>Credit-Risk-Analyst</code></td>
+<td>Group chat</td>
+<td>Repayment capacity, collateral, risk rating, rate tier.</td>
+<td>prose</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>Fraud-AML-Analyst</code></td>
+<td>Group chat</td>
+<td>Fraud red flags + simulated AML/sanctions/PEP screen.</td>
+<td>prose + <code>FRAUD_AML_STATUS:</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>Compliance-Policy-Officer</code></td>
+<td>Group chat</td>
+<td>Fair‑lending + policy‑limit checks.</td>
+<td>prose + <code>COMPLIANCE_STATUS:</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>Credit-Committee-Chair</code></td>
+<td>Group chat (moderator)</td>
+<td>Weigh the three opinions into a consensus; decide if a human is needed.</td>
+<td>JSON <code>committee_recommendation</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>Underwriter-Briefing-Agent</code></td>
+<td>Human‑in‑the‑loop</td>
+<td>Render the Chair's JSON into a plain‑English sign‑off card.</td>
+<td>prose</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>Decision-Letter-Agent</code></td>
+<td>Finalize</td>
+<td>Draft the applicant‑facing approval / adverse‑action letter.</td>
+<td>prose</td>
+</tr>
+</tbody>
+</table>
+<div class="callout tip">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1h6c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"/></svg>Tip</div>
+<p><strong>Why an eighth agent just to reformat JSON?</strong> Foundry's workflow expression language is a small subset of Power Fx — it <strong>cannot parse or reshape JSON</strong> (no <code>ParseJSON</code>, no array‑join). So instead of showing the Senior Underwriter raw JSON, a dedicated <code>Underwriter-Briefing-Agent</code> turns the Chair's structured output into a friendly card. It runs <strong>only</strong> when a human is actually pulled in, so clean deals pay no extra cost. This is a recurring lesson in Lab 2: <strong>let an agent do the string work the workflow engine can't.</strong></p>
+</div>
+<h2 id="how-state-flows-between-agents">How state flows between agents<a href="#how-state-flows-between-agents" class="anchor" aria-hidden="true"> #</a></h2>
+<p>Agents don't share memory — the workflow does, through <strong>variables</strong> (all prefixed <code>Local.</code>). Each stage writes a variable the next stage reads:</p>
+<pre><code class="language-text">application text
+   → Local.LatestMessage      (running message the sequential agents rewrite)
+   → Local.committeeText       (the Chair's JSON, captured as a string)
+   → Local.briefingText        (friendly HITL card, only if a human is needed)
+   → Local.humanDecision       (APPROVE / DECLINE / REVISE from the underwriter)
+   → Local.finalDecision       (what actually happened)
+   → Local.decisionLetter      (the applicant-facing letter)
+</code></pre>
+<p>You'll wire these up in Module 3. For now, just note the shape: <strong>a message is progressively transformed</strong>, and a couple of key results are captured into named variables so later branches can test them.</p>
+<h2 id="the-governance-rule-that-drives-the-human-gate">The governance rule that drives the human gate<a href="#the-governance-rule-that-drives-the-human-gate" class="anchor" aria-hidden="true"> #</a></h2>
+<p>The whole point of the HITL stage is that <strong>not every decision needs a human</strong> — only <em>material</em> ones. The Chair sets a <code>requiresHumanSignoff</code> flag using Meridian's policy:</p>
+<table>
+<thead>
+<tr>
+<th>Human sign‑off REQUIRED when ANY holds</th>
+<th>Delegated authority (auto‑finalizes)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Requested amount <strong>≥ $250,000</strong></td>
+<td><code>ApproveWithConditions</code></td>
+</tr>
+<tr>
+<td>Decision = <strong>Decline</strong></td>
+<td>Fraud/AML = <strong>REVIEW</strong></td>
+</tr>
+<tr>
+<td>Compliance = <strong>NOT_COMPLIANT</strong></td>
+<td>Compliance = <strong>CONDITIONS</strong></td>
+</tr>
+<tr>
+<td>Fraud/AML = <strong>FLAGGED</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Credit band <strong>Marginal / Poor</strong> (below Fair)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>This is why, in Module 4, a small clean loan <strong>auto‑approves</strong> while a large borderline loan <strong>pauses</strong> for a human — the same workflow, two different paths, decided entirely by the data.</p>
+<h2 id="what-youll-build-in-the-rest-of-lab-2">What you'll build in the rest of Lab 2<a href="#what-youll-build-in-the-rest-of-lab-2" class="anchor" aria-hidden="true"> #</a></h2>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>You will…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Lab 2 · 02 — Create the agents</strong></td>
+<td>Deploy a chat model and create all <strong>eight prompt agents</strong> in the portal, pasting copy‑ready instructions and setting <strong>JSON Schema</strong> output on the three structured agents.</td>
+</tr>
+<tr>
+<td><strong>Lab 2 · 03 — Build the workflow</strong></td>
+<td>Open the <strong>Workflows</strong> designer, paste the full <strong>workflow YAML</strong>, and walk the nodes so you understand every sequential handoff, the group chat, the HITL gate, and the re‑ask loop.</td>
+</tr>
+<tr>
+<td><strong>Lab 2 · 04 — Run &amp; trace</strong></td>
+<td>Run two sample applications — one that <strong>auto‑approves</strong>, one that <strong>pauses for sign‑off</strong> — and confirm every run is <strong>traced</strong> in Application Insights.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="before-you-start">Before you start<a href="#before-you-start" class="anchor" aria-hidden="true"> #</a></h2>
+<p>Lab 2 is <strong>portal‑only</strong> and builds on the environment from <strong>Lab 1</strong>. Confirm you have:</p>
+<ul>
+<li>A <strong>Foundry project</strong> with the <strong>New Foundry</strong> toggle <strong>ON</strong> (see <a href="01-setup.html">Lab 1 · Module 01</a>).</li>
+<li>Permission to create agents and workflows — <strong>Contributor</strong> (or higher) on the project.</li>
+<li><strong>Application Insights connected</strong> to the project, so workflow runs are traced (this was provisioned with your project; you'll verify it in Module 4).</li>
+<li>A <strong>chat model</strong> you can deploy in Module 2 — these instructions were authored against <strong><code>gpt-5.6-terra</code></strong>, but any current GPT chat model (for example <code>gpt-5</code> or <code>gpt-4o</code>) works.</li>
+</ul>
+<div class="callout note">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Note</div>
+<p>Nothing in Lab 2 requires local code, an SDK, or a container. Everything — agents, workflow, runs, and traces — happens in the <strong>Foundry portal</strong> at <a href="https://ai.azure.com">ai.azure.com</a>.</p>
+</div>
+<p>Ready? Continue to <strong>Lab 2 · Module 02 — Create the agents</strong>.</p>
+
+<div class="pager"><span class="spacer"></span><a class="next" href="lab2-02-create-agents.html"><span class="dir">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span><span class="ttl">02. Create the eight committee agents</span></a></div>
+<div class="page-footer">
+Original content authored for this workshop. Screenshot frames are placeholders &mdash; capture your own from your Foundry portal as you go.
+</div>
+</article>
+<nav class="toc"><div class="toc-title">On this page</div><a class="h2" href="#objectives">Objectives</a><a class="h2" href="#the-scenario--meridian-commercial-bank">The scenario — Meridian Commercial Bank</a><a class="h2" href="#the-three-orchestration-patterns">The three orchestration patterns</a><a class="h2" href="#the-agent-roster-eight-prompt-agents">The agent roster (eight prompt agents)</a><a class="h2" href="#how-state-flows-between-agents">How state flows between agents</a><a class="h2" href="#the-governance-rule-that-drives-the-human-gate">The governance rule that drives the human gate</a><a class="h2" href="#what-youll-build-in-the-rest-of-lab-2">What you'll build in the rest of Lab 2</a><a class="h2" href="#before-you-start">Before you start</a></nav>
+</div></main>
+</div>
+<script src="../assets/js/flags.js"></script>
+<script src="../assets/js/modules-data.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

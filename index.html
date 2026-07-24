@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Microsoft Foundry Agent Service — Portal-First Workshop</title>
-<meta name="description" content="A hands-on workshop that builds the acl-remedy-advisor agent entirely inside the Microsoft Foundry portal (ai.azure.com). 13 modules, portal-first.">
+<meta name="description" content="A hands-on, portal-first workshop for Microsoft Foundry Agent Service. Lab 1 builds a single prompt agent; Lab 2 builds a multi-agent workflow. 17 modules, all in the Foundry portal.">
 <link rel="preconnect" href="https://ai.azure.com">
 <link rel="stylesheet" href="assets/css/styles.css">
 </head>
@@ -15,52 +15,61 @@
 
 <section class="hero">
   <span class="hero-tag">Microsoft Foundry · Agent Service</span>
-  <h1>Build an AI agent — start to finish — inside the Foundry portal</h1>
-  <p>A hands-on workshop that takes you from a fresh Foundry project to a grounded, tool-using, published agent — the <strong>acl-remedy-advisor</strong> — doing every hands-on step in the <strong>Foundry portal</strong> at ai.azure.com. No local setup required; you already have Foundry access.</p>
+  <h1>Build AI agents — start to finish — inside the Foundry portal</h1>
+  <p>A hands-on workshop in <span id="heroLabsWord">two labs</span>, done entirely in the <strong>Foundry portal</strong> at ai.azure.com. <strong>Lab 1</strong> takes you from a fresh project to a grounded, tool-using, published <strong>prompt agent</strong>.<span data-lab="2"> <strong>Lab 2</strong> composes eight agents into a governed <strong>multi-agent workflow</strong> — sequential, group chat, and human-in-the-loop.</span> No local setup required.</p>
   <div class="hero-stats">
-    <div class="s"><b>13</b><span>Modules</span></div>
-    <div class="s"><b>8</b><span>Hands-on labs</span></div>
-    <div class="s"><b>~6 hrs</b><span>End to end</span></div>
+    <div class="s"><b id="heroLabs">2</b><span>Labs</span></div>
+    <div class="s"><b id="heroModules">17</b><span>Modules</span></div>
+    <div class="s"><b id="heroHandson">11</b><span>Hands-on labs</span></div>
     <div class="s"><b>Portal</b><span>No install needed</span></div>
   </div>
   <div class="hero-actions">
-    <a class="btn btn-primary" href="modules/01-setup.html">Start Module 01 →</a>
-    <a class="btn btn-ghost" href="https://ai.azure.com" target="_blank" rel="noopener">Open the Foundry portal</a>
+    <a class="btn btn-primary" href="modules/01-setup.html">Start Lab 1 →</a>
+    <a class="btn btn-ghost" href="modules/lab2-01-workflow-overview.html" data-lab="2">Jump to Lab 2</a>
   </div>
 </section>
 
 <div class="scenario-card">
   <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 7l-4 6a4 4 0 0 0 8 0L7 7Zm10 0-4 6a4 4 0 0 0 8 0l-4-6ZM4 21h16M9 3h6"/></svg></div>
   <div>
-    <h3>The scenario — <code>acl-remedy-advisor</code></h3>
-    <p>Across the modules you build one agent: an <strong>Australian Consumer Law Remedy Advisor</strong> that helps a retailer decide whether a customer is entitled to a repair, replacement, or refund. You give it instructions, add web search and a code tool, ground it in policy documents, wire in a custom MCP tool, evaluate it, monitor it, and publish it — each module building on the last.</p>
+    <h3>Lab 1 scenario — <code>acl-remedy-advisor</code></h3>
+    <p>You build one agent: an <strong>Australian Consumer Law Remedy Advisor</strong> that helps a retailer decide whether a customer is entitled to a repair, replacement, or refund. You give it instructions, add web search and a code tool, ground it in policy documents, wire in a custom MCP tool, evaluate it, monitor it, and publish it — each module building on the last.</p>
+  </div>
+</div>
+
+<div class="scenario-card" data-lab="2">
+  <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 21V10l8-6 8 6v11M9 21v-6h6v6"/></svg></div>
+  <div>
+    <h3>Lab 2 scenario — <code>Meridian Commercial Bank</code></h3>
+    <p>You build a <strong>commercial loan underwriting</strong> workflow: a loan application flows through a <strong>sequential</strong> intake pipeline, a <strong>group-chat</strong> credit committee (Risk + Fraud/AML + Compliance, moderated by a Chair), a policy-gated <strong>human-in-the-loop</strong> Senior Underwriter sign-off, and a final applicant decision letter — all traced in Application Insights.</p>
   </div>
 </div>
 
 <div class="overall-progress">
   <div class="ring" id="overallRing"></div>
   <div class="meta">
-    <div id="overallLbl"><b>0 of 13 modules complete</b></div>
+    <div id="overallLbl"><b>0 of 17 modules complete</b></div>
     <div class="bar"><span id="overallBar"></span></div>
   </div>
   <button id="resetProgress" type="button">Reset progress</button>
 </div>
 
 <div class="section-head">
-  <h2>Modules</h2>
-  <p>Hands-on labs are done in the portal. Concept modules are short read-only overviews.</p>
+  <h2>Labs &amp; modules</h2>
+  <p>Two labs, each a self-contained track. Hands-on labs are done in the portal; concept modules are short read-only overviews.</p>
 </div>
-<div class="module-grid" id="moduleGrid"></div>
+<div id="labSections"></div>
 
 <footer class="landing-footer">
-  Adapted for <strong>portal-first delivery</strong> from the open-source
+  <strong>Lab 1</strong> is adapted for <strong>portal-first delivery</strong> from the open-source
   <a href="https://github.com/PlagueHO/foundry-agentic-workshop" target="_blank" rel="noopener">Microsoft Foundry Agentic Workshop</a>
-  by Daniel Scott-Raynsford (MIT-licensed). This adaptation assumes you already have access to an Azure subscription with Microsoft Foundry.
+  by Daniel Scott-Raynsford (MIT-licensed). <strong>Lab 2</strong> is original content authored for this workshop. Both assume you already have access to an Azure subscription with Microsoft Foundry.
   <div class="disclaimer">Bundled screenshots come from the source workshop's shared environment and the New Foundry UI evolves quickly — exact labels and layouts in your tenant may differ. Progress is stored only in this browser.</div>
 </footer>
 
 </div></main>
 </div>
+<script src="assets/js/flags.js"></script>
 <script src="assets/js/modules-data.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
