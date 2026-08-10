@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Microsoft Foundry Agent Service — Portal-First Workshop</title>
-<meta name="description" content="A hands-on, portal-first workshop for Microsoft Foundry Agent Service. Lab 1 builds a single prompt agent; Lab 2 builds a multi-agent workflow. 17 modules, all in the Foundry portal.">
+<title>Microsoft Foundry Agent Service — Portal-to-Code Workshop</title>
+<meta name="description" content="A hands-on workshop for Microsoft Foundry Agent Service. Lab 1 builds a single prompt agent; Lab 2 a portal multi-agent workflow; Lab 3 re-implements it in Python with the Agent Framework. 26 modules, with Labs 4–5 on the roadmap.">
 <link rel="preconnect" href="https://ai.azure.com">
 <link rel="stylesheet" href="assets/css/styles.css">
 </head>
@@ -15,19 +15,21 @@
 
 <section class="hero">
   <span class="hero-tag">Microsoft Foundry · Agent Service</span>
-  <h1>Build AI agents — start to finish — inside the Foundry portal</h1>
-  <p>A hands-on workshop in <span id="heroLabsWord">two labs</span>, done entirely in the <strong>Foundry portal</strong> at ai.azure.com. <strong>Lab 1</strong> takes you from a fresh project to a grounded, tool-using, published <strong>prompt agent</strong>.<span data-lab="2"> <strong>Lab 2</strong> composes eight agents into a governed <strong>multi-agent workflow</strong> — sequential, group chat, and human-in-the-loop.</span> No local setup required.</p>
+  <h1>Build AI agents from portal to production</h1>
+  <p>A hands-on workshop that grows with you across <span id="heroLabsWord">three labs</span>. <strong>Lab 1</strong> takes you from a fresh project to a grounded, tool-using, published <strong>prompt agent</strong> in the Foundry portal. <strong>Lab 2</strong> composes eight agents into a governed <strong>portal workflow</strong>. <strong>Lab 3</strong> re-implements that same workflow in <strong>Python with the Microsoft Agent Framework</strong> — Magentic planning, human-in-the-loop, durable checkpointing, evaluation, and tracing.</p>
   <div class="hero-stats">
-    <div class="s"><b id="heroLabs">2</b><span>Labs</span></div>
-    <div class="s"><b id="heroModules">17</b><span>Modules</span></div>
-    <div class="s"><b id="heroHandson">11</b><span>Hands-on labs</span></div>
-    <div class="s"><b>Portal</b><span>No install needed</span></div>
+    <div class="s"><b id="heroLabs">3</b><span>Labs ready</span></div>
+    <div class="s"><b id="heroModules">26</b><span>Modules</span></div>
+    <div class="s"><b id="heroHandson">19</b><span>Hands-on labs</span></div>
+    <div class="s"><b>5</b><span>On the roadmap</span></div>
   </div>
   <div class="hero-actions">
     <a class="btn btn-primary" href="modules/01-setup.html">Start Lab 1 →</a>
-    <a class="btn btn-ghost" href="modules/lab2-01-workflow-overview.html" data-lab="2">Jump to Lab 2</a>
+    <a class="btn btn-ghost" href="#journeyPath">See the full journey</a>
   </div>
 </section>
+
+<div class="journey" id="journeyPath"></div>
 
 <div class="scenario-card">
   <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 7l-4 6a4 4 0 0 0 8 0L7 7Zm10 0-4 6a4 4 0 0 0 8 0l-4-6ZM4 21h16M9 3h6"/></svg></div>
@@ -37,18 +39,18 @@
   </div>
 </div>
 
-<div class="scenario-card" data-lab="2">
+<div class="scenario-card">
   <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 21V10l8-6 8 6v11M9 21v-6h6v6"/></svg></div>
   <div>
-    <h3>Lab 2 scenario — <code>Meridian Commercial Bank</code></h3>
-    <p>You build a <strong>commercial loan underwriting</strong> workflow: a loan application flows through a <strong>sequential</strong> intake pipeline, a <strong>group-chat</strong> credit committee (Risk + Fraud/AML + Compliance, moderated by a Chair), a policy-gated <strong>human-in-the-loop</strong> Senior Underwriter sign-off, and a final applicant decision letter — all traced in Application Insights.</p>
+    <h3>Labs 2 &amp; 3 scenario — <code>Meridian Commercial Bank</code></h3>
+    <p>A <strong>commercial loan underwriting</strong> case: an application flows through a <strong>sequential</strong> intake pipeline, a <strong>group-chat / Magentic</strong> credit committee (Risk + Fraud/AML + Compliance, moderated by a Chair), and a policy-gated <strong>human-in-the-loop</strong> Senior Underwriter sign-off. <strong>Lab 2</strong> builds it visually in the portal Workflows designer; <strong>Lab 3</strong> re-implements the exact same case in Python — the designer-to-code path Microsoft is steering teams toward.</p>
   </div>
 </div>
 
 <div class="overall-progress">
   <div class="ring" id="overallRing"></div>
   <div class="meta">
-    <div id="overallLbl"><b>0 of 17 modules complete</b></div>
+    <div id="overallLbl"><b>0 of 26 modules complete</b></div>
     <div class="bar"><span id="overallBar"></span></div>
   </div>
   <button id="resetProgress" type="button">Reset progress</button>
@@ -56,14 +58,20 @@
 
 <div class="section-head">
   <h2>Labs &amp; modules</h2>
-  <p>Two labs, each a self-contained track. Hands-on labs are done in the portal; concept modules are short read-only overviews.</p>
+  <p>Three labs, each a self-contained track. Lab 1 and Lab 2 run in the Foundry portal; Lab 3 runs in Python. Concept modules are short read-only overviews.</p>
 </div>
 <div id="labSections"></div>
+
+<div class="section-head" id="roadmap">
+  <h2>The roadmap ahead</h2>
+  <p>Labs 4 and 5 carry the same Meridian scenario into live systems and production operations. They're in development — here's what's coming.</p>
+</div>
+<div id="roadmapSections"></div>
 
 <footer class="landing-footer">
   <strong>Lab 1</strong> is adapted for <strong>portal-first delivery</strong> from the open-source
   <a href="https://github.com/PlagueHO/foundry-agentic-workshop" target="_blank" rel="noopener">Microsoft Foundry Agentic Workshop</a>
-  by Daniel Scott-Raynsford (MIT-licensed). <strong>Lab 2</strong> is original content authored for this workshop. Both assume you already have access to an Azure subscription with Microsoft Foundry.
+  by Daniel Scott-Raynsford (MIT-licensed). <strong>Labs 2 &amp; 3</strong> are original content authored for this workshop — Lab 2 in the portal Workflows designer, Lab 3 in Python with the Microsoft Agent Framework. All labs assume you already have access to an Azure subscription with Microsoft Foundry.
   <div class="disclaimer">Bundled screenshots come from the source workshop's shared environment and the New Foundry UI evolves quickly — exact labels and layouts in your tenant may differ. Progress is stored only in this browser.</div>
 </footer>
 

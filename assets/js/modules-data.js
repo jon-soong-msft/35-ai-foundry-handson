@@ -202,19 +202,176 @@ window.WORKSHOP_MODULES = [
     "summary": "Run a clean auto-approval and a borderline human-in-the-loop deal, then confirm end-to-end traces in Application Insights.",
     "optional": false,
     "lab": 2
+  },
+  {
+    "num": "01",
+    "slug": "lab3-01-setup-and-first-run",
+    "title": "Set up the code environment",
+    "type": "handson",
+    "minutes": 20,
+    "difficulty": "intermediate",
+    "taskCount": 7,
+    "summary": "Open the foundry-agent-framework project in its devcontainer, authenticate, and call one portal-authored agent from Python.",
+    "optional": false,
+    "lab": 3
+  },
+  {
+    "num": "02",
+    "slug": "lab3-02-bind-portal-agents",
+    "title": "Bind the portal agents from code",
+    "type": "handson",
+    "minutes": 15,
+    "difficulty": "intermediate",
+    "taskCount": 4,
+    "summary": "Reuse the eight Lab 2 committee agents by name — the hybrid model: author in the portal, orchestrate in code.",
+    "optional": false,
+    "lab": 3
+  },
+  {
+    "num": "03",
+    "slug": "lab3-03-sequential-intake",
+    "title": "Sequential intake pipeline",
+    "type": "handson",
+    "minutes": 20,
+    "difficulty": "intermediate",
+    "taskCount": 4,
+    "summary": "Build a Sequential orchestration that runs intake then enrichment, and inspect the structured fact sheet.",
+    "optional": false,
+    "lab": 3
+  },
+  {
+    "num": "04",
+    "slug": "lab3-04-committee-magentic",
+    "title": "The credit committee with Magentic",
+    "type": "handson",
+    "minutes": 30,
+    "difficulty": "advanced",
+    "taskCount": 4,
+    "summary": "Coordinate the three specialists under a planning manager with Magentic orchestration to produce the committee recommendation.",
+    "optional": false,
+    "lab": 3
+  },
+  {
+    "num": "05",
+    "slug": "lab3-05-human-in-the-loop",
+    "title": "Human-in-the-loop sign-off",
+    "type": "handson",
+    "minutes": 30,
+    "difficulty": "advanced",
+    "taskCount": 5,
+    "summary": "Pause the run for a Senior Underwriter with request/response HITL, and resume on APPROVE / DECLINE / REVISE.",
+    "optional": false,
+    "lab": 3
+  },
+  {
+    "num": "06",
+    "slug": "lab3-06-durable-checkpointing",
+    "title": "Durable pause & resume",
+    "type": "handson",
+    "minutes": 25,
+    "difficulty": "advanced",
+    "taskCount": 4,
+    "summary": "Make the sign-off survive a process restart with FileCheckpointStorage, and resume from a checkpoint in a fresh run.",
+    "optional": false,
+    "lab": 3
+  },
+  {
+    "num": "07",
+    "slug": "lab3-07-memory-and-state",
+    "title": "Memory & workflow state",
+    "type": "concept",
+    "minutes": 10,
+    "difficulty": "intermediate",
+    "taskCount": 0,
+    "summary": "How conversation memory and shared workflow state carry the fact sheet and recommendation between stages.",
+    "optional": false,
+    "lab": 3
+  },
+  {
+    "num": "08",
+    "slug": "lab3-08-evaluation-harness",
+    "title": "Evaluation harness",
+    "type": "handson",
+    "minutes": 25,
+    "difficulty": "advanced",
+    "taskCount": 4,
+    "summary": "Score the committee over a dataset in code and gate the build on the human-signoff decision being correct.",
+    "optional": false,
+    "lab": 3
+  },
+  {
+    "num": "09",
+    "slug": "lab3-09-trace-and-observe",
+    "title": "Trace & observe the run",
+    "type": "handson",
+    "minutes": 15,
+    "difficulty": "intermediate",
+    "taskCount": 4,
+    "summary": "Send OpenTelemetry traces to Application Insights and read a full underwriting run as a span tree.",
+    "optional": false,
+    "lab": 3
   }
 ];
 window.WORKSHOP_LABS = [
   {
     "lab": 1,
+    "stage": 2,
+    "status": "available",
+    "theme": "Portal · prompt agent",
     "title": "Lab 1 — Prompt Agent with Foundry",
     "navTitle": "Lab 1 · Prompt Agent",
     "blurb": "Build, tool, ground, evaluate, and publish a single prompt agent — entirely in the Foundry portal."
   },
   {
     "lab": 2,
+    "stage": 3,
+    "status": "available",
+    "theme": "Portal · agent workflow",
     "title": "Lab 2 — Multi-agent with Agent Workflow",
     "navTitle": "Lab 2 · Agent Workflow",
     "blurb": "Compose eight agents into one governed workflow that combines sequential, group-chat, and human-in-the-loop orchestration."
+  },
+  {
+    "lab": 3,
+    "stage": 3,
+    "status": "available",
+    "theme": "Python · Agent Framework",
+    "title": "Lab 3 — Multi-agent with Agent Framework",
+    "navTitle": "Lab 3 · Agent Framework",
+    "blurb": "Rebuild the underwriting flow in Python — Magentic orchestration, human-in-the-loop sign-off, checkpointing, evaluation, and tracing."
+  }
+];
+window.WORKSHOP_UPCOMING = [
+  {
+    "lab": 4,
+    "stage": 4,
+    "status": "upcoming",
+    "theme": "Hybrid · code-led",
+    "title": "Lab 4 — Integrated & Autonomous",
+    "navTitle": "Lab 4 · Integrated & Autonomous",
+    "blurb": "Let the orchestration act on real systems, safely — connect line-of-business systems, automate end-to-end, and enforce guardrails and approvals on every side effect.",
+    "topics": [
+      "Connect a line-of-business system as an MCP tool / Foundry Toolbox",
+      "End-to-end automation — book the action on APPROVE",
+      "Guardrails & approval gates on money-moving tools",
+      "Bounded autonomy with human oversight",
+      "Deploy the workflow as a hosted agent with azd"
+    ]
+  },
+  {
+    "lab": 5,
+    "stage": 5,
+    "status": "upcoming",
+    "theme": "Hybrid · azd + CI",
+    "title": "Lab 5 — Scale & Operate (AgentOps)",
+    "navTitle": "Lab 5 · Scale & Operate",
+    "blurb": "Run it reliably in production — monitor and continuously evaluate, optimise cost and performance, and manage agent lifecycle and versions.",
+    "topics": [
+      "Monitoring, tracing & alerting dashboards",
+      "Continuous evaluation with regression gates",
+      "Cost & performance optimisation",
+      "Lifecycle & versioning with azd-based CI/CD",
+      "Governance & Responsible AI reporting at scale"
+    ]
   }
 ];

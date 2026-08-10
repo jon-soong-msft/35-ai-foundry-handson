@@ -1,0 +1,18 @@
+{
+  "workflow_name": "meridian-underwriting",
+  "graph_signature_hash": "35ca5b29a05ab32c99fa958b40bd7589087fecc3c1b487fa0e22202679fbb43e",
+  "checkpoint_id": "dbf79789-3ea1-48fa-8cbb-797efa1faed3",
+  "previous_checkpoint_id": "e0b6542b-6b00-421d-ac9c-d343db70f26a",
+  "timestamp": "2026-08-10T02:31:33.007996+00:00",
+  "messages": {},
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "human_signoff": {}
+    }
+  },
+  "pending_request_info_events": {},
+  "iteration_count": 3,
+  "metadata": {},
+  "version": "1.0"
+}

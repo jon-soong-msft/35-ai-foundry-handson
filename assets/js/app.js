@@ -15,6 +15,7 @@
   var FLAGS = window.WORKSHOP_FLAGS || {};
   var MODULES = window.WORKSHOP_MODULES || [];
   var LABS = window.WORKSHOP_LABS || [];
+  var UPCOMING = window.WORKSHOP_UPCOMING || [];
   var byslug = {};
   MODULES.forEach(function (m) { byslug[m.slug] = m; });
 
@@ -61,7 +62,10 @@
     set("heroModules", mods.length);
     set("heroHandson", handson);
     var word = document.getElementById("heroLabsWord");
-    if (word) word.textContent = labCount === 1 ? "one lab" : (labCount === 2 ? "two labs" : labCount + " labs");
+    if (word) {
+      var words = { 1: "one lab", 2: "two labs", 3: "three labs", 4: "four labs", 5: "five labs" };
+      word.textContent = words[labCount] || (labCount + " labs");
+    }
   }
 
   // If Lab 2 is off, keep its module pages unreachable by direct URL.
@@ -90,6 +94,7 @@
   /* ------------------------------------------------------ Copy button */
   var COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
   var CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  var SOON_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09Z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2Z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>';
 
   function addCopyButtons() {
     document.querySelectorAll(".content pre").forEach(function (pre) {
@@ -304,6 +309,57 @@
       grid.innerHTML = frag;
     }
 
+    // Agent journey stepper — all five labs, available first then upcoming.
+    var journeyHost = document.getElementById("journeyPath");
+    if (journeyHost) {
+      var visLab = {};
+      shownModules.forEach(function (m) { visLab[m.lab || 1] = true; });
+      var steps = "";
+      LABS.forEach(function (l) {
+        if (!visLab[l.lab]) return;
+        steps += '<a class="jstep available" href="#lab-' + l.lab + '">' +
+          '<span class="jtop"><span class="jnum">' + l.lab + '</span>' +
+            '<span class="jpill ok">Ready</span></span>' +
+          '<span class="jbody"><b>' + esc(labTitleShort(l)) + '</b>' +
+            '<span>' + esc(l.theme || "") + '</span></span></a>';
+      });
+      UPCOMING.forEach(function (l) {
+        steps += '<a class="jstep upcoming" href="#lab-' + l.lab + '">' +
+          '<span class="jtop"><span class="jnum">' + l.lab + '</span>' +
+            '<span class="jpill soon">Soon</span></span>' +
+          '<span class="jbody"><b>' + esc(labTitleShort(l)) + '</b>' +
+            '<span>' + esc(l.theme || "") + '</span></span></a>';
+      });
+      journeyHost.innerHTML =
+        '<div class="journey-head"><h2>Your agent journey</h2>' +
+        '<p>Five labs take you from a single portal agent to production AgentOps. ' +
+        'Labs 1&ndash;3 are ready to run now; Labs 4&ndash;5 are in development.</p></div>' +
+        '<div class="journey-track">' + steps + '</div>';
+    }
+
+    // Roadmap — upcoming labs rendered as read-only "coming soon" previews.
+    var roadHost = document.getElementById("roadmapSections");
+    if (roadHost) {
+      var road = "";
+      UPCOMING.forEach(function (l) {
+        var topics = (l.topics || []).map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("");
+        road += '<section class="lab-section upcoming" id="lab-' + l.lab + '">' +
+          '<div class="lab-head">' +
+            '<div class="lab-ring soon-ring">' + SOON_ICON + '</div>' +
+            '<div class="lab-meta"><h2>' + esc(l.title) +
+              ' <span class="soon-badge">In development</span></h2>' +
+              '<p>' + esc(l.blurb || "") + '</p>' +
+              '<span class="lab-progress">Stage ' + esc(String(l.stage || "")) +
+                ' \u00b7 ' + esc(l.theme || "") + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="soon-card"><div class="soon-card-h">Planned modules</div>' +
+          '<ul class="soon-topics">' + topics + '</ul></div>' +
+        '</section>';
+      });
+      roadHost.innerHTML = road;
+    }
+
     var overallPct = shownModules.length ? Math.round((doneCount / shownModules.length) * 100) : 0;
     var ring = document.getElementById("overallRing");
     if (ring) ring.innerHTML = circle(overallPct, 58);
@@ -316,6 +372,13 @@
 
   function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
   function esc(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+  // "Lab 3 · Agent Framework" -> "Agent Framework" (falls back to full title).
+  function labTitleShort(l) {
+    var s = l.navTitle || l.title || ("Lab " + l.lab);
+    var i = s.indexOf("\u00b7");
+    return i >= 0 ? s.slice(i + 1).trim() : s;
+  }
 
   function initReset() {
     var btn = document.getElementById("resetProgress");

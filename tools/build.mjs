@@ -80,12 +80,74 @@ MODULES.push(
     summary: "Run a clean auto-approval and a borderline human-in-the-loop deal, then confirm end-to-end traces in Application Insights." }
 );
 
+// Lab 3 — Multi-agent with the Microsoft Agent Framework (code-first, Python).
+MODULES.push(
+  { num: "01", slug: "lab3-01-setup-and-first-run", type: "handson", minutes: 20, difficulty: "intermediate", lab: 3,
+    title: "Set up the code environment",
+    summary: "Open the foundry-agent-framework project in its devcontainer, authenticate, and call one portal-authored agent from Python." },
+  { num: "02", slug: "lab3-02-bind-portal-agents", type: "handson", minutes: 15, difficulty: "intermediate", lab: 3,
+    title: "Bind the portal agents from code",
+    summary: "Reuse the eight Lab 2 committee agents by name — the hybrid model: author in the portal, orchestrate in code." },
+  { num: "03", slug: "lab3-03-sequential-intake", type: "handson", minutes: 20, difficulty: "intermediate", lab: 3,
+    title: "Sequential intake pipeline",
+    summary: "Build a Sequential orchestration that runs intake then enrichment, and inspect the structured fact sheet." },
+  { num: "04", slug: "lab3-04-committee-magentic", type: "handson", minutes: 30, difficulty: "advanced", lab: 3,
+    title: "The credit committee with Magentic",
+    summary: "Coordinate the three specialists under a planning manager with Magentic orchestration to produce the committee recommendation." },
+  { num: "05", slug: "lab3-05-human-in-the-loop", type: "handson", minutes: 30, difficulty: "advanced", lab: 3,
+    title: "Human-in-the-loop sign-off",
+    summary: "Pause the run for a Senior Underwriter with request/response HITL, and resume on APPROVE / DECLINE / REVISE." },
+  { num: "06", slug: "lab3-06-durable-checkpointing", type: "handson", minutes: 25, difficulty: "advanced", lab: 3,
+    title: "Durable pause & resume",
+    summary: "Make the sign-off survive a process restart with FileCheckpointStorage, and resume from a checkpoint in a fresh run." },
+  { num: "07", slug: "lab3-07-memory-and-state", type: "concept", minutes: 10, difficulty: "intermediate", lab: 3,
+    title: "Memory & workflow state",
+    summary: "How conversation memory and shared workflow state carry the fact sheet and recommendation between stages." },
+  { num: "08", slug: "lab3-08-evaluation-harness", type: "handson", minutes: 25, difficulty: "advanced", lab: 3,
+    title: "Evaluation harness",
+    summary: "Score the committee over a dataset in code and gate the build on the human-signoff decision being correct." },
+  { num: "09", slug: "lab3-09-trace-and-observe", type: "handson", minutes: 15, difficulty: "intermediate", lab: 3,
+    title: "Trace & observe the run",
+    summary: "Send OpenTelemetry traces to Application Insights and read a full underwriting run as a span tree." }
+);
+
 // ---- Labs: grouping metadata for the sidebar + landing page -----------
 const LABS = [
-  { lab: 1, title: "Lab 1 — Prompt Agent with Foundry", navTitle: "Lab 1 · Prompt Agent",
+  { lab: 1, stage: 2, status: "available", theme: "Portal · prompt agent",
+    title: "Lab 1 — Prompt Agent with Foundry", navTitle: "Lab 1 · Prompt Agent",
     blurb: "Build, tool, ground, evaluate, and publish a single prompt agent — entirely in the Foundry portal." },
-  { lab: 2, title: "Lab 2 — Multi-agent with Agent Workflow", navTitle: "Lab 2 · Agent Workflow",
-    blurb: "Compose eight agents into one governed workflow that combines sequential, group-chat, and human-in-the-loop orchestration." }
+  { lab: 2, stage: 3, status: "available", theme: "Portal · agent workflow",
+    title: "Lab 2 — Multi-agent with Agent Workflow", navTitle: "Lab 2 · Agent Workflow",
+    blurb: "Compose eight agents into one governed workflow that combines sequential, group-chat, and human-in-the-loop orchestration." },
+  { lab: 3, stage: 3, status: "available", theme: "Python · Agent Framework",
+    title: "Lab 3 — Multi-agent with Agent Framework", navTitle: "Lab 3 · Agent Framework",
+    blurb: "Rebuild the underwriting flow in Python — Magentic orchestration, human-in-the-loop sign-off, checkpointing, evaluation, and tracing." }
+];
+
+// Labs on the roadmap but not yet authored. Previewed on the landing page only —
+// deliberately kept OUT of MODULES/LABS so they never touch the sidebar or the
+// module build. See ROADMAP.md for the full 5-stage plan.
+const UPCOMING_LABS = [
+  { lab: 4, stage: 4, status: "upcoming", theme: "Hybrid · code-led",
+    title: "Lab 4 — Integrated & Autonomous", navTitle: "Lab 4 · Integrated & Autonomous",
+    blurb: "Let the orchestration act on real systems, safely — connect line-of-business systems, automate end-to-end, and enforce guardrails and approvals on every side effect.",
+    topics: [
+      "Connect a line-of-business system as an MCP tool / Foundry Toolbox",
+      "End-to-end automation — book the action on APPROVE",
+      "Guardrails & approval gates on money-moving tools",
+      "Bounded autonomy with human oversight",
+      "Deploy the workflow as a hosted agent with azd"
+    ] },
+  { lab: 5, stage: 5, status: "upcoming", theme: "Hybrid · azd + CI",
+    title: "Lab 5 — Scale & Operate (AgentOps)", navTitle: "Lab 5 · Scale & Operate",
+    blurb: "Run it reliably in production — monitor and continuously evaluate, optimise cost and performance, and manage agent lifecycle and versions.",
+    topics: [
+      "Monitoring, tracing & alerting dashboards",
+      "Continuous evaluation with regression gates",
+      "Cost & performance optimisation",
+      "Lifecycle & versioning with azd-based CI/CD",
+      "Governance & Responsible AI reporting at scale"
+    ] }
 ];
 const labModules = (lab) => MODULES.filter((m) => m.lab === lab);
 const labOf = (lab) => LABS.find((l) => l.lab === lab) || LABS[0];
@@ -272,7 +334,7 @@ function headerHtml(mod) {
     ? '<div class="header-progress"><span class="lbl">0 / 0 steps</span><div class="bar"><span></span></div></div>'
     : "";
   const srcUrl = `${SRC_BASE}/${mod.slug}/README.md`;
-  const srcLink = mod.lab === 2 ? "" :
+  const srcLink = mod.lab >= 2 ? "" :
     `<a class="icon-btn" href="${srcUrl}" target="_blank" rel="noopener" title="View source module on GitHub">${IC.github}</a>`;
   return '<header class="site-header">' +
     `<button class="icon-btn menu-btn" aria-label="Toggle navigation">${IC.menu}</button>` +
@@ -332,7 +394,7 @@ function badgeHtml(mod) {
 function pageHtml(mod, idx, bodyHtml, toc) {
   const srcUrl = `${SRC_BASE}/${mod.slug}/README.md`;
   const lab = labOf(mod.lab);
-  const footer = mod.lab === 2
+  const footer = mod.lab >= 2
     ? `Original content authored for this workshop. Screenshot frames are placeholders &mdash; capture your own from your Foundry portal as you go.`
     : `Adapted for portal-first delivery from the open-source
 <a href="${srcUrl}" target="_blank" rel="noopener">Microsoft Foundry Agentic Workshop</a>
@@ -402,7 +464,8 @@ function build() {
   if (!fs.existsSync(JS)) fs.mkdirSync(JS, { recursive: true });
   fs.writeFileSync(path.join(JS, "modules-data.js"),
     "window.WORKSHOP_MODULES = " + JSON.stringify(dataOut, null, 2) + ";\n" +
-    "window.WORKSHOP_LABS = " + JSON.stringify(LABS, null, 2) + ";\n", "utf8");
+    "window.WORKSHOP_LABS = " + JSON.stringify(LABS, null, 2) + ";\n" +
+    "window.WORKSHOP_UPCOMING = " + JSON.stringify(UPCOMING_LABS, null, 2) + ";\n", "utf8");
   console.log(`\nBuilt ${built}/${MODULES.length} module pages + modules-data.js`);
 }
 
