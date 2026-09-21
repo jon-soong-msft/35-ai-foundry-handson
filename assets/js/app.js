@@ -8,11 +8,9 @@
   var LS = window.localStorage;
   var K = {
     theme: "fw:theme",
-    flagLab2: "fw:flag:lab2",
     check: function (slug, i) { return "fw:check:" + slug + ":" + i; },
     progress: function (slug) { return "fw:progress:" + slug; }
   };
-  var FLAGS = window.WORKSHOP_FLAGS || {};
   var MODULES = window.WORKSHOP_MODULES || [];
   var LABS = window.WORKSHOP_LABS || [];
   var UPCOMING = window.WORKSHOP_UPCOMING || [];
@@ -20,19 +18,8 @@
   MODULES.forEach(function (m) { byslug[m.slug] = m; });
 
   /* --------------------------------------------- Feature flag: Lab 2 */
-  // Apply a ?lab2=1 / ?lab2=0 URL override once, persisting to localStorage.
-  (function applyLab2UrlOverride() {
-    try {
-      var q = new URLSearchParams(window.location.search).get("lab2");
-      if (q === "1" || q === "0") LS.setItem(K.flagLab2, q === "1" ? "1" : "0");
-    } catch (e) { /* older browsers: ignore */ }
-  })();
-
   function lab2Enabled() {
-    var v = LS.getItem(K.flagLab2);
-    if (v === "1") return true;
-    if (v === "0") return false;
-    return !!FLAGS.lab2; // fall back to build-time default
+    return true;
   }
 
   // Modules that survive the current flag state.
@@ -392,21 +379,6 @@
     });
   }
 
-  /* --------------------------------------------- Lab 2 flag: shortcut */
-  function initLab2Shortcut() {
-    document.addEventListener("keydown", function (e) {
-      // Ctrl+Alt+2 ("2" or numpad) toggles Lab 2 visibility.
-      if (e.ctrlKey && e.altKey && (e.key === "2" || e.code === "Digit2" || e.code === "Numpad2")) {
-        e.preventDefault();
-        var next = !lab2Enabled();
-        LS.setItem(K.flagLab2, next ? "1" : "0");
-        applyLab2Dom();
-        renderLanding();
-        toast(next ? "Lab 2 enabled" : "Lab 2 hidden");
-      }
-    });
-  }
-
   /* ----------------------------------------------------------- Boot */
   function boot() {
     guardLab2Page();
@@ -414,7 +386,6 @@
       b.addEventListener("click", toggleTheme);
     });
     applyLab2Dom();
-    initLab2Shortcut();
     addCopyButtons();
     initNav();
     initModuleProgress();
