@@ -88,6 +88,57 @@ Foundry runs the agent loop — receive message → reason → optionally call a
 
   </details>
 
+  <details>
+  <summary>✍️ Best practice — how these instructions are structured, and a template you can reuse</summary>
+
+  The instructions above are not arbitrary prose. They follow the structure Microsoft
+  recommends for agent instructions — **purpose → guidelines → assessment criteria →
+  grounding → boundaries → response style**. Start from this skeleton for your own
+  agents and delete what you don't need:
+
+  ```markdown
+  # Purpose
+  You are a <role> for <audience>. Your job is to <one specific task>.
+
+  # Guidelines
+  - Tone: <professional | friendly | concise>. Keep answers under <length>.
+  - Define domain terms: `<term>` means <definition>.
+  - Use precise verbs - ask, search, check, compare, cite.
+
+  # Workflow
+  1. <Step> - Goal: <why>. Action: <what, and which tool>. Transition: <when to move on>.
+  2. <Step> - one action per step; never merge two actions into one.
+
+  # Grounding
+  - Use <tool or knowledge source> for <what>. Always cite sources with links.
+  - If the answer is not in <source>, say so - do not guess.
+
+  # Boundaries
+  - Always: <the non-negotiables>
+  - Ask first: <anything that needs confirmation>
+  - Never: <out of scope, unsafe, or legally risky output>
+
+  # Response format
+  - <structure, e.g. "max 3 bullets per section; use a table for comparisons">
+  - Return only the requested format, with no preamble.
+  ```
+
+  | Rule | Why it matters |
+  |---|---|
+  | Keep tasks **atomic** | "Extract the metrics and summarise them" collapses into one blurred step. Split it in two. |
+  | Choose **bullets vs numbered steps** deliberately | Numbers signal a required order; bullets signal independent tasks. |
+  | Always state **tone, verbosity, and format** | If you don't, the model infers them — and that inference shifts between model versions. |
+  | **Name tools and sources explicitly** | "Use web search to ground guidance at `accc.gov.au`" is far more reliable than "research the answer". |
+  | Say what to do when it **can't** answer | Missing-data handling is the most commonly skipped — and most valuable — instruction. |
+
+  For the full guidance — including nine instruction design patterns such as output
+  contracts, explicit decision rules, self-evaluation gates, and a literal-execution
+  header for agents that drift — see
+  [Write effective instructions for agents](https://learn.microsoft.com/microsoft-365/copilot/extensibility/declarative-agent-instructions)
+  on Microsoft Learn.
+
+  </details>
+
 > [!NOTE]
 > Foundry saves your changes automatically and records them as an agent **version** (`v1`, `v2`, …). Referencing the agent by name always routes to the latest version, so there is no separate "Save" button to click.
 

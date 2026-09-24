@@ -119,6 +119,73 @@ busy store environment.
 <p><img src="../assets/img/screenshots/lab-04/02-agent-builder-config.png" alt="Agent Builder showing acl-remedy-advisor configured with the chat model and instructions filled in"></p>
 <p>The original workshop configured this agent in the VS Code Agent Builder. The <strong>Name</strong>, <strong>Model</strong>, and <strong>Instructions</strong> fields are identical in the portal.</p>
 </details>
+<details>
+<summary>✍️ Best practice — how these instructions are structured, and a template you can reuse</summary>
+<p>The instructions above are not arbitrary prose. They follow the structure Microsoft
+recommends for agent instructions — <strong>purpose → guidelines → assessment criteria →
+grounding → boundaries → response style</strong>. Start from this skeleton for your own
+agents and delete what you don't need:</p>
+<pre><code class="language-markdown"># Purpose
+You are a &lt;role&gt; for &lt;audience&gt;. Your job is to &lt;one specific task&gt;.
+
+# Guidelines
+- Tone: &lt;professional | friendly | concise&gt;. Keep answers under &lt;length&gt;.
+- Define domain terms: `&lt;term&gt;` means &lt;definition&gt;.
+- Use precise verbs - ask, search, check, compare, cite.
+
+# Workflow
+1. &lt;Step&gt; - Goal: &lt;why&gt;. Action: &lt;what, and which tool&gt;. Transition: &lt;when to move on&gt;.
+2. &lt;Step&gt; - one action per step; never merge two actions into one.
+
+# Grounding
+- Use &lt;tool or knowledge source&gt; for &lt;what&gt;. Always cite sources with links.
+- If the answer is not in &lt;source&gt;, say so - do not guess.
+
+# Boundaries
+- Always: &lt;the non-negotiables&gt;
+- Ask first: &lt;anything that needs confirmation&gt;
+- Never: &lt;out of scope, unsafe, or legally risky output&gt;
+
+# Response format
+- &lt;structure, e.g. &quot;max 3 bullets per section; use a table for comparisons&quot;&gt;
+- Return only the requested format, with no preamble.
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keep tasks <strong>atomic</strong></td>
+<td>&quot;Extract the metrics and summarise them&quot; collapses into one blurred step. Split it in two.</td>
+</tr>
+<tr>
+<td>Choose <strong>bullets vs numbered steps</strong> deliberately</td>
+<td>Numbers signal a required order; bullets signal independent tasks.</td>
+</tr>
+<tr>
+<td>Always state <strong>tone, verbosity, and format</strong></td>
+<td>If you don't, the model infers them — and that inference shifts between model versions.</td>
+</tr>
+<tr>
+<td><strong>Name tools and sources explicitly</strong></td>
+<td>&quot;Use web search to ground guidance at <code>accc.gov.au</code>&quot; is far more reliable than &quot;research the answer&quot;.</td>
+</tr>
+<tr>
+<td>Say what to do when it <strong>can't</strong> answer</td>
+<td>Missing-data handling is the most commonly skipped — and most valuable — instruction.</td>
+</tr>
+</tbody>
+</table>
+<p>For the full guidance — including nine instruction design patterns such as output
+contracts, explicit decision rules, self-evaluation gates, and a literal-execution
+header for agents that drift — see
+<a href="https://learn.microsoft.com/microsoft-365/copilot/extensibility/declarative-agent-instructions">Write effective instructions for agents</a>
+on Microsoft Learn.</p>
+</details>
 </li>
 </ul>
 <div class="callout note">
