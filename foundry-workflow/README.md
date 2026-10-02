@@ -49,19 +49,22 @@ flowchart TD
 ## 0. Pre-checks (2 minutes)
 1. Sign in to **https://ai.azure.com** and make sure the **New Foundry** toggle (top of the
    left nav) is **ON**. The Workflows feature only exists in **Foundry (new)**.
-2. Open the project **`proj-foundry-playground`** (account `aifdyqzpuli4oocafy`, Southeast Asia).
+2. Open the project **`proj-foundry-playground`** (account `<foundry-account>`, Southeast Asia).
 3. Confirm you can see **Build** in the top-right menu and, under it, **Workflows / Create new
    workflow**. If not, you need the **Contributor** role (or higher) *on the project* — ask an
    owner to grant it (you provisioned this RG, so you almost certainly already have it).
 4. Confirm the **`gpt-5`** model deployment exists (it does — provisioned via `azd up`).
 
 **Environment facts (already provisioned):**
+`<foundry-account>` is the generated Foundry account name — find it in your `azd up` output or the
+resource group in the Azure portal.
+
 | Thing | Value |
 |---|---|
 | Resource group | `rg-foundry-playground` |
-| Foundry account | `aifdyqzpuli4oocafy` (Southeast Asia) |
+| Foundry account | `<foundry-account>` (Southeast Asia) |
 | Project | `proj-foundry-playground` |
-| Project endpoint | `https://aifdyqzpuli4oocafy.services.ai.azure.com/api/projects/proj-foundry-playground` |
+| Project endpoint | `https://<foundry-account>.services.ai.azure.com/api/projects/proj-foundry-playground` |
 | Model deployment | **`gpt-5`** (2025-08-07, GlobalStandard) — backs all 7 agents |
 | Tracing | App Insights **`appi-foundry-playground`** (connection `appinsights`) |
 
