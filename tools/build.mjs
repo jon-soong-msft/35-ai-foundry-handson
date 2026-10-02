@@ -60,9 +60,13 @@ const MODULES = [
     summary: "Publish the agent to Microsoft 365 Copilot and Teams and verify a live conversation." },
   { num: "13", slug: "13-custom-engine-agent", type: "concept", minutes: 60, difficulty: "advanced", optional: true,
     title: "Custom Engine Agent",
-    summary: "How to build an M365 Custom Engine Agent proxy in your own tenant. Optional extra credit, read-only overview." }
+    summary: "How to build an M365 Custom Engine Agent proxy in your own tenant. Optional extra credit, read-only overview." },
+  { num: "14", slug: "14-work-iq", type: "handson", minutes: 45, difficulty: "advanced", optional: true, original: true,
+    title: "Ground with Work IQ (Microsoft 365)",
+    summary: "Connect Work IQ as an MCP tool so the agent can reason over email, calendar, Teams, and files with the signed-in user's permissions. Requires tenant admin." }
 ];
 
+// `original: true` marks a Lab 1 module authored for this workshop (no upstream source module).
 // Everything above is Lab 1; default it, then append the Lab 2 modules.
 for (const m of MODULES) if (m.lab == null) m.lab = 1;
 MODULES.push(
@@ -334,7 +338,7 @@ function headerHtml(mod) {
     ? '<div class="header-progress"><span class="lbl">0 / 0 steps</span><div class="bar"><span></span></div></div>'
     : "";
   const srcUrl = `${SRC_BASE}/${mod.slug}/README.md`;
-  const srcLink = mod.lab >= 2 ? "" :
+  const srcLink = (mod.lab >= 2 || mod.original) ? "" :
     `<a class="icon-btn" href="${srcUrl}" target="_blank" rel="noopener" title="View source module on GitHub">${IC.github}</a>`;
   return '<header class="site-header">' +
     `<button class="icon-btn menu-btn" aria-label="Toggle navigation">${IC.menu}</button>` +
@@ -394,7 +398,7 @@ function badgeHtml(mod) {
 function pageHtml(mod, idx, bodyHtml, toc) {
   const srcUrl = `${SRC_BASE}/${mod.slug}/README.md`;
   const lab = labOf(mod.lab);
-  const footer = mod.lab >= 2
+  const footer = (mod.lab >= 2 || mod.original)
     ? `Original content authored for this workshop. Screenshot frames are placeholders &mdash; capture your own from your Foundry portal as you go.`
     : `Adapted for portal-first delivery from the open-source
 <a href="${srcUrl}" target="_blank" rel="noopener">Microsoft Foundry Agentic Workshop</a>

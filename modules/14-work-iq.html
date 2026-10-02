@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>14. Ground with Work IQ (Microsoft 365) · Foundry Agent Service Workshop</title>
+<meta name="description" content="Connect Work IQ as an MCP tool so the agent can reason over email, calendar, Teams, and files with the signed-in user's permissions. Requires tenant admin.">
+<link rel="preconnect" href="https://ai.azure.com">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body data-page="module" data-slug="14-work-iq">
+<header class="site-header"><button class="icon-btn menu-btn" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button><a class="brand" href="../index.html"><span class="brand-mark">F</span><span class="brand-text"><small>Portal-first workshop</small><strong>Foundry Agent Service</strong></span></a><div class="header-progress"><span class="lbl">0 / 0 steps</span><div class="bar"><span></span></div></div><div class="header-actions"><button class="icon-btn" data-action="theme" aria-label="Toggle dark mode"><svg class="i-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="i-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button></div></header>
+<div class="layout">
+<aside class="sidebar" id="sidebar"><h4>Workshop</h4><a class="nav-item" href="../index.html"><span class="num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 21V12h6v9"/></svg></span><span class="txt">Overview &amp; progress</span></a><h4 data-lab="1">Lab 1 · Prompt Agent</h4><a class="nav-item" data-lab="1" data-slug="01-setup" href="01-setup.html"><span class="num">01</span><span class="txt">Setup &amp; access verification</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="02-foundry-portal-walkthrough" href="02-foundry-portal-walkthrough.html"><span class="num">02</span><span class="txt">Foundry portal walkthrough</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="03-foundry-toolkit-vscode" href="03-foundry-toolkit-vscode.html"><span class="num">03</span><span class="txt">Foundry Toolkit for VS Code</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="04-prompt-based-agents" href="04-prompt-based-agents.html"><span class="num">04</span><span class="txt">Create &amp; chat with a Prompt Agent</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="05-agent-tools-and-evaluations" href="05-agent-tools-and-evaluations.html"><span class="num">05</span><span class="txt">Agent tools &amp; evaluations</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="06-mcp-tools" href="06-mcp-tools.html"><span class="num">06</span><span class="txt">Integrate MCP tools</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="07-foundry-iq" href="07-foundry-iq.html"><span class="num">07</span><span class="txt">Ground with Foundry IQ knowledge</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="08-agent-framework-python" href="08-agent-framework-python.html"><span class="num">08</span><span class="txt">Agent Framework for Python</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="09-hosted-agents" href="09-hosted-agents.html"><span class="num">09</span><span class="txt">Build &amp; run a hosted agent</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="10-foundry-toolboxes" href="10-foundry-toolboxes.html"><span class="num">10</span><span class="txt">Foundry Toolboxes</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="11-agent-ops-and-agent-id" href="11-agent-ops-and-agent-id.html"><span class="num">11</span><span class="txt">Agent operations &amp; Agent ID</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="12-publishing-agents" href="12-publishing-agents.html"><span class="num">12</span><span class="txt">Publish an agent</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="1" data-slug="13-custom-engine-agent" href="13-custom-engine-agent.html"><span class="num">13</span><span class="txt">Custom Engine Agent</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item active" data-lab="1" data-slug="14-work-iq" href="14-work-iq.html"><span class="num">14</span><span class="txt">Ground with Work IQ (Microsoft 365)</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><h4 data-lab="2">Lab 2 · Agent Workflow</h4><a class="nav-item" data-lab="2" data-slug="lab2-01-workflow-overview" href="lab2-01-workflow-overview.html"><span class="num">01</span><span class="txt">Agent workflow concepts &amp; architecture</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="2" data-slug="lab2-02-create-agents" href="lab2-02-create-agents.html"><span class="num">02</span><span class="txt">Create the eight committee agents</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="2" data-slug="lab2-03-build-workflow" href="lab2-03-build-workflow.html"><span class="num">03</span><span class="txt">Assemble the multi-agent workflow</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="2" data-slug="lab2-04-run-and-trace" href="lab2-04-run-and-trace.html"><span class="num">04</span><span class="txt">Run &amp; trace the workflow</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><h4 data-lab="3">Lab 3 · Agent Framework</h4><a class="nav-item" data-lab="3" data-slug="lab3-01-setup-and-first-run" href="lab3-01-setup-and-first-run.html"><span class="num">01</span><span class="txt">Set up the code environment</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="3" data-slug="lab3-02-bind-portal-agents" href="lab3-02-bind-portal-agents.html"><span class="num">02</span><span class="txt">Bind the portal agents from code</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="3" data-slug="lab3-03-sequential-intake" href="lab3-03-sequential-intake.html"><span class="num">03</span><span class="txt">Sequential intake pipeline</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="3" data-slug="lab3-04-committee-magentic" href="lab3-04-committee-magentic.html"><span class="num">04</span><span class="txt">The credit committee with Magentic</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="3" data-slug="lab3-05-human-in-the-loop" href="lab3-05-human-in-the-loop.html"><span class="num">05</span><span class="txt">Human-in-the-loop sign-off</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="3" data-slug="lab3-06-durable-checkpointing" href="lab3-06-durable-checkpointing.html"><span class="num">06</span><span class="txt">Durable pause &amp; resume</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="3" data-slug="lab3-07-memory-and-state" href="lab3-07-memory-and-state.html"><span class="num">07</span><span class="txt">Memory &amp; workflow state</span><span class="type-dot concept" title="Concept overview"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="3" data-slug="lab3-08-evaluation-harness" href="lab3-08-evaluation-harness.html"><span class="num">08</span><span class="txt">Evaluation harness</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a><a class="nav-item" data-lab="3" data-slug="lab3-09-trace-and-observe" href="lab3-09-trace-and-observe.html"><span class="num">09</span><span class="txt">Trace &amp; observe the run</span><span class="type-dot handson" title="Hands-on lab"></span><span class="nav-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></a></aside><div class="scrim"></div>
+<main class="main"><div class="content-wrap">
+<article class="content">
+<div class="breadcrumb"><a href="../index.html">Workshop</a> &nbsp;/&nbsp; Lab 1 · Prompt Agent &nbsp;/&nbsp; Module 14</div>
+<div class="module-eyebrow"><span class="mod-badge handson"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 0 1 4 0v5"/><path d="M13 7a2 2 0 0 1 4 0v6a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-4l-1.5-3a1.5 1.5 0 0 1 2.7-1.3L9 15"/></svg> Hands-on lab</span><span class="mod-badge optional">Optional · extra credit</span></div>
+<h1>Ground with Work IQ (Microsoft 365)</h1>
+<div class="meta-row"><span class="chip lab-chip">Lab 1</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 0 1 4 0v5"/><path d="M13 7a2 2 0 0 1 4 0v6a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-4l-1.5-3a1.5 1.5 0 0 1 2.7-1.3L9 15"/></svg>Hands-on lab</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>45 min</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Advanced</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>Module 14 of 14</span></div>
+<p>This module connects <strong>Work IQ</strong> — the workplace intelligence layer over Microsoft 365 — to a Foundry agent as an <strong>MCP tool</strong>. Once connected, your agent can reason over email, calendar, Teams chats, and files with the signed-in user's permissions, sensitivity labels, and tenant policy applied automatically, so you never build a retrieval pipeline or compliance layer yourself.</p>
+<div class="callout tip">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1h6c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"/></svg>Tip</div>
+<p>Tick the checkbox next to each step as you complete it. Your progress is saved in this browser and shown on the <a href="../index.html">workshop overview</a>.</p>
+</div>
+<div class="callout important">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7v10l10 5 10-5V7L12 2Z"/><path d="M12 8v4M12 16h.01"/></svg>Important</div>
+<p>This module spans <strong>three portals</strong> — Entra, the Microsoft 365 admin center, and Foundry. Work through the parts in order. Parts 1–4 are one-time-per-tenant setup that an admin performs once; Parts 5–7 are per-project and are repeated for every Foundry project that uses Work IQ. A fourth portal, the Power Platform admin center, appears only in the optional remediation appendix at the end.</p>
+</div>
+<h2 id="objectives">Objectives<a href="#objectives" class="anchor" aria-hidden="true"> #</a></h2>
+<ul>
+<li>Provision the <strong>Work IQ service principal</strong> so the API exists in your tenant.</li>
+<li>Create an Entra app registration and grant admin consent for <strong><code>WorkIQAgent.Ask</code></strong>.</li>
+<li>Enable <strong>Copilot Credits</strong> — the usage-based billing Work IQ requires before it will answer a single call.</li>
+<li>Create a <strong>Work IQ MCP</strong> tool connection in your Foundry project and complete the OAuth round-trip.</li>
+<li>Add the tool to an agent and confirm a grounded Microsoft 365 answer comes back.</li>
+</ul>
+<h2 id="prerequisites">Prerequisites<a href="#prerequisites" class="anchor" aria-hidden="true"> #</a></h2>
+<p>This module needs more than the usual Foundry access, because Work IQ touches tenant-wide identity and billing. Parts 1–4 require tenant administration rights:</p>
+<table>
+<thead>
+<tr>
+<th>You want to…</th>
+<th>Typical role needed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Provision the Work IQ service principal</td>
+<td><strong>Global Administrator</strong></td>
+</tr>
+<tr>
+<td>Grant admin consent for <code>WorkIQAgent.Ask</code></td>
+<td><strong>Global Administrator</strong> or <strong>Privileged Role Administrator</strong></td>
+</tr>
+<tr>
+<td>Attach pay-as-you-go billing</td>
+<td><strong>Owner</strong> or <strong>Contributor</strong> on the Azure subscription</td>
+</tr>
+<tr>
+<td>Create the Power Platform billing plan <em>(optional — remediation only)</em></td>
+<td><strong>Power Platform Administrator</strong> or <strong>Global Administrator</strong></td>
+</tr>
+<tr>
+<td>Create the Foundry tool connection</td>
+<td><strong>Foundry Project Manager</strong> on the project</td>
+</tr>
+<tr>
+<td>Run the agent and complete OAuth sign-in</td>
+<td><strong>Foundry User</strong> on the project</td>
+</tr>
+</tbody>
+</table>
+<div class="callout note">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Note</div>
+<p>Work IQ uses <strong>delegated</strong> Entra authentication only. Application-only (client-credentials) auth is <strong>not supported</strong> — every call runs in the context of a signed-in user, which is what makes the permission and sensitivity-label enforcement possible.</p>
+</div>
+<h3 id="microsoft-365-licensing">Microsoft 365 licensing<a href="#microsoft-365-licensing" class="anchor" aria-hidden="true"> #</a></h3>
+<p>This is the most misunderstood part of Work IQ. What you need depends entirely on <em>which path</em> you use:</p>
+<table>
+<thead>
+<tr>
+<th>Connection path</th>
+<th>Requirement type</th>
+<th>What you need</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Work IQ API</strong> via MCP, A2A, or REST — this module</td>
+<td><strong>Usage-based billing</strong></td>
+<td>Copilot Credits enabled (Part 4). <strong>No connector licensing.</strong></td>
+</tr>
+<tr>
+<td>Connector-backed Microsoft 365 tools</td>
+<td><strong>Connector licensing</strong></td>
+<td>The specific connector's prerequisites, which <em>can</em> include a <strong>Microsoft 365 Copilot</strong> licence per calling user.</td>
+</tr>
+</tbody>
+</table>
+<div class="callout important">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7v10l10 5 10-5V7L12 2Z"/><path d="M12 8v4M12 16h.01"/></svg>Important</div>
+<p>The Work IQ API path in this module does <strong>not</strong> require a Microsoft 365 Copilot licence for anybody — not the developer, not the calling user. Billing is purely consumption-based through Copilot Credits. A tenant holding only, say, <strong>Microsoft 365 E5</strong> and no Copilot SKUs at all can complete this module end to end. The per-user Copilot licence requirement applies only to <em>connector-backed</em> tools, which are a different feature.</p>
+</div>
+<p>These values are the same in every tenant — keep them handy:</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Work IQ application ID</td>
+<td><code>fdcc1f02-fc51-4226-8753-f668596af7f7</code></td>
+</tr>
+<tr>
+<td>Delegated permission</td>
+<td><code>WorkIQAgent.Ask</code></td>
+</tr>
+<tr>
+<td>MCP endpoint</td>
+<td><code>https://workiq.svc.cloud.microsoft/mcp</code></td>
+</tr>
+<tr>
+<td>Scope (full form)</td>
+<td><code>api://workiq.svc.cloud.microsoft/WorkIQAgent.Ask</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="steps">Steps<a href="#steps" class="anchor" aria-hidden="true"> #</a></h2>
+<h3 id="part-1--provision-the-work-iq-service-principal">Part 1 — Provision the Work IQ service principal<a href="#part-1--provision-the-work-iq-service-principal" class="anchor" aria-hidden="true"> #</a></h3>
+<p>Work IQ has no presence in your tenant until you create its service principal. Until you do, it will not even appear in the <strong>API permissions</strong> picker in Part 3.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Sign in with a Global Administrator account and create the service principal:</p>
+<pre><code class="language-bash">az ad sp create --id fdcc1f02-fc51-4226-8753-f668596af7f7
+</code></pre>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Confirm it now resolves:</p>
+<pre><code class="language-bash">az ad sp show --id fdcc1f02-fc51-4226-8753-f668596af7f7 --query &quot;{name:displayName, id:id}&quot; -o table
+</code></pre>
+<details>
+<summary>Alternative — create it from Graph Explorer</summary>
+<ol>
+<li>
+<p>Open <a href="https://developer.microsoft.com/graph/graph-explorer">Graph Explorer</a> and sign in as an admin.</p>
+</li>
+<li>
+<p>Set the method to <strong>POST</strong> and the URL to <code>https://graph.microsoft.com/v1.0/servicePrincipals</code>. Enter the URL <em>before</em> consenting, so Graph Explorer surfaces the right scopes.</p>
+</li>
+<li>
+<p>Select <strong>Modify permissions</strong> and consent to <code>Application.ReadWrite.All</code>. This grants the scope only for your Graph Explorer session — it does not change organization-wide permissions.</p>
+</li>
+<li>
+<p>Use this request body:</p>
+<pre><code class="language-json">{ &quot;appId&quot;: &quot;fdcc1f02-fc51-4226-8753-f668596af7f7&quot; }
+</code></pre>
+</li>
+<li>
+<p>Select <strong>Run query</strong>. <strong>201 Created</strong> confirms success; a conflict error means it already exists.</p>
+</li>
+</ol>
+</details>
+</li>
+</ul>
+<div class="callout warning">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>Warning</div>
+<p><code>Insufficient privileges to complete the operation</code> here almost always means your Global Administrator role is <strong>PIM-eligible but not activated</strong>. Activate it in <a href="https://entra.microsoft.com/">Privileged Identity Management</a> and retry. This is easy to misdiagnose: Graph's <code>transitiveMemberOf</code> only returns <em>activated</em> roles, so an un-activated role looks exactly like no role at all.</p>
+</div>
+<h3 id="part-2--create-the-entra-app-registration">Part 2 — Create the Entra app registration<a href="#part-2--create-the-entra-app-registration" class="anchor" aria-hidden="true"> #</a></h3>
+<p>This app is the OAuth client Foundry uses to obtain delegated tokens on each user's behalf.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> In the <a href="https://entra.microsoft.com/">Entra admin center</a>, go to <strong>Entra ID → App registrations → New registration</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Name it something recognisable, such as <code>Foundry-WorkIQ-Connector</code>:</p>
+<ul>
+<li>Leave <strong>Supported account types</strong> on <strong>Accounts in this organizational directory only</strong>.</li>
+<li>Leave the redirect URI <strong>blank</strong> — Foundry generates it in Part 6, and you cannot know it yet.</li>
+</ul>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Copy the <strong>Application (client) ID</strong> and the <strong>Directory (tenant) ID</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Go to <strong>Certificates &amp; secrets → New client secret</strong>, set an expiry, and select <strong>Add</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Copy the secret <strong>Value</strong> immediately and store it somewhere safe. It is shown only once.</p>
+<div class="shot-placeholder">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+<span><strong>Add your own screenshot:</strong> the <em>Certificates &amp; secrets</em> blade with the new secret's Value column.</span>
+</div>
+</li>
+</ul>
+<div class="callout caution">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>Caution</div>
+<p>The secrets blade shows two columns: <strong>Value</strong> and <strong>Secret ID</strong>. You want <strong>Value</strong> (roughly 40 characters). <strong>Secret ID</strong> is a 36-character GUID. Pasting the Secret ID by mistake produces one of the most confusing failures in this module — Foundry reports <strong>&quot;Sign in successful&quot;</strong> and then loops on consent forever, because the authorize leg genuinely succeeds and only the token exchange fails.</p>
+</div>
+<details>
+<summary>💡 Creating the secret from the CLI — Azure CLI hides the value</summary>
+<p><code>az ad app credential reset</code> scrubs secrets from <strong>all</strong> output, printing <code>******</code>. There is no flag to disable this. Fetch the secret through Microsoft Graph instead, using a token the CLI does not scrub:</p>
+<pre><code class="language-powershell">$token = az account get-access-token --resource https://graph.microsoft.com --query accessToken -o tsv
+$body  = @{ passwordCredential = @{
+             displayName = &quot;foundry&quot;
+             endDateTime = (Get-Date).AddYears(2).ToString(&quot;o&quot;)
+           } } | ConvertTo-Json
+
+$r = Invoke-RestMethod -Method Post -ContentType &quot;application/json&quot; `
+       -Uri &quot;https://graph.microsoft.com/v1.0/applications/{object-id}/addPassword&quot; `
+       -Headers @{ Authorization = &quot;Bearer $token&quot; } -Body $body
+
+$r.secretText | Set-Content secret.txt
+</code></pre>
+<p>Use the app's <strong>object ID</strong> (not the client ID) in the URL. Then sanity-check the length before you paste it anywhere:</p>
+<pre><code class="language-powershell">(Get-Content secret.txt -Raw).Trim().Length   # expect ~40, never 36
+</code></pre>
+<p>Delete <code>secret.txt</code> once the value is in Foundry.</p>
+</details>
+<h3 id="part-3--grant-admin-consent-for-workiqagentask">Part 3 — Grant admin consent for <code>WorkIQAgent.Ask</code><a href="#part-3--grant-admin-consent-for-workiqagentask" class="anchor" aria-hidden="true"> #</a></h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> In your app registration, open <strong>API permissions → Add a permission → APIs my organization uses</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Search for <strong>Work IQ</strong>, select it, choose <strong>Delegated permissions</strong>, and tick <strong><code>WorkIQAgent.Ask</code></strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Add <strong><code>offline_access</code></strong> from <strong>Microsoft Graph → Delegated permissions</strong>. Without it, Entra issues no refresh token and your users are re-prompted to sign in constantly.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Select <strong>Grant admin consent for &lt;your tenant&gt;</strong> and confirm both permissions show a green check in the <strong>Status</strong> column.</p>
+<div class="shot-placeholder">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+<span><strong>Add your own screenshot:</strong> <em>API permissions</em> showing WorkIQAgent.Ask granted for the tenant.</span>
+</div>
+</li>
+</ul>
+<div class="callout note">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Note</div>
+<p>If <strong>Work IQ</strong> does not appear in the search results, Part 1 has not taken effect. Re-run <code>az ad sp create</code> and allow a minute for directory replication before searching again.</p>
+</div>
+<h3 id="part-4--turn-on-copilot-credits">Part 4 — Turn on Copilot Credits<a href="#part-4--turn-on-copilot-credits" class="anchor" aria-hidden="true"> #</a></h3>
+<p>Work IQ API usage is billed against <strong>Copilot Credits</strong>. With no credits policy in place, every call is rejected — no matter how correct your Entra configuration is.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Open the <a href="https://admin.microsoft.com">Microsoft 365 admin center</a> and go to <strong>Copilot → Cost management</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Select <strong>Get started</strong>, then choose <strong>Pay-as-you-go</strong> as the billing method and select your Azure subscription.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Set the <strong>budget scope</strong>. <strong>All users</strong> is simplest for a workshop; scope to a security group for production.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Choose a spending limit (or <strong>No limit</strong>) and optionally configure budget alerts.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Select <strong>Customize setup configuration</strong> and confirm <strong>Work IQ API</strong> is ticked under agents and services. Leave <strong>Auto-apply new services</strong> on.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> <strong>Activate</strong> the policy and confirm it shows <strong>Enabled</strong>.</p>
+<div class="shot-placeholder">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+<span><strong>Add your own screenshot:</strong> <em>Cost management</em> showing the policy Enabled with Work IQ API included.</span>
+</div>
+</li>
+</ul>
+<div class="callout tip">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1h6c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"/></svg>Tip</div>
+<p>Entitlement does not apply instantly. Expect <strong>30–60 minutes</strong> before Work IQ stops returning <code>403 NoPolicy</code>, and occasionally longer on CDX or demo tenants (<code>MngEnvMCAP*</code>). If Parts 1–4 are all correct, waiting genuinely is the fix — resist the urge to start dismantling a working Entra configuration. If it still fails well beyond that window, see <a href="#appendix--optional-power-platform-billing-plan">the optional remediation appendix</a>.</p>
+</div>
+<h3 id="part-5--create-the-work-iq-mcp-tool-connection">Part 5 — Create the Work IQ MCP tool connection<a href="#part-5--create-the-work-iq-mcp-tool-connection" class="anchor" aria-hidden="true"> #</a></h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Open your project in <a href="https://ai.azure.com">Microsoft Foundry</a> and select <strong>Tools</strong> in the left navigation.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Select <strong>Connect a tool</strong>, then open the <strong>Catalog</strong> tab.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Search for <strong><code>Work IQ MCP</code></strong> — the exact phrase — select it, and choose <strong>Create</strong>.</p>
+</li>
+</ul>
+<div class="callout caution">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>Caution</div>
+<p>There are <strong>two</strong> Work IQ cards in the catalog and they are not interchangeable. The plain <strong>&quot;Work IQ&quot;</strong> card is the A2A connector: its endpoint is locked to <code>/a2a/</code>, and because its agent card declares no <code>securitySchemes</code> and it returns 401 without a <code>WWW-Authenticate</code> header, Foundry has nothing to build a consent URL from. The result is <em>&quot;Sign-in couldn't start because the tool returned an invalid consent link.&quot;</em> Always choose <strong>Work IQ MCP</strong>.</p>
+</div>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Fill in the connection using the values you copied in Part 2:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Endpoint</td>
+<td><code>https://workiq.svc.cloud.microsoft/mcp</code></td>
+</tr>
+<tr>
+<td>Authentication</td>
+<td><strong>OAuth Identity Passthrough</strong></td>
+</tr>
+<tr>
+<td>Client ID</td>
+<td>Application (client) ID</td>
+</tr>
+<tr>
+<td>Client secret</td>
+<td>Secret <strong>Value</strong> (~40 characters)</td>
+</tr>
+<tr>
+<td>Authorization URL</td>
+<td><code>https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/authorize</code></td>
+</tr>
+<tr>
+<td>Token URL</td>
+<td><code>https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/token</code></td>
+</tr>
+<tr>
+<td>Refresh URL</td>
+<td><code>https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/token</code></td>
+</tr>
+<tr>
+<td>Scopes</td>
+<td><code>api://workiq.svc.cloud.microsoft/WorkIQAgent.Ask,offline_access</code></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Replace <code>{tenant-id}</code> with your Directory (tenant) ID in all three URLs, then save the connection.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Reopen the saved connection and <strong>verify the three URLs kept their full path</strong>.</p>
+<div class="shot-placeholder">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+<span><strong>Add your own screenshot:</strong> the saved Work IQ MCP connection showing the OAuth fields.</span>
+</div>
+</li>
+</ul>
+<div class="callout warning">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>Warning</div>
+<p>The portal sometimes saves the OAuth URLs as a bare <code>https://login.microsoftonline.com/</code>, dropping the tenant ID and the <code>/oauth2/v2.0/...</code> path. The symptom is unmistakable: after signing in, the popup lands on <strong><code>m365.cloud.microsoft/chat</code></strong> instead of returning to Foundry, because there is no valid redirect target. Re-enter the full URLs and save again. Note the <strong>Scopes</strong> field uses a <strong>comma</strong> separator here, not a space.</p>
+</div>
+<h3 id="part-6--register-the-oauth-redirect-uri">Part 6 — Register the OAuth redirect URI<a href="#part-6--register-the-oauth-redirect-uri" class="anchor" aria-hidden="true"> #</a></h3>
+<p>Foundry generates its redirect URL only <strong>after</strong> the connection is saved, so this step has to come second.</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Open the saved connection and copy the <strong>OAuth redirect URL</strong>. It looks like <code>https://global.consent.azure-apim.net/redirect/&lt;guid&gt;</code>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> In the <a href="https://entra.microsoft.com/">Entra admin center</a>, open your app registration and go to <strong>Authentication → Add a platform → Web</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Paste the redirect URL into <strong>Redirect URIs</strong> and select <strong>Configure</strong>.</p>
+</li>
+</ul>
+<div class="callout note">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Note</div>
+<p>Every connection gets its <strong>own</strong> redirect GUID. If you experimented with the A2A card earlier, its redirect URI will not work for the MCP connection — add the new one alongside it rather than replacing it. Registering several is harmless.</p>
+</div>
+<h3 id="part-7--add-work-iq-to-your-agent">Part 7 — Add Work IQ to your agent<a href="#part-7--add-work-iq-to-your-agent" class="anchor" aria-hidden="true"> #</a></h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Open the agent that should use Microsoft 365 context — for example <code>acl-remedy-advisor</code>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Add the <strong>Work IQ MCP</strong> tool and select the connection you created in Part 5.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> If Foundry asks you to configure MCP tool access, allow the Work IQ tools the agent should be able to call, and decide whether calls require approval or run automatically.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Save or publish the agent configuration.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Start a <strong>new thread</strong> and send a prompt that needs work data:</p>
+<pre><code class="language-text">Show me my unread email
+</code></pre>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> When the consent card appears, select <strong>Open consent</strong> <strong>exactly once</strong>, complete sign-in, and let the popup close on its own.</p>
+<div class="shot-placeholder">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+<span><strong>Add your own screenshot:</strong> the agent returning a grounded Microsoft 365 answer.</span>
+</div>
+</li>
+</ul>
+<div class="callout caution">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>Caution</div>
+<p>Clicking <strong>Open consent</strong> more than once — or retrying in a thread that already has consent cards stacked up from an earlier failure — causes <code>AADSTS54005: authorization code was already redeemed</code>. An authorization code is single-use. After changing <em>any</em> connection setting, always start a <strong>fresh thread</strong> rather than retrying in the old one.</p>
+</div>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Try a few more prompts to confirm the grounding is real:</p>
+<pre><code class="language-text">Summarize my upcoming meetings for today.
+Find recent messages from my manager from this week.
+Retrieve the latest email related to the quarterly business review.
+</code></pre>
+</li>
+</ul>
+<h2 id="validation">Validation<a href="#validation" class="anchor" aria-hidden="true"> #</a></h2>
+<ul>
+<li><code>az ad sp show --id fdcc1f02-fc51-4226-8753-f668596af7f7</code> resolves the Work IQ service principal.</li>
+<li><strong>API permissions</strong> lists <code>WorkIQAgent.Ask</code> and <code>offline_access</code>, both with tenant-wide admin consent granted.</li>
+<li><strong>Copilot → Cost management</strong> shows an <strong>Enabled</strong> policy that includes <strong>Work IQ API</strong>.</li>
+<li><em>(Only if you applied the optional remediation)</em> The Power Platform billing plan shows a non-empty <strong>Target environments</strong> and includes the <strong>Copilot Studio</strong> meter.</li>
+<li>The Foundry connection's Authorization and Token URLs both contain your tenant ID and <code>/oauth2/v2.0/</code>.</li>
+<li>The connection's redirect URL appears under the app registration's <strong>Authentication → Web → Redirect URIs</strong>.</li>
+<li>The agent answers a Microsoft 365 prompt with real tenant data, with no consent loop and no <code>403</code>.</li>
+</ul>
+<h2 id="congratulations-">Congratulations 🎉<a href="#congratulations-" class="anchor" aria-hidden="true"> #</a></h2>
+<p>Your agent can now reason over Microsoft 365 work data through Work IQ. You provisioned the Work IQ service principal, created an Entra app with delegated <code>WorkIQAgent.Ask</code> consent, enabled Copilot Credits so the API is billable, and wired an MCP tool connection into a Foundry agent with a working OAuth round-trip. Every answer is scoped to the signed-in user's own permissions and sensitivity labels — with no retrieval pipeline, no orchestration code, and no custom compliance logic on your side, and no per-user Microsoft 365 Copilot licence required.</p>
+<div class="callout tip">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1h6c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"/></svg>Tip</div>
+<p><strong>Next up → <a href="../index.html">Workshop overview</a></strong>
+Revisit <a href="06-mcp-tools.html">Module 06: MCP tools</a> to compare this managed catalog connection against a custom MCP server, or <a href="11-agent-ops-and-agent-id.html">Module 11: Agent ops and Agent ID</a> to monitor Work IQ calls in production.</p>
+</div>
+<h2 id="troubleshooting">Troubleshooting<a href="#troubleshooting" class="anchor" aria-hidden="true"> #</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Sign-in couldn't start because the tool returned an invalid consent link</code></td>
+<td>You used the <strong>A2A</strong> &quot;Work IQ&quot; card. Its agent card declares no <code>securitySchemes</code> and it returns 401 with no <code>WWW-Authenticate</code>, so Foundry cannot construct a consent URL.</td>
+<td>Delete that connection and use the <strong>Work IQ MCP</strong> card instead. The app registration, secret, and admin consent all carry over unchanged.</td>
+</tr>
+<tr>
+<td><code>403 NoPolicy — AI credits access is not configured for this user</code></td>
+<td>Copilot Credits policy missing or not yet propagated. Entitlement is not instant.</td>
+<td>Complete Part 4 and confirm the policy is <strong>Enabled</strong> with <strong>Work IQ API</strong> included, then wait 30–60 minutes before assuming anything is broken. Only if it persists well beyond that, work through the remediation appendix below.</td>
+</tr>
+<tr>
+<td><code>403 Forbidden</code> on a connector-backed tool</td>
+<td>That connector has its own licensing requirement.</td>
+<td>Connector-backed tools are a separate feature from the Work IQ API and can require a <strong>Microsoft 365 Copilot</strong> licence per calling user. The MCP path in this module does not.</td>
+</tr>
+<tr>
+<td>Sign-in popup lands on <code>m365.cloud.microsoft/chat</code></td>
+<td>The connection saved its OAuth URLs as a bare <code>https://login.microsoftonline.com/</code>, so there is no valid redirect target.</td>
+<td>Re-enter the full tenant-scoped <code>/oauth2/v2.0/authorize</code> and <code>/token</code> URLs, save, and reopen to confirm they persisted.</td>
+</tr>
+<tr>
+<td>&quot;Sign in successful&quot; but consent re-prompts endlessly</td>
+<td>Secret <strong>ID</strong> (36 chars) pasted instead of secret <strong>Value</strong> (~40 chars). The authorize leg succeeds; only the token exchange fails.</td>
+<td>Replace it with the secret Value. If the value was never copied, create a new secret — existing values cannot be retrieved.</td>
+</tr>
+<tr>
+<td><code>AADSTS54005: authorization code was already redeemed</code></td>
+<td><strong>Open consent</strong> clicked twice, or stale consent cards queued in the thread from an earlier failure.</td>
+<td>Close the popup, start a <strong>new thread</strong>, and click <strong>Open consent</strong> exactly once.</td>
+</tr>
+<tr>
+<td><code>AADSTS50011: redirect URI mismatch</code></td>
+<td>Foundry's generated redirect URL is not registered on the app.</td>
+<td>Copy the connection's redirect URL and add it under <strong>Authentication → Web</strong>. Each connection has its own GUID.</td>
+</tr>
+<tr>
+<td><strong>Work IQ</strong> missing from the API permissions picker</td>
+<td>Service principal not provisioned in the tenant.</td>
+<td>Run Part 1, then wait a minute for directory replication.</td>
+</tr>
+<tr>
+<td><code>az ad sp create</code> fails with <em>Insufficient privileges</em></td>
+<td>Global Administrator role is PIM-eligible but not activated.</td>
+<td>Activate the role in PIM and retry. <code>transitiveMemberOf</code> lists only activated roles, so this is easy to misread as missing access.</td>
+</tr>
+<tr>
+<td><code>az ad app credential reset</code> prints <code>******</code></td>
+<td>Azure CLI scrubs secrets from all output by design.</td>
+<td>Use the Graph <code>addPassword</code> approach in the Part 2 deep-dive.</td>
+</tr>
+<tr>
+<td>Users prompted to sign in on every request</td>
+<td><code>offline_access</code> missing, so Entra issues no refresh token.</td>
+<td>Add <code>offline_access</code> to the app's delegated permissions and re-grant admin consent.</td>
+</tr>
+<tr>
+<td>Billing plan created but credits still unavailable <em>(remediation only)</em></td>
+<td>The environment link on page 2 of the wizard was skipped.</td>
+<td>Open the plan with <strong>See details</strong> and confirm <strong>Target environments</strong>. Re-edit the plan if it is empty.</td>
+</tr>
+<tr>
+<td>Environment missing from the billing plan picker <em>(remediation only)</em></td>
+<td>An environment can belong to only one billing plan, and another plan already claims it.</td>
+<td>Remove it from the other plan first, or add the Copilot Studio meter to that existing plan instead.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="appendix--optional-power-platform-billing-plan">Appendix — optional Power Platform billing plan<a href="#appendix--optional-power-platform-billing-plan" class="anchor" aria-hidden="true"> #</a></h2>
+<div class="callout note">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Note</div>
+<p><strong>Do not do this as part of normal setup.</strong> It is a remediation step, listed here only because the <em>Enable Work IQ</em> prerequisites still reference a Copilot Studio billing plan. Reach for it only when <code>403 NoPolicy</code> survives a correctly configured Part 4 <strong>and</strong> a full propagation window.</p>
+</div>
+<h3 id="when-to-consider-it">When to consider it<a href="#when-to-consider-it" class="anchor" aria-hidden="true"> #</a></h3>
+<p>Work through this in order, and stop as soon as calls succeed:</p>
+<ol>
+<li>Confirm Part 4 is genuinely complete — policy <strong>Enabled</strong>, <strong>Work IQ API</strong> ticked, billing method attached.</li>
+<li>Wait a <strong>full 60 minutes</strong> from the moment the policy was activated. Most <code>403 NoPolicy</code> reports are simply impatience.</li>
+<li>Confirm the failure is really billing and not auth: a billing block returns <code>403</code> with <code>NoPolicy</code>, whereas a consent problem returns <code>403</code> with <code>Required scopes = [...]</code> and an audience problem returns <code>401</code>.</li>
+<li>Only then add the billing plan below.</li>
+</ol>
+<h3 id="create-the-plan">Create the plan<a href="#create-the-plan" class="anchor" aria-hidden="true"> #</a></h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Open the <a href="https://admin.powerplatform.microsoft.com">Power Platform admin center</a> and go to <strong>Licensing → Pay-as-you-go plans</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Select <strong>New billing plan</strong> and choose <strong>Azure subscription</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Give the plan a name, then select your <strong>Azure subscription</strong> and a <strong>Resource group</strong>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Under <strong>Meter</strong>, make sure <strong>Copilot Studio</strong> is ticked alongside the other products.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Select <strong>Next</strong>, choose the <strong>Region</strong>, and tick the <strong>environment</strong> your users sit in — commonly <code>&lt;Tenant&gt; (default)</code>.</p>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Select <strong>Save</strong>, then reopen the plan with <strong>See details</strong> and confirm <strong>Target environments</strong> is <strong>not empty</strong>.</p>
+<div class="shot-placeholder">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+<span><strong>Add your own screenshot:</strong> the billing plan details pane showing Meter and Target environments.</span>
+</div>
+</li>
+<li class="task-list-item enabled">
+<p><input class="task-list-item-checkbox"type="checkbox"> Allow another propagation window before retesting.</p>
+</li>
+</ul>
+<div class="callout important">
+<div class="callout-title"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7v10l10 5 10-5V7L12 2Z"/><path d="M12 8v4M12 16h.01"/></svg>Important</div>
+<p>Creating the plan is <strong>not</strong> the same as applying it. The environment link lives on the <em>second</em> page of the wizard and is easy to skip — and a plan with zero target environments silently does nothing. An environment can belong to only one billing plan at a time, so if your environment does not appear in the picker, another plan already claims it.</p>
+</div>
+<details>
+<summary>💡 Deep dive — do you really need both billing surfaces?</summary>
+<p>Short answer: <strong>no — Copilot Credits (Part 4) is the requirement. This appendix is almost certainly unnecessary.</strong></p>
+<p>The confusion is real, and comes from the documentation contradicting itself:</p>
+<ul>
+<li><strong><a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/work-iq">Connect agents to Microsoft 365 with Work IQ</a></strong> — the most specific page for this exact scenario — states that the Work IQ API through <em>A2A, REST, or MCP</em> requires <strong>usage-based billing via Copilot Credits</strong>, and that &quot;this path doesn't use connector licensing.&quot; Its troubleshooting entry for <code>403 Forbidden</code> reads: <em>&quot;Enable Copilot Credits billing for Work IQ API calls.&quot;</em> The Power Platform is never mentioned.</li>
+<li><strong><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-overview-copilot-credits">Copilot Credits overview</a></strong> lists <strong>Work IQ API (for third-party agents)</strong> as a service managed in the Microsoft 365 admin center — and separately directs Copilot Studio to its <em>own</em>, different pay-as-you-go path.</li>
+<li><strong><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/work-iq/enable-work-iq">Enable Work IQ</a></strong> prerequisites say <em>&quot;a usage-based billing plan set up in Copilot Studio with an Azure subscription and resource group assigned.&quot;</em> The tell that this sentence is stale: the words say <em>Copilot Studio</em>, but the hyperlink on them points at the <strong>Copilot Credits</strong> article. It reads like a line inherited from an earlier preview, when Work IQ was gated behind Copilot Studio pay-as-you-go.</li>
+</ul>
+<p>Two independent, more specific sources say Copilot Credits; one older, more general prerequisite list says Copilot Studio while linking to Copilot Credits. Weigh accordingly.</p>
+<p><strong>Why this is hard to settle by experiment:</strong> entitlement takes 30–60 minutes to propagate in <em>both</em> directions. If you configure both surfaces and calls start working, you cannot attribute the fix to either one. Isolating it means removing one, waiting an hour, testing, then restoring and waiting again — rarely worth it on a tenant that finally works.</p>
+<p><strong>Practical guidance:</strong> do Part 4, skip this appendix, and give it an hour before concluding anything is wrong.</p>
+</details>
+<h2 id="references">References<a href="#references" class="anchor" aria-hidden="true"> #</a></h2>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/work-iq/enable-work-iq">Enable Work IQ APIs</a></li>
+<li><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/work-iq/mcp/quickstart/foundry">Connect a Microsoft Foundry project to Work IQ</a></li>
+<li><a href="https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/work-iq">Connect agents to Microsoft 365 with Work IQ</a></li>
+<li><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-overview-copilot-credits">Understand usage-based billing for Copilot Credits</a></li>
+<li><a href="https://learn.microsoft.com/en-us/power-platform/admin/pay-as-you-go-set-up">Set up pay-as-you-go in Power Platform</a></li>
+</ul>
+
+<div class="pager"><a class="prev" href="13-custom-engine-agent.html"><span class="dir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Previous</span><span class="ttl">13. Custom Engine Agent</span></a><span class="spacer"></span></div>
+<div class="page-footer">
+Original content authored for this workshop. Screenshot frames are placeholders &mdash; capture your own from your Foundry portal as you go.
+</div>
+</article>
+<nav class="toc"><div class="toc-title">On this page</div><a class="h2" href="#objectives">Objectives</a><a class="h2" href="#prerequisites">Prerequisites</a><a class="h3" href="#microsoft-365-licensing">Microsoft 365 licensing</a><a class="h2" href="#steps">Steps</a><a class="h3" href="#part-1--provision-the-work-iq-service-principal">Part 1 — Provision the Work IQ service principal</a><a class="h3" href="#part-2--create-the-entra-app-registration">Part 2 — Create the Entra app registration</a><a class="h3" href="#part-3--grant-admin-consent-for-workiqagentask">Part 3 — Grant admin consent for WorkIQAgent.Ask</a><a class="h3" href="#part-4--turn-on-copilot-credits">Part 4 — Turn on Copilot Credits</a><a class="h3" href="#part-5--create-the-work-iq-mcp-tool-connection">Part 5 — Create the Work IQ MCP tool connection</a><a class="h3" href="#part-6--register-the-oauth-redirect-uri">Part 6 — Register the OAuth redirect URI</a><a class="h3" href="#part-7--add-work-iq-to-your-agent">Part 7 — Add Work IQ to your agent</a><a class="h2" href="#validation">Validation</a><a class="h2" href="#congratulations-">Congratulations 🎉</a><a class="h2" href="#troubleshooting">Troubleshooting</a><a class="h2" href="#appendix--optional-power-platform-billing-plan">Appendix — optional Power Platform billing plan</a><a class="h3" href="#when-to-consider-it">When to consider it</a><a class="h3" href="#create-the-plan">Create the plan</a><a class="h2" href="#references">References</a></nav>
+</div></main>
+</div>
+<script src="../assets/js/flags.js"></script>
+<script src="../assets/js/modules-data.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

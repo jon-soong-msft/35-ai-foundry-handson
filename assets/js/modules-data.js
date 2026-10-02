@@ -156,6 +156,18 @@ window.WORKSHOP_MODULES = [
     "lab": 1
   },
   {
+    "num": "14",
+    "slug": "14-work-iq",
+    "title": "Ground with Work IQ (Microsoft 365)",
+    "type": "handson",
+    "minutes": 45,
+    "difficulty": "advanced",
+    "taskCount": 40,
+    "summary": "Connect Work IQ as an MCP tool so the agent can reason over email, calendar, Teams, and files with the signed-in user's permissions. Requires tenant admin.",
+    "optional": true,
+    "lab": 1
+  },
+  {
     "num": "01",
     "slug": "lab2-01-workflow-overview",
     "title": "Agent workflow concepts & architecture",

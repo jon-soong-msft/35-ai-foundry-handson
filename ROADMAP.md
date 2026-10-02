@@ -46,10 +46,11 @@ multi‑agent story.
 
 ## 3. Where the course is today (coverage map)
 
-**Lab 1 — Prompt Agent with Foundry** (13 modules, portal‑first): setup, portal tour, Foundry
+**Lab 1 — Prompt Agent with Foundry** (14 modules, portal‑first): setup, portal tour, Foundry
 Toolkit (concept), build the `acl-remedy-advisor` prompt agent, tools + evaluations, MCP tools,
 Foundry IQ grounding (RAG), Agent Framework (concept), hosted agents (concept), toolboxes
-(concept), agent ops + Agent ID, publish to M365/Teams, custom engine agent (concept).
+(concept), agent ops + Agent ID, publish to M365/Teams, custom engine agent (concept), Work IQ
+Microsoft 365 grounding via MCP (optional, tenant admin).
 
 **Lab 2 — Multi‑agent with Agent Workflow** (4 modules, portal‑first): the Meridian loan
 underwriting scenario — 8 prompt agents composed in the **portal Workflows designer**
@@ -342,3 +343,4 @@ All five open decisions were confirmed on **2026-07-31** (recommendations accept
 | 2026-07-31 | Initial roadmap. Locked hybrid/Python delivery; HITL moved from Lab 1 to Lab 3; proposed Labs 0, 3, 4, 5 to complete the 5‑stage path. |
 | 2026-07-31 | Resolved all five open decisions (§9): keep‑both‑then‑demote Lab 2 (~Oct 2026); Python‑only; `.devcontainer` for Lab 3+; in‑repo FastAPI LOB stub via `azd`; Foundation networking as concept + links. Propagated to Labs 0, 2, 4 and §8. |
 | 2026-07-31 | **Scaffolded Lab 3 (P1).** Authored 9 modules (`content/lab3-*.md`) + the `foundry-agent-framework/` Python project (`.devcontainer`, `src/` with Magentic committee, request/response HITL, checkpointing, eval harness, tracing); wired into `tools/build.mjs` (`MODULES`, `LABS`, `lab>=2` self‑authored). Build green (26/26); Python `py_compile` clean. Code is a **preview‑tracking scaffold** (`# VERIFY` markers). |
+| 2026-10-02 | Added **Lab 1 · Module 14 — Work IQ** (`content/14-work-iq.md`): optional hands‑on connecting Work IQ as an MCP tool for Microsoft 365 grounding (Entra app + `WorkIQAgent.Ask`, Copilot Credits, OAuth passthrough). Self‑authored (`original: true`, no upstream source link). Build 27/27. |

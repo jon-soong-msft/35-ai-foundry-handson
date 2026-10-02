@@ -62,6 +62,9 @@ A **project** is the workspace that holds your agents, model deployments, tools,
   <span><strong>Add your own screenshot:</strong> the <em>Create project</em> dialog in your subscription.</span>
   </div>
 
+> [!TIP]
+> One **Foundry resource** can host many projects, and model deployments belong to the *resource*, not to the individual project. Every project under the same resource sees the same deployments, so there is no need to redeploy a model each time you create a project.
+
 ### Part 3 — Deploy the models you'll use
 
 The workshop scenario needs a **chat model**. A later module ([Foundry IQ](07-foundry-iq.html)) also uses an **embedding model**, so deploy both now while you are here.
@@ -82,8 +85,38 @@ The workshop scenario needs a **chat model**. A later module ([Foundry IQ](07-fo
 
 - [ ] Confirm both deployments appear under **Build → Models** with a status of **Succeeded**.
 
+<details>
+<summary>💡 Best practice — choosing the region, deployment type, and deployment name</summary>
+
+Three small decisions in this step quietly shape the rest of the workshop. Microsoft's guidance:
+
+**1. Pick the region before you deploy anything.** Agent *tools* — not just models — vary by region, and the region is fixed on the Foundry resource. Web search, MCP, Azure AI Search, and Code Interpreter are broadly available; File search is missing in Italy North and Brazil South, and Computer Use is supported in only a handful of regions. Check the tool-by-region matrix first.
+
+**2. Start with Global Standard.** It receives new models first, carries the lowest price, and has the broadest region coverage. Move away from it only for a specific reason:
+
+| Requirement | Deployment type |
+|---|---|
+| Default — newest models, lowest price, broadest regions | **Global Standard** |
+| Keep processing inside the EU, US, or APAC data zone | Data Zone Standard |
+| Reserved, predictable throughput | Global Provisioned (PTU) |
+| Large asynchronous jobs at roughly half the cost | Global Batch |
+
+Not every model offers every type. If the dropdown shows only **Global Standard**, that is the model's limitation, not an error.
+
+**3. Keep the deployment name identical to the model name.** Agents, the SDK, and every later module reference the *deployment* name, not the model. Matching the two means anything you copy from this workshop works unchanged.
+
+**4. Quota is granted per model, per region**, in units of 1,000 tokens per minute. Deploying a chat model does not consume your embedding model's allowance — so if a deployment fails on capacity, check the quota for *that specific model* rather than assuming the subscription is exhausted.
+
+More detail: [Deployment types for Foundry Models](https://learn.microsoft.com/azure/foundry/foundry-models/concepts/deployment-types) · [Agent Service limits, quotas, and regional support](https://learn.microsoft.com/azure/foundry/agents/concepts/limits-quotas-regions)
+
+</details>
+
 > [!IMPORTANT]
 > Model availability and quota vary by region. If a model is greyed out or a deployment fails on quota, pick a supported region for your Foundry resource or request a quota increase for that model family in the Azure portal.
+
+> [!WARNING]
+> When you pick a model for an agent later on, the dropdown has **two groups**: **Deployments** (models already deployed here) and **Models** (catalog entries that are *not* deployed yet).
+> Always choose from **Deployments**. Selecting from **Models** asks Foundry to create a new deployment, which fails unless you hold model-deployment rights. If the **Deployments** group looks empty, that is a missing **Reader** role on the Foundry resource — not a missing model.
 
 ## Validation
 
@@ -106,6 +139,9 @@ Your Foundry project is ready. You signed in, enabled New Foundry, confirmed (or
 |---------|--------------|-----|
 | No **Create project** option | You lack write access on the subscription/resource group. | Ask an Owner/Contributor to create the project, or grant yourself the role. |
 | **Deploy model** button disabled | Missing model-deployment permissions. | Get **Azure AI Account Owner** / **Cognitive Services Contributor** (or Owner) on the Foundry resource. |
-| Deployment fails on quota | No capacity for that model in the region. | Choose a different region for the Foundry resource, or request a quota increase in the Azure portal. |
+| Deployment fails on quota | No capacity for that model in the region. | Choose a different region for the Foundry resource, or request a quota increase in the Azure portal. Quota is per model — check the row for that exact model. |
+| Only **Global Standard** offered as a deployment type | That model doesn't support the other types in this region. | Expected. Continue with Global Standard, or pick a different model if you need data-zone residency. |
+| Agent model dropdown lists models you never deployed | The **Models** group is the global catalog, not your deployments. | Pick from the **Deployments** group at the top. Selecting a catalog model triggers a brand-new deployment. |
+| **Deployments** group is empty, but the project otherwise works | Missing **Reader** on the Foundry resource — the picker reads the resource, not the project. | Ask an admin for **Reader** on the Foundry resource. Project-level access alone is not enough. |
 | Can't see the endpoint or New Foundry layout | Classic view is active. | Turn the **New Foundry** toggle on in the top navigation bar. |
 | Project home won't load | Transient portal issue or role propagation delay. | Refresh, wait a minute for role assignments to apply, and try again. |

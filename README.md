@@ -19,6 +19,11 @@ existing access to an Azure subscription with Microsoft Foundry.
 
 The very first step assumed is simply: *they can sign in to ai.azure.com and open a project.*
 
+> **Delivering this workshop?** Start with **[`docs/portal-quickstart.md`](docs/portal-quickstart.md)**
+> — a one-page, portal-only setup (~20 min). For per-attendee projects, scripting, or the reasoning
+> behind each choice, see the full runbook in **[`docs/admin-prework.md`](docs/admin-prework.md)**:
+> model deployments, RBAC, observability, and region/quota selection.
+
 ---
 
 ## Open it
@@ -72,6 +77,7 @@ No server-side code is needed. Progress tracking uses the browser's `localStorag
 | **02, 11, 12** | Portal-based in the source; kept close to the original. |
 | **04, 05, 06, 07** | **Portal-first primary path.** The original workshop drives these through the VS Code *Agent Builder* extension and Python; here the hands-on is re-written for the portal Agents UI. The original VS Code / code path is preserved as a linked reference, and the source screenshots are kept as illustrations. |
 | **03, 08, 09, 10, 13** | Condensed into short **read-only concept overviews** (they are VS Code / CLI / SDK / M365-heavy). Each links to the full source module for the code. |
+| **14** | **Original to this workshop** (no upstream module). Optional hands-on connecting **Work IQ** as an MCP tool for Microsoft 365 grounding; needs tenant-admin rights for the one-time setup. |
 
 Every page carries a note that the New Foundry UI evolves quickly, so exact labels and
 layouts in your tenant may differ from the bundled screenshots.
